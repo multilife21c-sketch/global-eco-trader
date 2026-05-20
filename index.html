@@ -1,1112 +1,2101 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>글로벌 에코 트레이더 (Global Eco-Trader)</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Pretendard', sans-serif;
-            background-color: #0b0f19;
-            color: #f1f5f9;
-        }
-        /* Custom scrollbar for trading aesthetic */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
-        /* Glowing neon effects */
-        .glow-green {
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
-        }
-        .glow-red {
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
-        }
-        .glow-blue {
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.35);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NationVault — 국가주식 거래소</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #111827;
+    --bg-tertiary: #1a2332;
+    --bg-elevated: #1f2937;
+    --border-default: #2a3441;
+    --border-strong: #3d4a5c;
+    --text-primary: #e5e7eb;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --accent-green: #10b981;
+    --accent-green-dim: #065f46;
+    --accent-red: #ef4444;
+    --accent-red-dim: #7f1d1d;
+    --accent-amber: #f59e0b;
+    --accent-blue: #3b82f6;
+    --accent-purple: #a855f7;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-kr: 'Noto Sans KR', sans-serif;
+  }
+  
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-kr), var(--font-display), sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* === TOP BAR === */
+  .topbar {
+    height: 56px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 24px;
+  }
+  
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-icon { 
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #0a0e1a;
+  }
+  .logo-text { font-family: var(--font-display); }
+  .logo-text span { color: var(--accent-green); }
+  
+  .market-status {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 10px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .pulse-dot {
+    width: 6px; height: 6px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  
+  .top-clock {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .speed-control {
+    display: flex; gap: 4px;
+    background: var(--bg-tertiary);
+    padding: 3px;
+    border-radius: 6px;
+    border: 1px solid var(--border-default);
+  }
+  .speed-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .speed-btn.active {
+    background: var(--accent-green);
+    color: #0a0e1a;
+  }
+  .speed-btn:hover:not(.active) { color: var(--text-primary); }
+  
+  .balance-display {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-default);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+  }
+  .balance-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .balance-value { font-size: 14px; font-weight: 600; color: var(--accent-green); }
+  
+  /* === TICKER TAPE === */
+  .ticker-tape {
+    height: 36px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-default);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .ticker-track {
+    display: flex;
+    gap: 32px;
+    animation: ticker-scroll 90s linear infinite;
+    padding-left: 100%;
+    white-space: nowrap;
+  }
+  @keyframes ticker-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+  .ticker-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .ticker-flag { font-size: 16px; }
+  .ticker-code { font-weight: 600; color: var(--text-primary); }
+  .ticker-price { color: var(--text-secondary); }
+  .ticker-change.up { color: var(--accent-green); }
+  .ticker-change.down { color: var(--accent-red); }
+  
+  /* === MAIN LAYOUT === */
+  .main-container {
+    display: grid;
+    grid-template-columns: 320px 1fr 360px;
+    height: calc(100vh - 92px);
+    gap: 0;
+  }
+  
+  /* === LEFT PANEL: COUNTRY LIST === */
+  .left-panel {
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-default);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .panel-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-title {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+  }
+  
+  .search-box {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .search-input {
+    width: 100%;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: var(--font-kr);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--accent-blue); }
+  .search-input::placeholder { color: var(--text-muted); }
+  
+  .tier-filter {
+    display: flex;
+    gap: 4px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .tier-btn {
+    flex: 1;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    padding: 5px 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .tier-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+  .tier-btn.active {
+    background: var(--accent-blue);
+    color: white;
+    border-color: var(--accent-blue);
+  }
+  
+  .country-list {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  .country-list::-webkit-scrollbar { width: 6px; }
+  .country-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+  
+  .country-row {
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(42, 52, 65, 0.4);
+    transition: background 0.1s;
+  }
+  .country-row:hover { background: var(--bg-tertiary); }
+  .country-row.selected { 
+    background: var(--bg-tertiary);
+    border-left: 3px solid var(--accent-blue);
+    padding-left: 13px;
+  }
+  
+  .country-flag { font-size: 22px; line-height: 1; }
+  .country-info { min-width: 0; }
+  .country-code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tier-badge {
+    font-size: 8px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-weight: 700;
+  }
+  .tier-S { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+  .tier-A { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+  .tier-B { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+  .tier-C { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
+  .tier-D { background: rgba(156, 163, 175, 0.2); color: var(--text-secondary); }
+  
+  .country-name {
+    font-size: 11px;
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .country-price { text-align: right; }
+  .price-value {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .price-change {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .price-change.up { color: var(--accent-green); }
+  .price-change.down { color: var(--accent-red); }
+  .price-change.flat { color: var(--text-muted); }
+  
+  /* === CENTER PANEL: CHART === */
+  .center-panel {
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .chart-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .selected-country {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .sc-flag { font-size: 32px; }
+  .sc-info h2 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .sc-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 12px;
+  }
+  
+  .price-display {
+    text-align: right;
+  }
+  .pd-price {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .pd-change {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .flash-up { animation: flash-green 0.6s; }
+  .flash-down { animation: flash-red 0.6s; }
+  @keyframes flash-green { 0% { background: rgba(16, 185, 129, 0.3); } 100% { background: transparent; } }
+  @keyframes flash-red { 0% { background: rgba(239, 68, 68, 0.3); } 100% { background: transparent; } }
+  
+  .chart-tools {
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .timeframe-group {
+    display: flex;
+    gap: 2px;
+    background: var(--bg-tertiary);
+    padding: 2px;
+    border-radius: 5px;
+  }
+  .tf-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  .tf-btn.active {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+  }
+  
+  .chart-container {
+    flex: 1;
+    padding: 20px;
+    position: relative;
+  }
+  #priceChart { width: 100%; height: 100%; display: block; }
+  
+  .chart-stats {
+    padding: 12px 24px;
+    border-top: 1px solid var(--border-default);
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 24px;
+  }
+  .stat-item .stat-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+    cursor: help;
+    border-bottom: 1px dashed var(--text-muted);
+    display: inline-block;
+  }
+  .stat-item .stat-value {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  
+  /* === RIGHT PANEL: TRADE + NEWS === */
+  .right-panel {
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border-default);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .trade-panel {
+    border-bottom: 1px solid var(--border-default);
+    padding: 16px;
+  }
+  
+  .trade-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .trade-tab {
+    flex: 1;
+    padding: 10px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .trade-tab.buy.active {
+    background: var(--accent-green);
+    color: #0a0e1a;
+    border-color: var(--accent-green);
+  }
+  .trade-tab.sell.active {
+    background: var(--accent-red);
+    color: white;
+    border-color: var(--accent-red);
+  }
+  
+  .form-group { margin-bottom: 12px; }
+  .form-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+    display: block;
+  }
+  .form-input {
+    width: 100%;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--accent-blue); }
+  
+  .quick-amounts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .qa-btn {
+    padding: 5px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .qa-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+  
+  .trade-summary {
+    background: var(--bg-tertiary);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-default);
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    margin: 3px 0;
+  }
+  .summary-row .label { color: var(--text-secondary); }
+  .summary-row .value { color: var(--text-primary); font-weight: 600; }
+  
+  .trade-button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: filter 0.15s;
+  }
+  .trade-button.buy {
+    background: var(--accent-green);
+    color: #0a0e1a;
+  }
+  .trade-button.sell {
+    background: var(--accent-red);
+    color: white;
+  }
+  .trade-button:hover { filter: brightness(1.1); }
+  .trade-button:disabled { 
+    opacity: 0.4; 
+    cursor: not-allowed; 
+    filter: grayscale(0.5);
+  }
+  
+  /* === NEWS FEED === */
+  .news-section {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .news-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  .news-list::-webkit-scrollbar { width: 6px; }
+  .news-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+  
+  .news-item {
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+    border-left: 3px solid var(--border-default);
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .news-item:hover { border-left-color: var(--accent-blue); }
+  .news-item.positive { border-left-color: var(--accent-green); }
+  .news-item.negative { border-left-color: var(--accent-red); }
+  
+  .news-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+  .news-flag { font-size: 12px; }
+  .news-country-code {
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .news-impact {
+    margin-left: auto;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .news-impact.positive { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+  .news-impact.negative { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+  .news-impact.neutral { background: rgba(156, 163, 175, 0.15); color: var(--text-secondary); }
+  
+  .news-title {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: 3px;
+  }
+  .news-time {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+  }
+  
+  /* === BOTTOM PANEL: PORTFOLIO === */
+  .bottom-bar {
+    position: fixed;
+    bottom: 20px;
+    right: 380px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    padding: 12px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    z-index: 100;
+  }
+  .stat-block { text-align: center; }
+  .sb-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .sb-value {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .portfolio-btn {
+    background: var(--accent-blue);
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  /* === MODAL === */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+  }
+  .modal-backdrop.active { display: flex; }
+  .modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+    width: 600px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  }
+  .modal-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 20px;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+  }
+  .modal-close:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+  .modal-body { padding: 22px; }
+  
+  .holdings-table { width: 100%; border-collapse: collapse; }
+  .holdings-table th {
+    text-align: left;
+    padding: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .holdings-table th.right { text-align: right; }
+  .holdings-table td {
+    padding: 10px 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    border-bottom: 1px solid rgba(42, 52, 65, 0.4);
+  }
+  .holdings-table td.right { text-align: right; }
+  .holdings-table tr:hover { background: var(--bg-tertiary); }
+  
+  /* === TOAST NOTIFICATIONS === */
+  .toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toast {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-left: 4px solid var(--accent-blue);
+    padding: 10px 14px;
+    border-radius: 6px;
+    min-width: 280px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    animation: toast-in 0.3s ease-out;
+    font-size: 12px;
+  }
+  .toast.success { border-left-color: var(--accent-green); }
+  .toast.error { border-left-color: var(--accent-red); }
+  .toast.warning { border-left-color: var(--accent-amber); }
+  @keyframes toast-in {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  
+  .toast-title { font-weight: 600; margin-bottom: 2px; font-family: var(--font-display); }
+  .toast-msg { color: var(--text-secondary); font-size: 11px; }
+  
+  /* === TOOLTIP === */
+  [data-tip] { position: relative; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--font-kr);
+    white-space: nowrap;
+    z-index: 1000;
+    border: 1px solid var(--border-strong);
+    pointer-events: none;
+  }
+  
+  /* === WELCOME OVERLAY === */
+  .welcome-overlay {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #0a0e1a 0%, #1a2332 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5000;
+    flex-direction: column;
+    padding: 40px;
+  }
+  .welcome-overlay.hidden { display: none; }
+  .welcome-content {
+    max-width: 600px;
+    text-align: center;
+  }
+  .welcome-logo {
+    font-family: var(--font-display);
+    font-size: 48px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+    letter-spacing: -1px;
+  }
+  .welcome-tagline {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    font-family: var(--font-display);
+  }
+  .welcome-features {
+    text-align: left;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    padding: 24px;
+    border-radius: 10px;
+    margin-bottom: 28px;
+  }
+  .welcome-features h3 {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+  }
+  .welcome-features ul { list-style: none; }
+  .welcome-features li {
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .welcome-features li::before {
+    content: "▸";
+    color: var(--accent-green);
+    font-weight: 700;
+  }
+  .welcome-btn {
+    background: var(--accent-green);
+    color: #0a0e1a;
+    border: none;
+    padding: 14px 36px;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: filter 0.15s;
+  }
+  .welcome-btn:hover { filter: brightness(1.1); }
+  
+  .ai-eval-badge {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-purple);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    animation: ai-pulse 2s infinite;
+  }
+  .ai-eval-badge.active { display: flex; }
+  @keyframes ai-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(168, 85, 247, 0); }
+  }
+  .ai-icon {
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: white;
+  }
+  .ai-text { font-family: var(--font-mono); font-size: 11px; }
+  .ai-text .ai-title { color: var(--accent-purple); font-weight: 600; }
+  .ai-text .ai-status { color: var(--text-secondary); font-size: 10px; }
+</style>
 </head>
-<body class="h-screen overflow-hidden flex flex-col">
+<body>
 
-    <!-- TOP HEADER BAR -->
-    <header class="bg-[#0f172a] border-b border-slate-800 px-6 py-3 flex items-center justify-between z-10 shrink-0">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-600 text-white p-2 rounded-lg glow-blue">
-                <i class="fa-solid fa-earth-americas text-xl animate-spin-slow"></i>
-            </div>
-            <div>
-                <h1 class="font-extrabold text-lg tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">GLOBAL ECO-TRADER</h1>
-                <p class="text-xs text-slate-400">고등학생을 위한 AI 거시경제 국가 거래 시뮬레이션</p>
-            </div>
-        </div>
-
-        <!-- USER PORTFOLIO BANNER -->
-        <div class="flex items-center gap-6">
-            <div class="bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-lg flex items-center gap-4">
-                <div>
-                    <span class="text-[10px] text-slate-400 block uppercase font-semibold">총 자산</span>
-                    <span id="total-asset-text" class="text-base font-bold text-yellow-400">₩100,000,000</span>
-                </div>
-                <div class="border-l border-slate-800 h-8 pl-4">
-                    <span class="text-[10px] text-slate-400 block uppercase font-semibold">보유 현금</span>
-                    <span id="cash-text" class="text-base font-bold text-white">₩100,000,000</span>
-                </div>
-                <div class="border-l border-slate-800 h-8 pl-4">
-                    <span class="text-[10px] text-slate-400 block uppercase font-semibold">총 수익률</span>
-                    <span id="total-profit-rate" class="text-base font-bold text-slate-400">0.00%</span>
-                </div>
-            </div>
-
-            <!-- AI VALUATION SESSION TRIGGER -->
-            <button onclick="openAiSessionModal()" class="relative group bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold px-5 py-2.5 rounded-xl transition duration-300 flex items-center gap-2 glow-blue text-sm">
-                <i class="fa-solid fa-brain-circuit animate-pulse"></i>
-                <span>AI 시장 정산 세션 실행</span>
-                <span id="pending-news-badge" class="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold border border-slate-950 animate-bounce">3</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- LIVE NEWS TICKER -->
-    <div class="bg-[#020617] border-b border-slate-800 py-1.5 px-4 overflow-hidden flex items-center gap-4 shrink-0 text-xs text-slate-300">
-        <div class="bg-red-950 border border-red-800 text-red-400 px-2 py-0.5 rounded font-bold uppercase tracking-wider shrink-0 flex items-center gap-1">
-            <span class="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
-            <span>BREAKING NEWS</span>
-        </div>
-        <div class="overflow-hidden relative w-full h-5">
-            <div id="news-ticker-text" class="absolute whitespace-nowrap transition-transform duration-1000">
-                [알림] 글로벌 에코 트레이더 세계에 오신 것을 환영합니다! AI 뉴스 분석과 함께 세계 정세를 활용한 주식거래가 곧 시작됩니다.
-            </div>
-        </div>
+<!-- Welcome Overlay -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-content">
+    <div class="welcome-logo">NationVault</div>
+    <div class="welcome-tagline">국가를 거래하라. 세계를 이해하라.</div>
+    <div class="welcome-features">
+      <h3>📋 게임 가이드</h3>
+      <ul>
+        <li>가상 자금 $1,000,000으로 전 세계 20개 국가에 투자</li>
+        <li>실제 GDP 기반 시가총액으로 상장된 국가들</li>
+        <li>AI가 1시간(게임내 30초)마다 뉴스 분석 후 자동 평가</li>
+        <li>좋은 뉴스 = 주가 상승 / 나쁜 뉴스 = 주가 하락</li>
+        <li>경제 용어에 마우스를 올리면 설명이 표시됩니다</li>
+      </ul>
     </div>
+    <button class="welcome-btn" onclick="startGame()">거래 시작하기 →</button>
+  </div>
+</div>
 
-    <!-- MAIN BODY SECTION -->
-    <div class="flex flex-1 overflow-hidden">
-        
-        <!-- LEFT PANEL: Country Asset Directory (Market List) -->
-        <aside class="w-[320px] bg-[#090d16] border-r border-slate-800 flex flex-col shrink-0">
-            <div class="p-4 border-b border-slate-800">
-                <div class="relative">
-                    <input id="search-input" oninput="filterCountries()" type="text" placeholder="국가 검색..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 pl-9 text-sm text-slate-200 focus:outline-none focus:border-blue-500">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-500 text-xs"></i>
-                </div>
-                <!-- Continent Filter -->
-                <div class="flex gap-1.5 mt-3 overflow-x-auto text-[11px] pb-1">
-                    <button onclick="selectContinent('ALL')" class="continent-btn px-2.5 py-1 rounded bg-blue-600 text-white font-semibold">전체</button>
-                    <button onclick="selectContinent('ASIA')" class="continent-btn px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-slate-400 hover:border-slate-700">아시아</button>
-                    <button onclick="selectContinent('AMERICA')" class="continent-btn px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-slate-400 hover:border-slate-700">아메리카</button>
-                    <button onclick="selectContinent('EUROPE')" class="continent-btn px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-slate-400 hover:border-slate-700">유럽</button>
-                    <button onclick="selectContinent('OTHER')" class="continent-btn px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-slate-400 hover:border-slate-700">기타</button>
-                </div>
-            </div>
-
-            <!-- Country Trading Assets List -->
-            <div id="country-list" class="flex-1 overflow-y-auto divide-y divide-slate-900">
-                <!-- Javascript will inject list items here -->
-            </div>
-        </aside>
-
-        <!-- CENTER PANEL: Advanced MTS Chart & National Data Info -->
-        <main class="flex-1 bg-[#0b0f19] flex flex-col overflow-y-auto p-6 space-y-6">
-            
-            <!-- Dynamic Country Quick Information Header -->
-            <div class="flex justify-between items-start bg-[#0f172a] p-5 rounded-2xl border border-slate-800">
-                <div class="flex items-center gap-4">
-                    <span id="active-flag" class="text-5xl">🇰🇷</span>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h2 id="active-country-name" class="text-2xl font-black">대한민국</h2>
-                            <span id="active-country-symbol" class="bg-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded font-bold font-mono">KOR</span>
-                        </div>
-                        <div class="flex items-baseline gap-2 mt-1">
-                            <span id="active-country-price" class="text-3xl font-extrabold text-emerald-400">₩15,200</span>
-                            <span id="active-country-diff" class="text-sm font-semibold text-emerald-400">+₩1,200 (+8.57%)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Big Basic Macro Metrics of Selected Country -->
-                <div class="grid grid-cols-3 gap-6 text-right">
-                    <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/40 min-w-[120px]">
-                        <span class="text-[10px] text-slate-400 block uppercase font-bold">GDP (시가총액)</span>
-                        <span id="active-country-gdp" class="text-sm font-bold mt-0.5 block">1.8조 USD</span>
-                    </div>
-                    <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/40 min-w-[100px]">
-                        <span class="text-[10px] text-slate-400 block uppercase font-bold">기준 금리</span>
-                        <span id="active-country-interest" class="text-sm font-bold text-blue-400 mt-0.5 block">3.50%</span>
-                    </div>
-                    <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/40 min-w-[100px]">
-                        <span class="text-[10px] text-slate-400 block uppercase font-bold">인플레이션율</span>
-                        <span id="active-country-inflation" class="text-sm font-bold text-red-400 mt-0.5 block">2.7%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MTS Candlestick/Line Price Trend Chart Area -->
-            <div class="bg-[#0f172a] p-5 rounded-2xl border border-slate-800 flex flex-col h-[320px]">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-sm font-bold flex items-center gap-2 text-slate-300">
-                        <i class="fa-solid fa-chart-line text-blue-400"></i>
-                        <span>AI 가치 역사 변동성 트렌드</span>
-                    </h3>
-                    <div class="flex gap-2">
-                        <span class="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-400 font-bold">1H Cycle</span>
-                        <span class="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-400 font-bold">AI 반영됨</span>
-                    </div>
-                </div>
-                <div class="flex-1 relative">
-                    <canvas id="active-price-chart" class="w-full h-full"></canvas>
-                </div>
-            </div>
-
-            <!-- Two Column Section: National Macro Details & Active Country Real-Time News Logs -->
-            <div class="grid grid-cols-2 gap-6">
-                
-                <!-- Macro Economy Profiles Card -->
-                <div class="bg-[#0f172a] p-5 rounded-2xl border border-slate-800">
-                    <h3 class="text-sm font-bold mb-4 flex items-center gap-2 border-b border-slate-800 pb-2 text-slate-300">
-                        <i class="fa-solid fa-gears text-blue-400"></i>
-                        <span>국가 거시경제 가치 프로필</span>
-                    </h3>
-                    <div class="space-y-3 text-sm">
-                        <div class="flex justify-between py-1.5 border-b border-slate-900">
-                            <span class="text-slate-400">주요 수출 산업군</span>
-                            <span id="active-country-industry" class="font-semibold text-slate-200">반도체, 자동차, 2차 전지</span>
-                        </div>
-                        <div class="flex justify-between py-1.5 border-b border-slate-900">
-                            <span class="text-slate-400">경제 체급 분류</span>
-                            <span id="active-country-grade" class="font-semibold text-emerald-400">중견 강대국 / 제조업 허브</span>
-                        </div>
-                        <div class="flex justify-between py-1.5 border-b border-slate-900">
-                            <span class="text-slate-400">대외 무역의존도</span>
-                            <span class="font-semibold text-yellow-400">72.4% (글로벌 악재 고감도 반응)</span>
-                        </div>
-                        <div class="flex justify-between py-1.5">
-                            <span class="text-slate-400">AI 영향력 필터</span>
-                            <span class="text-[11px] bg-slate-900 border border-slate-800 text-blue-400 px-2 py-0.5 rounded font-mono">Macro-Sentiment v4.1</span>
-                        </div>
-                    </div>
-                    <div class="mt-4 p-3.5 bg-[#070b12] rounded-xl border border-slate-800/60 text-xs text-slate-400 leading-relaxed">
-                        💡 **경제 상식 학습**: 이 나라는 무역의존도가 매우 높습니다. 공급망 붕괴나 원자재 가격 급등 뉴스가 나오면 AI 가치평가 세션에서 변동 폭이 더 크게 산출됩니다.
-                    </div>
-                </div>
-
-                <!-- Latest Valued Country News History -->
-                <div class="bg-[#0f172a] p-5 rounded-2xl border border-slate-800 flex flex-col h-[260px]">
-                    <h3 class="text-sm font-bold mb-3 flex items-center gap-2 border-b border-slate-800 pb-2 text-slate-300">
-                        <i class="fa-solid fa-newspaper text-emerald-400"></i>
-                        <span>이 국가에 반영된 최근 뉴스 히스토리</span>
-                    </h3>
-                    <div id="country-news-logs" class="flex-1 overflow-y-auto space-y-2.5 pr-2">
-                        <!-- Instantiated news reflections per country -->
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- RIGHT PANEL: Trading Floor MTS Order Pad & Portfolio -->
-        <aside class="w-[360px] bg-[#090d16] border-l border-slate-800 flex flex-col shrink-0">
-            
-            <!-- Trading Tab selector (Buy / Sell) -->
-            <div class="flex border-b border-slate-800">
-                <button onclick="switchTradeMode('BUY')" id="tab-buy" class="flex-1 py-3.5 text-center font-bold text-sm bg-[#0f172a] text-emerald-400 border-b-2 border-emerald-500">
-                    국가 매수
-                </button>
-                <button onclick="switchTradeMode('SELL')" id="tab-sell" class="flex-1 py-3.5 text-center font-bold text-sm text-slate-400 hover:text-slate-200">
-                    국가 매도
-                </button>
-            </div>
-
-            <!-- Trading Pad Form -->
-            <div class="p-5 border-b border-slate-800 space-y-4">
-                <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-400">거래 방식</span>
-                    <span class="font-bold text-slate-300">실시간 시장가 주문</span>
-                </div>
-
-                <!-- Quantity Order Input -->
-                <div class="space-y-1.5">
-                    <label class="text-xs text-slate-400 font-bold block">주문 수량 (주)</label>
-                    <div class="relative">
-                        <input id="trade-qty" oninput="calculateEstimatedOrder()" type="number" min="1" value="10" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-lg font-bold text-white focus:outline-none focus:border-blue-500">
-                        <span class="absolute right-4 top-3.5 text-slate-500 font-semibold">주</span>
-                    </div>
-                </div>
-
-                <!-- Shortcut Percent Buttons -->
-                <div class="grid grid-cols-4 gap-1.5">
-                    <button onclick="setQtyPct(10)" class="bg-slate-950 hover:bg-slate-800 text-[11px] text-slate-400 py-1 rounded border border-slate-800 font-bold">10%</button>
-                    <button onclick="setQtyPct(25)" class="bg-slate-950 hover:bg-slate-800 text-[11px] text-slate-400 py-1 rounded border border-slate-800 font-bold">25%</button>
-                    <button onclick="setQtyPct(50)" class="bg-slate-950 hover:bg-slate-800 text-[11px] text-slate-400 py-1 rounded border border-slate-800 font-bold">50%</button>
-                    <button onclick="setQtyPct(100)" class="bg-slate-950 hover:bg-slate-800 text-[11px] text-slate-400 py-1 rounded border border-slate-800 font-bold">최대</button>
-                </div>
-
-                <!-- Transaction Summary Calculation -->
-                <div class="bg-slate-900/60 rounded-xl p-3.5 border border-slate-850 space-y-2 text-xs">
-                    <div class="flex justify-between">
-                        <span class="text-slate-400">체결 예정가</span>
-                        <span id="trade-est-price" class="font-bold text-slate-200">₩15,200 / 1주</span>
-                    </div>
-                    <div class="flex justify-between border-t border-slate-850 pt-2">
-                        <span class="text-slate-400">총 주문금액</span>
-                        <span id="trade-total-est" class="font-extrabold text-white text-sm">₩152,000</span>
-                    </div>
-                </div>
-
-                <!-- Action Button -->
-                <button onclick="executeTrade()" id="trade-action-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold py-3.5 rounded-xl transition duration-200 text-center text-sm glow-green">
-                    시장가 매수 주문
-                </button>
-            </div>
-
-            <!-- Real-Time User Inventory Status -->
-            <div class="flex-1 flex flex-col overflow-hidden">
-                <div class="p-4 border-b border-slate-800 bg-slate-950 flex justify-between items-center shrink-0">
-                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wide">
-                        <i class="fa-solid fa-wallet text-yellow-500 mr-1.5"></i>나의 포트폴리오 자산 현황
-                    </h3>
-                    <span id="portfolio-count" class="text-[10px] bg-slate-850 text-slate-400 px-2 py-0.5 rounded font-bold font-mono">0개 종목</span>
-                </div>
-                
-                <!-- Inventory List -->
-                <div id="portfolio-list" class="flex-1 overflow-y-auto divide-y divide-slate-900">
-                    <!-- Javascript will inject owned inventory stocks here -->
-                </div>
-            </div>
-        </aside>
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">N</div>
+    <div class="logo-text">Nation<span>Vault</span></div>
+  </div>
+  <div class="market-status">
+    <div class="pulse-dot"></div>
+    <span>MARKET OPEN</span>
+  </div>
+  <div class="top-clock">
+    <span>SIM TIME: <span id="simClock">00:00:00</span></span>
+    <div class="speed-control">
+      <button class="speed-btn" data-speed="0" onclick="setSpeed(0)">⏸</button>
+      <button class="speed-btn active" data-speed="1" onclick="setSpeed(1)">1×</button>
+      <button class="speed-btn" data-speed="2" onclick="setSpeed(2)">2×</button>
+      <button class="speed-btn" data-speed="5" onclick="setSpeed(5)">5×</button>
     </div>
+    <div class="balance-display">
+      <div class="balance-label">CASH BALANCE</div>
+      <div class="balance-value" id="cashBalance">$1,000,000.00</div>
+    </div>
+  </div>
+</div>
 
-    <!-- MAIN MODEL LAYER: AI MARKET VALUATION ENGINE POPUP -->
-    <div id="ai-session-modal" class="fixed inset-0 bg-slate-950/90 z-50 flex items-center justify-center p-6 hidden">
-        <div class="bg-[#0f172a] border border-slate-800 rounded-3xl w-full max-w-4xl max-h-[640px] flex flex-col overflow-hidden shadow-2xl glow-blue">
-            
-            <!-- AI Header -->
-            <div class="bg-[#121b2e] px-6 py-5 border-b border-slate-800 flex justify-between items-center shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="bg-purple-600/30 border border-purple-500/50 p-2.5 rounded-xl flex items-center justify-center text-purple-400">
-                        <i class="fa-solid fa-brain-circuit text-2xl animate-pulse"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-extrabold text-lg text-white">AI 세계 경제 가치평가 정산소</h3>
-                        <p class="text-xs text-purple-400/80">LLM 기반 전 세계 뉴스 수치화 및 실시간 가격 변동 자동화 프로세스</p>
-                    </div>
-                </div>
-                <button onclick="closeAiSessionModal()" class="text-slate-400 hover:text-white transition">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
+<!-- Ticker Tape -->
+<div class="ticker-tape">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
 
-            <!-- Current Batch Dashboard during simulation -->
-            <div class="p-6 bg-[#090d16] border-b border-slate-850 flex items-center justify-between text-xs text-slate-400 shrink-0">
-                <div class="flex gap-6">
-                    <div>
-                        <span>분석 대상 미정산 뉴스</span>
-                        <span id="ai-status-news-count" class="block font-bold text-base text-yellow-400 mt-0.5">3건</span>
-                    </div>
-                    <div class="border-l border-slate-800 pl-6">
-                        <span>예측 거시경제 파급효과</span>
-                        <span class="block font-bold text-base text-emerald-400 mt-0.5">글로벌 무역 흐름 업데이트</span>
-                    </div>
-                </div>
-                <button onclick="startAiProcessSimulation()" id="ai-start-btn" class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black px-6 py-2.5 rounded-xl flex items-center gap-2 transition duration-300">
-                    <i class="fa-solid fa-play"></i>
-                    <span>AI 시뮬레이션 가동</span>
-                </button>
-            </div>
+<!-- Main Layout -->
+<div class="main-container">
+  <!-- Left: Country List -->
+  <div class="left-panel">
+    <div class="panel-header">
+      <div class="panel-title">📊 Markets</div>
+      <div class="panel-title" style="color: var(--text-muted);" id="countryCount">20</div>
+    </div>
+    <div class="search-box">
+      <input type="text" class="search-input" placeholder="국가 검색..." id="searchInput" oninput="filterCountries()">
+    </div>
+    <div class="tier-filter">
+      <button class="tier-btn active" data-tier="ALL" onclick="filterByTier('ALL')">전체</button>
+      <button class="tier-btn" data-tier="S" onclick="filterByTier('S')">S</button>
+      <button class="tier-btn" data-tier="A" onclick="filterByTier('A')">A</button>
+      <button class="tier-btn" data-tier="B" onclick="filterByTier('B')">B</button>
+      <button class="tier-btn" data-tier="C" onclick="filterByTier('C')">C</button>
+    </div>
+    <div class="country-list" id="countryList"></div>
+  </div>
 
-            <!-- AI Process Logging Output -->
-            <div class="flex-1 p-6 overflow-y-auto space-y-4 font-mono text-xs text-slate-300 bg-slate-950">
-                <div id="ai-logs-container" class="space-y-3">
-                    <div class="text-slate-500">[대기 중] 가치평가 시작 버튼을 누르면 AI가 경제 뉴스를 정밀 분석하여 각 나라의 시장가에 연동합니다.</div>
-                </div>
-                <!-- Interactive Loading Spinner of AI -->
-                <div id="ai-loading-spinner" class="hidden flex items-center gap-2.5 text-purple-400 animate-pulse py-2">
-                    <i class="fa-solid fa-circle-notch animate-spin text-base"></i>
-                    <span>AI가 국가 GDP 데이터와 외교 관계 가치를 연산 중입니다...</span>
-                </div>
-            </div>
-
-            <!-- Action footer info -->
-            <div class="p-4 bg-[#0f172a] border-t border-slate-800 flex justify-between items-center text-xs text-slate-400 shrink-0">
-                <span>⚠️ AI 가격 정산 후에는 이전 시황으로 롤백이 불가능합니다.</span>
-                <button onclick="closeAiSessionModal()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-bold px-4 py-2 rounded-lg transition text-xs">
-                    확인 후 정산소 닫기
-                </button>
-            </div>
+  <!-- Center: Chart -->
+  <div class="center-panel">
+    <div class="chart-header">
+      <div class="selected-country">
+        <div class="sc-flag" id="scFlag">🇺🇸</div>
+        <div class="sc-info">
+          <h2 id="scName">United States</h2>
+          <div class="sc-meta">
+            <span id="scCode">USA</span>
+            <span>·</span>
+            <span id="scTier">Tier S</span>
+            <span>·</span>
+            <span data-tip="국가의 연간 총생산. 시가총액의 기준이 됩니다">GDP: <span id="scGDP">$27.4T</span></span>
+          </div>
         </div>
+      </div>
+      <div class="price-display">
+        <div class="pd-price" id="pdPrice">$1,047.20</div>
+        <div class="pd-change" id="pdChange">+$12.40 (+1.20%)</div>
+      </div>
     </div>
+    <div class="chart-tools">
+      <div class="timeframe-group">
+        <button class="tf-btn" data-tf="20">20틱</button>
+        <button class="tf-btn active" data-tf="50">50틱</button>
+        <button class="tf-btn" data-tf="100">100틱</button>
+        <button class="tf-btn" data-tf="all">전체</button>
+      </div>
+      <div style="margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">
+        📊 라인 차트 · 실시간 갱신
+      </div>
+    </div>
+    <div class="chart-container">
+      <canvas id="priceChart"></canvas>
+    </div>
+    <div class="chart-stats">
+      <div class="stat-item">
+        <div class="stat-label" data-tip="장중 최고가">HIGH 24H</div>
+        <div class="stat-value" id="statHigh">$1,059.30</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label" data-tip="장중 최저가">LOW 24H</div>
+        <div class="stat-value" id="statLow">$1,032.10</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label" data-tip="국가의 총 시장 가치 = 주가 × 발행주식수">MARKET CAP</div>
+        <div class="stat-value" id="statMcap">$27.4T</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label" data-tip="누적 거래량">VOLUME</div>
+        <div class="stat-value" id="statVol">2.4M</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label" data-tip="가격 변동성 - 높을수록 위험/기회">VOLATILITY</div>
+        <div class="stat-value" id="statVol2">1.2%</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label" data-tip="AI가 뉴스 종합 후 산출한 점수 (-100 ~ +100)">AI SENTIMENT</div>
+        <div class="stat-value" id="statSentiment" style="color: var(--accent-green);">+45</div>
+      </div>
+    </div>
+  </div>
 
-    <!-- TOAST NOTIFICATION STACK -->
-    <div id="toast-stack" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
+  <!-- Right: Trade + News -->
+  <div class="right-panel">
+    <div class="trade-panel">
+      <div class="trade-tabs">
+        <button class="trade-tab buy active" id="tabBuy" onclick="switchTradeTab('BUY')">매수</button>
+        <button class="trade-tab sell" id="tabSell" onclick="switchTradeTab('SELL')">매도</button>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">현재가</label>
+        <input type="text" class="form-input" id="tradePrice" readonly>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">수량 (주)</label>
+        <input type="number" class="form-input" id="tradeQty" min="1" value="10" oninput="updateTradeSummary()">
+        <div class="quick-amounts">
+          <button class="qa-btn" onclick="setQty(10)">10</button>
+          <button class="qa-btn" onclick="setQty(50)">50</button>
+          <button class="qa-btn" onclick="setQty(100)">100</button>
+          <button class="qa-btn" onclick="setMaxQty()">MAX</button>
+        </div>
+      </div>
+      
+      <div class="trade-summary">
+        <div class="summary-row">
+          <span class="label">예상 체결가</span>
+          <span class="value" id="estPrice">$0.00</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">총 거래액</span>
+          <span class="value" id="estTotal">$0.00</span>
+        </div>
+        <div class="summary-row">
+          <span class="label" data-tip="거래 수수료 0.1%">수수료</span>
+          <span class="value" id="estFee">$0.00</span>
+        </div>
+      </div>
+      
+      <button class="trade-button buy" id="tradeBtn" onclick="executeTrade()">매수 주문</button>
+    </div>
+    
+    <div class="news-section">
+      <div class="panel-header">
+        <div class="panel-title">📰 글로벌 뉴스</div>
+        <div class="panel-title" style="color: var(--accent-green);" id="newsCount">0</div>
+      </div>
+      <div class="news-list" id="newsList"></div>
+    </div>
+  </div>
+</div>
 
-    <script>
-        // ==========================================
-        // 1. DATA DEFINITIONS (Global State Management)
-        // ==========================================
-        const CONTINENT = {
-            ASIA: "ASIA",
-            AMERICA: "AMERICA",
-            EUROPE: "EUROPE",
-            OTHER: "OTHER"
-        };
+<!-- Bottom Portfolio Bar -->
+<div class="bottom-bar">
+  <div class="stat-block">
+    <div class="sb-label">Portfolio Value</div>
+    <div class="sb-value" id="portfolioValue" style="color: var(--accent-green);">$1,000,000</div>
+  </div>
+  <div class="stat-block">
+    <div class="sb-label" data-tip="실현+미실현 손익 합계">Total P&L</div>
+    <div class="sb-value" id="totalPL">$0.00</div>
+  </div>
+  <div class="stat-block">
+    <div class="sb-label">Return %</div>
+    <div class="sb-value" id="returnPct">+0.00%</div>
+  </div>
+  <button class="portfolio-btn" onclick="openPortfolio()">📊 Portfolio</button>
+</div>
 
-        // Core dynamic country data object
-        let countries = [
-            {
-                id: "KOR",
-                name: "대한민국",
-                flag: "🇰🇷",
-                continent: CONTINENT.ASIA,
-                gdp: "1.8조 USD",
-                interestRate: "3.50%",
-                inflationRate: "2.7%",
-                mainIndustry: "반도체, 자동차, 배터리",
-                grade: "제조업 허브 & 글로벌 수출국",
-                tradeDependency: "고감도 무역 국가",
-                basePrice: 15200,
-                currentPrice: 15200,
-                prevPrice: 14000,
-                priceHistory: [13100, 13600, 13300, 14200, 14000, 15200],
-                newsLog: ["대한민국 반도체 기업, 차세대 나노 초전도 트랜지스터 세계 최초 수출 계약! [AI 평점: 호재 +8.57%]"]
-            },
-            {
-                id: "USA",
-                name: "미국",
-                flag: "🇺🇸",
-                continent: CONTINENT.AMERICA,
-                gdp: "25.4조 USD",
-                interestRate: "5.25%",
-                inflationRate: "3.1%",
-                mainIndustry: "빅테크, 인공지능, 금융, 국방",
-                grade: "글로벌 기축통화국 & 경제 패권",
-                tradeDependency: "금융 및 기축통화 지배력",
-                basePrice: 58900,
-                currentPrice: 58900,
-                prevPrice: 59100,
-                priceHistory: [57200, 58100, 58400, 59500, 59100, 58900],
-                newsLog: ["미국 연방준비제도, 추가 기준금리 인상 가능성 보도로 긴축 우려 재점화. [AI 평점: 악재 -0.34%]"]
-            },
-            {
-                id: "JPN",
-                name: "일본",
-                flag: "🇯🇵",
-                continent: CONTINENT.ASIA,
-                gdp: "4.2조 USD",
-                interestRate: "0.25%",
-                inflationRate: "2.1%",
-                mainIndustry: "엔터테인먼트, 정밀화학, 정밀소재",
-                grade: "안전자산 엔화국 & 디플레이션 탈출",
-                tradeDependency: "내수 및 하이테크 소재 공급망",
-                basePrice: 11400,
-                currentPrice: 11400,
-                prevPrice: 11900,
-                priceHistory: [12100, 11800, 12000, 12200, 11900, 11400],
-                newsLog: ["일본 오사카 부근 강진 발생으로 현지 반도체 장비 소재 공장 가동 일시 중단 소식. [AI 평점: 악재 -4.20%]"]
-            },
-            {
-                id: "GER",
-                name: "독일",
-                flag: "🇩🇪",
-                continent: CONTINENT.EUROPE,
-                gdp: "4.0조 USD",
-                interestRate: "4.25%",
-                inflationRate: "2.4%",
-                mainIndustry: "기계 공학, 완성차, 에너지 화학",
-                grade: "유럽 경제의 중추 & 친환경 에너지 리더",
-                tradeDependency: "유럽 연합 내부 무역의존도 고비율",
-                basePrice: 24500,
-                currentPrice: 24500,
-                prevPrice: 26100,
-                priceHistory: [25500, 25800, 26400, 26900, 26100, 24500],
-                newsLog: ["동유럽 파이프라인 누출로 겨울철 산업용 가스 공급 중단 위기 고조. [AI 평점: 악재 -6.13%]"]
-            },
-            {
-                id: "BRA",
-                name: "브라질",
-                flag: "🇧🇷",
-                continent: CONTINENT.AMERICA,
-                gdp: "1.9조 USD",
-                interestRate: "11.25%",
-                inflationRate: "4.5%",
-                mainIndustry: "대두 수출, 원유, 철광석, 신재생 에너지",
-                grade: "신흥 원자재 강국 & 풍부한 지하자원",
-                tradeDependency: "원자재 수출 비중 극도로 높음",
-                basePrice: 8500,
-                currentPrice: 8500,
-                prevPrice: 7840,
-                priceHistory: [7100, 7350, 7500, 7600, 7840, 8500],
-                newsLog: ["산토스 해역에서 초대형 심해 유전 추가 발견. 원유 자립국 가치 수직 상승. [AI 평점: 호재 +8.42%]"]
-            },
-            {
-                id: "TWN",
-                name: "대만",
-                flag: "🇹🇼",
-                continent: CONTINENT.ASIA,
-                gdp: "7900억 USD",
-                interestRate: "2.00%",
-                inflationRate: "1.8%",
-                mainIndustry: "파운드리 반도체 위탁생산",
-                grade: "글로벌 IT 공급망의 전략적 핵심 요충지",
-                tradeDependency: "지정학적 리스크 및 반도체 단일의존도",
-                basePrice: 21200,
-                currentPrice: 21200,
-                prevPrice: 19350,
-                priceHistory: [17800, 18400, 18200, 19100, 19350, 21200],
-                newsLog: ["글로벌 AI 칩 주문 가속화로 세계 1위 파운드리 생산 능력 전량 완판 발표. [AI 평점: 호재 +9.56%]"]
-            }
-        ];
+<!-- AI Evaluation Badge -->
+<div class="ai-eval-badge" id="aiEvalBadge">
+  <div class="ai-icon">AI</div>
+  <div class="ai-text">
+    <div class="ai-title">Gemini 분석 중...</div>
+    <div class="ai-status" id="aiStatus">국가별 뉴스 평가 진행</div>
+  </div>
+</div>
 
-        // User Wealth System
-        let userWallet = {
-            cash: 100000000, // Starting capital: 100 million KRW
-            shares: {
-                // Key-value store for bought countries: e.g., "KOR": { qty: 1500, avgPrice: 14800 }
-            }
-        };
+<!-- Portfolio Modal -->
+<div class="modal-backdrop" id="portfolioModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📊 포트폴리오</div>
+      <button class="modal-close" onclick="closePortfolio()">×</button>
+    </div>
+    <div class="modal-body" id="portfolioBody"></div>
+  </div>
+</div>
 
-        // Real-Time generated News Pool waiting for processing during the AI update session
-        let pendingNews = [
-            {
-                headline: "사우디아라비아 친환경 저탄소 초미래 도시 '더 라인' 1단계 착공 완공률 급등 보고",
-                impacts: [
-                    { countryId: "BRA", change: 3.5, reasoning: "인프라 원자재 수출국으로서 철광석 대규모 수출 계약 체결 수혜 예상" }
-                ],
-                source: "Riyadh Trade Press"
-            },
-            {
-                headline: "유로존, 급작스러운 인플레이션 폭발로 유럽중앙은행 긴급 금리 추가 인상 전망 발표",
-                impacts: [
-                    { countryId: "GER", change: -4.1, reasoning: "금리 인상 리스크로 유로존 금융 긴축 발생 및 독일 기계류 소비 감소 우려" }
-                ],
-                source: "Frankfurt Economic Herald"
-            },
-            {
-                headline: "한국 배터리 연구소, 전고체 배터리 수명 200% 연장 소재 최적화 및 양산 설계 기사 발표",
-                impacts: [
-                    { countryId: "KOR", change: 6.8, reasoning: "핵심 제조업 부가가치 대폭 확장 및 완성차향 로열티 수입 기대감" }
-                ],
-                source: "Seoul Science & Trade Journal"
-            }
-        ];
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
 
-        // System states
-        let selectedCountryId = "KOR";
-        let selectedContinentFilter = "ALL";
-        let tradeMode = "BUY"; // "BUY" or "SELL"
-        let priceChartInstance = null;
+<script>
+// ============================================================
+// === GAME DATA: 20 COUNTRIES ===
+// ============================================================
+const COUNTRIES = [
+  { code: 'USA', name: '미국', flag: '🇺🇸', tier: 'S', gdp: 27360, basePrice: 1100, volatility: 0.6 },
+  { code: 'CHN', name: '중국', flag: '🇨🇳', tier: 'S', gdp: 17790, basePrice: 950, volatility: 0.8 },
+  { code: 'JPN', name: '일본', flag: '🇯🇵', tier: 'A', gdp: 4231, basePrice: 580, volatility: 0.7 },
+  { code: 'DEU', name: '독일', flag: '🇩🇪', tier: 'A', gdp: 4456, basePrice: 620, volatility: 0.7 },
+  { code: 'IND', name: '인도', flag: '🇮🇳', tier: 'A', gdp: 3730, basePrice: 480, volatility: 1.1 },
+  { code: 'GBR', name: '영국', flag: '🇬🇧', tier: 'A', gdp: 3340, basePrice: 510, volatility: 0.8 },
+  { code: 'FRA', name: '프랑스', flag: '🇫🇷', tier: 'A', gdp: 3030, basePrice: 470, volatility: 0.8 },
+  { code: 'KOR', name: '대한민국', flag: '🇰🇷', tier: 'A', gdp: 1700, basePrice: 380, volatility: 1.0 },
+  { code: 'BRA', name: '브라질', flag: '🇧🇷', tier: 'B', gdp: 2126, basePrice: 220, volatility: 1.4 },
+  { code: 'CAN', name: '캐나다', flag: '🇨🇦', tier: 'B', gdp: 2140, basePrice: 280, volatility: 0.9 },
+  { code: 'AUS', name: '호주', flag: '🇦🇺', tier: 'B', gdp: 1690, basePrice: 240, volatility: 1.0 },
+  { code: 'MEX', name: '멕시코', flag: '🇲🇽', tier: 'B', gdp: 1810, basePrice: 180, volatility: 1.3 },
+  { code: 'ESP', name: '스페인', flag: '🇪🇸', tier: 'B', gdp: 1620, basePrice: 210, volatility: 1.0 },
+  { code: 'POL', name: '폴란드', flag: '🇵🇱', tier: 'B', gdp: 842, basePrice: 165, volatility: 1.1 },
+  { code: 'SWE', name: '스웨덴', flag: '🇸🇪', tier: 'B', gdp: 593, basePrice: 195, volatility: 0.9 },
+  { code: 'TUR', name: '튀르키예', flag: '🇹🇷', tier: 'C', gdp: 1118, basePrice: 85, volatility: 1.8 },
+  { code: 'IDN', name: '인도네시아', flag: '🇮🇩', tier: 'C', gdp: 1417, basePrice: 95, volatility: 1.4 },
+  { code: 'VNM', name: '베트남', flag: '🇻🇳', tier: 'C', gdp: 430, basePrice: 60, volatility: 1.5 },
+  { code: 'ARG', name: '아르헨티나', flag: '🇦🇷', tier: 'C', gdp: 640, basePrice: 45, volatility: 2.2 },
+  { code: 'EGY', name: '이집트', flag: '🇪🇬', tier: 'C', gdp: 393, basePrice: 38, volatility: 1.6 },
+];
 
-        // Future simulated dynamic news generated periodically
-        const globalNewsTemplates = [
-            {
-                headline: "미국 하이퍼 빅테크 기업 연쇄 어닝 서프라이즈 발표, 기술 독점 가속화 국면",
-                impacts: [
-                    { countryId: "USA", change: 4.5, reasoning: "빅테크 실적 호조에 따른 S&P 시가총액 견인 및 혁신 독점 가치 확대" },
-                    { countryId: "TWN", change: 3.2, reasoning: "AI 반도체 서버 칩 주문 증가로 파운드리 낙수효과" }
-                ],
-                source: "Bloomberg Tech"
-            },
-            {
-                headline: "남미 대규모 가뭄 장기화로 브라질 대두 및 작물 생산량 전년비 20% 폭락 전망",
-                impacts: [
-                    { countryId: "BRA", change: -5.8, reasoning: "농업 수출 부가가치 상실 및 식품 원재료 인플레이션 유발 우려" }
-                ],
-                source: "Sao Paulo News"
-            },
-            {
-                headline: "일본 엔화 가치, 단기 엔화 약세(엔저) 폭발로 수입 물가 폭등 및 서민 가계 소비 심리 최저치",
-                impacts: [
-                    { countryId: "JPN", change: -2.9, reasoning: "에너지 수입 단가 인상에 따른 기업 채산성 악화 우려" }
-                ],
-                source: "Tokyo Nikkei Press"
-            }
-        ];
+// ============================================================
+// === NEWS TEMPLATE POOL ===
+// ============================================================
+const NEWS_TEMPLATES = {
+  positive: [
+    { title: "{country} GDP 예상치 상회, 3분기 호조세", impact: 'positive', strength: 0.8 },
+    { title: "{country} 중앙은행 금리 인하 결정, 시장 환영", impact: 'positive', strength: 0.7 },
+    { title: "{country} 대규모 인프라 투자 계획 발표", impact: 'positive', strength: 0.6 },
+    { title: "{country} 수출 사상 최대 기록, 무역수지 개선", impact: 'positive', strength: 0.9 },
+    { title: "{country} 신기술 분야 글로벌 선도, 외국인 투자 급증", impact: 'positive', strength: 1.0 },
+    { title: "{country} 실업률 역대 최저치 갱신", impact: 'positive', strength: 0.7 },
+    { title: "{country} 신용등급 상향 조정, AAA 진입", impact: 'positive', strength: 1.1 },
+    { title: "{country} 글로벌 정상회의 개최, 외교적 입지 강화", impact: 'positive', strength: 0.5 },
+    { title: "{country} 인공지능 기업 IPO 성공, 시장 활기", impact: 'positive', strength: 0.8 },
+    { title: "{country} 친환경 에너지 전환 가속, 그린뉴딜 발표", impact: 'positive', strength: 0.6 },
+  ],
+  negative: [
+    { title: "{country} 인플레이션 우려 확대, 소비자물가 급등", impact: 'negative', strength: 0.8 },
+    { title: "{country} 정치 불안 심화, 의회 충돌 격화", impact: 'negative', strength: 1.0 },
+    { title: "{country} 자연재해 발생, 경제 피해 규모 확대", impact: 'negative', strength: 1.2 },
+    { title: "{country} 주요 수출 품목 단가 하락", impact: 'negative', strength: 0.6 },
+    { title: "{country} 무역 분쟁 격화, 관세 전쟁 우려", impact: 'negative', strength: 0.9 },
+    { title: "{country} 대형 은행 부실 우려, 금융시장 충격", impact: 'negative', strength: 1.3 },
+    { title: "{country} 신용등급 강등 위기, 무디스 부정적 전망", impact: 'negative', strength: 1.1 },
+    { title: "{country} 인구 감소 가속화, 노동력 부족 심화", impact: 'negative', strength: 0.5 },
+    { title: "{country} 정부 부채 한계 도달, 국채 발행 어려움", impact: 'negative', strength: 1.0 },
+    { title: "{country} 대규모 파업 발생, 산업 생산 차질", impact: 'negative', strength: 0.7 },
+  ],
+  neutral: [
+    { title: "{country} 정부 신규 정책 발표, 시장 영향 분석 중", impact: 'neutral', strength: 0.3 },
+    { title: "{country} 분기 경제지표 발표 예정", impact: 'neutral', strength: 0.2 },
+    { title: "{country} 중앙은행 회의 결과 시장 예상치 부합", impact: 'neutral', strength: 0.3 },
+  ]
+};
 
-        // ==========================================
-        // 2. INITIALIZATION AND REGULAR UPDATES
-        // ==========================================
-        window.addEventListener('load', () => {
-            renderCountryList();
-            renderActiveCountry();
-            renderPortfolio();
-            updateHeaderWidget();
-            updatePendingNewsBadge();
-            
-            // Generate some random live tickers periodically
-            setInterval(updateNewsTicker, 15000);
-            updateNewsTicker();
-        });
+const GLOBAL_NEWS = [
+  { title: "글로벌 원유 가격 급등, 산유국 수혜 예상", affects: ['USA', 'CAN', 'BRA'], impact: 'positive' },
+  { title: "전 세계 반도체 공급망 재편 가속화", affects: ['KOR', 'JPN', 'USA', 'CHN'], impact: 'positive' },
+  { title: "글로벌 경기 침체 우려 확산, 안전자산 선호", affects: ['USA', 'JPN', 'DEU'], impact: 'positive' },
+  { title: "신흥국 통화 약세, 자본 유출 심화", affects: ['TUR', 'ARG', 'IDN', 'EGY'], impact: 'negative' },
+  { title: "유럽 에너지 위기 재점화, 겨울 한파 우려", affects: ['DEU', 'FRA', 'GBR', 'POL', 'ESP'], impact: 'negative' },
+  { title: "아시아 무역 협정 확대, 역내 교역 증대", affects: ['KOR', 'JPN', 'CHN', 'IDN', 'VNM'], impact: 'positive' },
+];
 
-        // ==========================================
-        // 3. UI RENDERING METHODS
-        // ==========================================
-        
-        // Render List of Countries in the Left Panel
-        function renderCountryList() {
-            const container = document.getElementById('country-list');
-            const searchVal = document.getElementById('search-input').value.toLowerCase();
-            container.innerHTML = '';
+// ============================================================
+// === GAME STATE ===
+// ============================================================
+let state = {
+  cash: 1000000,
+  initialCash: 1000000,
+  holdings: {},
+  trades: [],
+  prices: {},
+  priceHistory: {},
+  news: [],
+  selectedCountry: 'USA',
+  tradeMode: 'BUY',
+  chartTimeframe: 50,
+  simTime: 0,
+  speed: 1,
+  tierFilter: 'ALL',
+  searchQuery: '',
+  sentiment: {},
+};
 
-            countries.forEach(country => {
-                // Filters
-                if (selectedContinentFilter !== "ALL" && country.continent !== selectedContinentFilter) return;
-                if (searchVal && !country.name.includes(searchVal) && !country.id.toLowerCase().includes(searchVal)) return;
+// ============================================================
+// === INITIALIZATION ===
+// ============================================================
+function initGame() {
+  // Try to load saved state
+  loadState();
+  
+  // Initialize prices and history if new game
+  COUNTRIES.forEach(c => {
+    if (!state.prices[c.code]) {
+      state.prices[c.code] = {
+        current: c.basePrice,
+        prev: c.basePrice,
+        high24: c.basePrice,
+        low24: c.basePrice,
+        volume: Math.floor(Math.random() * 5000000) + 500000,
+        changePct: 0,
+      };
+    }
+    if (!state.priceHistory[c.code]) {
+      // Initialize with some history
+      state.priceHistory[c.code] = [];
+      let p = c.basePrice;
+      for (let i = 0; i < 30; i++) {
+        p = p * (1 + (Math.random() - 0.5) * c.volatility * 0.01);
+        state.priceHistory[c.code].push({ t: i, price: p });
+      }
+      state.prices[c.code].current = p;
+    }
+    if (!state.sentiment[c.code]) {
+      state.sentiment[c.code] = 0;
+    }
+  });
+  
+  renderCountryList();
+  renderTickerTape();
+  selectCountry(state.selectedCountry);
+  updatePortfolioStats();
+  
+  // Start game loop
+  startGameLoop();
+}
 
-                const priceChange = country.currentPrice - country.prevPrice;
-                const pctChange = ((priceChange / country.prevPrice) * 100).toFixed(2);
-                const isUp = priceChange >= 0;
-                
-                const activeBg = country.id === selectedCountryId ? 'bg-slate-900 border-l-4 border-blue-500' : 'hover:bg-slate-900/40';
+// ============================================================
+// === GAME LOOP ===
+// ============================================================
+let gameLoopInterval = null;
+let aiEvalInterval = null;
+let clockInterval = null;
 
-                const itemHtml = `
-                    <div onclick="selectCountry('${country.id}')" class="p-4 cursor-pointer transition flex items-center justify-between ${activeBg}">
-                        <div class="flex items-center gap-3">
-                            <span class="text-3xl">${country.flag}</span>
-                            <div>
-                                <span class="text-sm font-bold block text-slate-100">${country.name}</span>
-                                <span class="text-[10px] text-slate-400 font-bold font-mono uppercase">${country.id} / ${country.gdp}</span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-sm font-black block text-slate-200">₩${country.currentPrice.toLocaleString()}</span>
-                            <span class="text-[11px] font-bold ${isUp ? 'text-emerald-400' : 'text-rose-400'}">
-                                ${isUp ? '+' : ''}${pctChange}%
-                            </span>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += itemHtml;
-            });
+function startGameLoop() {
+  // Price micro-tick (small fluctuations every 1 second)
+  if (gameLoopInterval) clearInterval(gameLoopInterval);
+  gameLoopInterval = setInterval(() => {
+    if (state.speed === 0) return;
+    for (let i = 0; i < state.speed; i++) {
+      microTick();
+    }
+  }, 1000);
+  
+  // AI evaluation cycle (every 30s = 1 simulated hour)
+  if (aiEvalInterval) clearInterval(aiEvalInterval);
+  aiEvalInterval = setInterval(() => {
+    if (state.speed === 0) return;
+    runAIEvaluation();
+  }, 30000 / Math.max(state.speed, 1));
+  
+  // Sim clock
+  if (clockInterval) clearInterval(clockInterval);
+  clockInterval = setInterval(() => {
+    if (state.speed === 0) return;
+    state.simTime += 60 * state.speed; // 60 sim seconds per real second per speed unit
+    updateClock();
+  }, 1000);
+}
+
+function microTick() {
+  // Small random walk for each country
+  COUNTRIES.forEach(c => {
+    const p = state.prices[c.code];
+    const sentimentBias = (state.sentiment[c.code] || 0) * 0.0005;
+    const drift = sentimentBias;
+    const noise = (Math.random() - 0.5) * c.volatility * 0.003;
+    const change = drift + noise;
+    
+    p.prev = p.current;
+    p.current = Math.max(0.01, p.current * (1 + change));
+    p.changePct = ((p.current - p.prev) / p.prev) * 100;
+    p.high24 = Math.max(p.high24, p.current);
+    p.low24 = Math.min(p.low24, p.current);
+    p.volume += Math.floor(Math.random() * 10000);
+    
+    // Sentiment decay
+    state.sentiment[c.code] *= 0.995;
+    
+    // Add to history
+    state.priceHistory[c.code].push({
+      t: state.priceHistory[c.code].length,
+      price: p.current
+    });
+    
+    // Cap history to last 200 ticks
+    if (state.priceHistory[c.code].length > 200) {
+      state.priceHistory[c.code].shift();
+    }
+  });
+  
+  renderCountryList();
+  renderTickerTape();
+  if (state.selectedCountry) updateCenterPanel();
+  updatePortfolioStats();
+  saveState();
+}
+
+// ============================================================
+// === AI EVALUATION (Simulated) ===
+// ============================================================
+function runAIEvaluation() {
+  showAIBadge('국가별 뉴스 분석 중...');
+  
+  setTimeout(() => {
+    // 1) Country-specific news (3-5 per cycle)
+    const newsCount = 3 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < newsCount; i++) {
+      const country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)];
+      const rand = Math.random();
+      let pool;
+      if (rand < 0.4) pool = NEWS_TEMPLATES.positive;
+      else if (rand < 0.8) pool = NEWS_TEMPLATES.negative;
+      else pool = NEWS_TEMPLATES.neutral;
+      
+      const template = pool[Math.floor(Math.random() * pool.length)];
+      const news = {
+        id: Date.now() + i,
+        country: country.code,
+        title: template.title.replace('{country}', country.name),
+        impact: template.impact,
+        strength: template.strength || 0.3,
+        time: state.simTime,
+        timestamp: new Date().toLocaleTimeString('ko-KR'),
+      };
+      state.news.unshift(news);
+      
+      // Apply sentiment shift
+      const sentimentDelta = template.impact === 'positive' ? template.strength * 30 :
+                             template.impact === 'negative' ? -template.strength * 30 : 0;
+      state.sentiment[country.code] = (state.sentiment[country.code] || 0) + sentimentDelta;
+      
+      // Clamp sentiment
+      state.sentiment[country.code] = Math.max(-100, Math.min(100, state.sentiment[country.code]));
+      
+      // Apply immediate price shock
+      const shockPct = sentimentDelta * 0.05; // Up to ±5%
+      const p = state.prices[country.code];
+      p.prev = p.current;
+      p.current = p.current * (1 + shockPct / 100);
+      p.changePct = ((p.current - p.prev) / p.prev) * 100;
+    }
+    
+    // 2) Global news (occasionally)
+    if (Math.random() < 0.3) {
+      const gNews = GLOBAL_NEWS[Math.floor(Math.random() * GLOBAL_NEWS.length)];
+      const news = {
+        id: Date.now() + 999,
+        country: 'GLOBAL',
+        title: '🌐 ' + gNews.title,
+        impact: gNews.impact,
+        strength: 0.5,
+        time: state.simTime,
+        timestamp: new Date().toLocaleTimeString('ko-KR'),
+      };
+      state.news.unshift(news);
+      
+      gNews.affects.forEach(code => {
+        const delta = gNews.impact === 'positive' ? 15 : -15;
+        state.sentiment[code] = (state.sentiment[code] || 0) + delta;
+        const p = state.prices[code];
+        if (p) {
+          p.prev = p.current;
+          p.current = p.current * (1 + (delta * 0.05) / 100);
         }
+      });
+    }
+    
+    // Trim news list
+    if (state.news.length > 50) state.news = state.news.slice(0, 50);
+    
+    renderNews();
+    renderCountryList();
+    if (state.selectedCountry) updateCenterPanel();
+    hideAIBadge();
+    saveState();
+  }, 1500);
+}
 
-        // Selected Country Actions
-        function selectCountry(id) {
-            selectedCountryId = id;
-            renderCountryList();
-            renderActiveCountry();
-            calculateEstimatedOrder();
-        }
+function showAIBadge(msg) {
+  const badge = document.getElementById('aiEvalBadge');
+  badge.classList.add('active');
+  document.getElementById('aiStatus').textContent = msg;
+}
+function hideAIBadge() {
+  setTimeout(() => {
+    document.getElementById('aiEvalBadge').classList.remove('active');
+  }, 800);
+}
 
-        function filterCountries() {
-            renderCountryList();
-        }
+// ============================================================
+// === RENDERING ===
+// ============================================================
+function renderCountryList() {
+  const list = document.getElementById('countryList');
+  let filtered = COUNTRIES.filter(c => {
+    if (state.tierFilter !== 'ALL' && c.tier !== state.tierFilter) return false;
+    if (state.searchQuery) {
+      const q = state.searchQuery.toLowerCase();
+      return c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q);
+    }
+    return true;
+  });
+  
+  document.getElementById('countryCount').textContent = filtered.length;
+  
+  list.innerHTML = filtered.map(c => {
+    const p = state.prices[c.code];
+    const changeClass = p.changePct > 0.01 ? 'up' : p.changePct < -0.01 ? 'down' : 'flat';
+    const arrow = p.changePct > 0.01 ? '▲' : p.changePct < -0.01 ? '▼' : '─';
+    return `
+      <div class="country-row ${state.selectedCountry === c.code ? 'selected' : ''}" onclick="selectCountry('${c.code}')">
+        <div class="country-flag">${c.flag}</div>
+        <div class="country-info">
+          <div class="country-code">${c.code} <span class="tier-badge tier-${c.tier}">${c.tier}</span></div>
+          <div class="country-name">${c.name}</div>
+        </div>
+        <div class="country-price">
+          <div class="price-value">$${p.current.toFixed(2)}</div>
+          <div class="price-change ${changeClass}">${arrow} ${Math.abs(p.changePct).toFixed(2)}%</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
 
-        function selectContinent(filter) {
-            selectedContinentFilter = filter;
-            document.querySelectorAll('.continent-btn').forEach(btn => {
-                btn.className = "continent-btn px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-slate-400 hover:border-slate-700";
-            });
-            // Update active btn styling
-            event.target.className = "continent-btn px-2.5 py-1 rounded bg-blue-600 text-white font-semibold";
-            renderCountryList();
-        }
+function renderTickerTape() {
+  const track = document.getElementById('tickerTrack');
+  // Duplicate to ensure infinite scroll smoothness
+  const items = COUNTRIES.concat(COUNTRIES).map(c => {
+    const p = state.prices[c.code];
+    const changeClass = p.changePct > 0 ? 'up' : p.changePct < 0 ? 'down' : 'flat';
+    const arrow = p.changePct > 0 ? '▲' : p.changePct < 0 ? '▼' : '';
+    return `
+      <div class="ticker-item">
+        <span class="ticker-flag">${c.flag}</span>
+        <span class="ticker-code">${c.code}</span>
+        <span class="ticker-price">$${p.current.toFixed(2)}</span>
+        <span class="ticker-change ${changeClass}">${arrow} ${Math.abs(p.changePct).toFixed(2)}%</span>
+      </div>
+    `;
+  }).join('');
+  track.innerHTML = items;
+}
 
-        // Render Active Country in Central Workspace
-        function renderActiveCountry() {
-            const country = countries.find(c => c.id === selectedCountryId);
-            if (!country) return;
+function selectCountry(code) {
+  state.selectedCountry = code;
+  renderCountryList();
+  updateCenterPanel();
+  updateTradeSummary();
+  saveState();
+}
 
-            document.getElementById('active-flag').innerText = country.flag;
-            document.getElementById('active-country-name').innerText = country.name;
-            document.getElementById('active-country-symbol').innerText = country.id;
-            document.getElementById('active-country-price').innerText = "₩" + country.currentPrice.toLocaleString();
-            
-            // Update Change details
-            const diff = country.currentPrice - country.prevPrice;
-            const pct = ((diff / country.prevPrice) * 100).toFixed(2);
-            const isUp = diff >= 0;
-            const diffText = document.getElementById('active-country-diff');
-            diffText.innerText = `${isUp ? '+' : ''}₩${diff.toLocaleString()} (${isUp ? '+' : ''}${pct}%)`;
-            diffText.className = `text-sm font-semibold ${isUp ? 'text-emerald-400' : 'text-rose-400'}`;
+function updateCenterPanel() {
+  const c = COUNTRIES.find(x => x.code === state.selectedCountry);
+  const p = state.prices[c.code];
+  
+  document.getElementById('scFlag').textContent = c.flag;
+  document.getElementById('scName').textContent = c.name;
+  document.getElementById('scCode').textContent = c.code;
+  document.getElementById('scTier').textContent = `Tier ${c.tier}`;
+  document.getElementById('scGDP').textContent = formatGDP(c.gdp);
+  
+  const oldPrice = parseFloat(document.getElementById('pdPrice').textContent.replace(/[$,]/g, ''));
+  document.getElementById('pdPrice').textContent = `$${p.current.toFixed(2)}`;
+  
+  const changeAmount = p.current - p.prev;
+  const changeStr = `${changeAmount >= 0 ? '+' : ''}$${changeAmount.toFixed(2)} (${changeAmount >= 0 ? '+' : ''}${p.changePct.toFixed(2)}%)`;
+  const changeEl = document.getElementById('pdChange');
+  changeEl.textContent = changeStr;
+  changeEl.style.color = changeAmount >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+  
+  if (oldPrice && p.current > oldPrice) {
+    changeEl.classList.remove('flash-down');
+    changeEl.classList.add('flash-up');
+    setTimeout(() => changeEl.classList.remove('flash-up'), 600);
+  } else if (oldPrice && p.current < oldPrice) {
+    changeEl.classList.remove('flash-up');
+    changeEl.classList.add('flash-down');
+    setTimeout(() => changeEl.classList.remove('flash-down'), 600);
+  }
+  
+  // Stats
+  document.getElementById('statHigh').textContent = `$${p.high24.toFixed(2)}`;
+  document.getElementById('statLow').textContent = `$${p.low24.toFixed(2)}`;
+  document.getElementById('statMcap').textContent = formatGDP(c.gdp);
+  document.getElementById('statVol').textContent = formatNum(p.volume);
+  document.getElementById('statVol2').textContent = `${c.volatility.toFixed(1)}%`;
+  
+  const sent = Math.round(state.sentiment[c.code] || 0);
+  const sentEl = document.getElementById('statSentiment');
+  sentEl.textContent = (sent >= 0 ? '+' : '') + sent;
+  sentEl.style.color = sent > 5 ? 'var(--accent-green)' : sent < -5 ? 'var(--accent-red)' : 'var(--text-secondary)';
+  
+  document.getElementById('tradePrice').value = `$${p.current.toFixed(2)}`;
+  
+  drawChart();
+  updateTradeSummary();
+}
 
-            // Set Macro specs
-            document.getElementById('active-country-gdp').innerText = country.gdp;
-            document.getElementById('active-country-interest').innerText = country.interestRate;
-            document.getElementById('active-country-inflation').innerText = country.inflationRate;
-            document.getElementById('active-country-industry').innerText = country.mainIndustry;
-            document.getElementById('active-country-grade').innerText = country.grade;
+// ============================================================
+// === CHART RENDERING (Canvas) ===
+// ============================================================
+function drawChart() {
+  const canvas = document.getElementById('priceChart');
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  
+  const w = rect.width;
+  const h = rect.height;
+  ctx.clearRect(0, 0, w, h);
+  
+  const history = state.priceHistory[state.selectedCountry] || [];
+  let dataPoints = history;
+  if (state.chartTimeframe !== 'all') {
+    dataPoints = history.slice(-state.chartTimeframe);
+  }
+  if (dataPoints.length < 2) return;
+  
+  const prices = dataPoints.map(d => d.price);
+  const minP = Math.min(...prices);
+  const maxP = Math.max(...prices);
+  const range = maxP - minP || 1;
+  const padding = range * 0.1;
+  const yMin = minP - padding;
+  const yMax = maxP + padding;
+  
+  const padL = 60, padR = 20, padT = 20, padB = 30;
+  const chartW = w - padL - padR;
+  const chartH = h - padT - padB;
+  
+  // Grid
+  ctx.strokeStyle = '#1f2937';
+  ctx.lineWidth = 1;
+  ctx.font = '10px JetBrains Mono';
+  ctx.fillStyle = '#6b7280';
+  
+  for (let i = 0; i <= 5; i++) {
+    const y = padT + (chartH / 5) * i;
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(w - padR, y);
+    ctx.stroke();
+    const price = yMax - ((yMax - yMin) / 5) * i;
+    ctx.textAlign = 'right';
+    ctx.fillText(`$${price.toFixed(2)}`, padL - 6, y + 3);
+  }
+  
+  // X-axis labels
+  ctx.textAlign = 'center';
+  for (let i = 0; i <= 5; i++) {
+    const x = padL + (chartW / 5) * i;
+    const idx = Math.floor((dataPoints.length - 1) * (i / 5));
+    ctx.fillText(`${idx}`, x, h - padB + 14);
+  }
+  
+  // Determine line color based on overall trend
+  const isUp = dataPoints[dataPoints.length - 1].price >= dataPoints[0].price;
+  const lineColor = isUp ? '#10b981' : '#ef4444';
+  const fillColor = isUp ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+  
+  // Area fill
+  ctx.beginPath();
+  dataPoints.forEach((d, i) => {
+    const x = padL + (chartW / (dataPoints.length - 1)) * i;
+    const y = padT + chartH - ((d.price - yMin) / (yMax - yMin)) * chartH;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.lineTo(padL + chartW, padT + chartH);
+  ctx.lineTo(padL, padT + chartH);
+  ctx.closePath();
+  ctx.fillStyle = fillColor;
+  ctx.fill();
+  
+  // Line
+  ctx.beginPath();
+  dataPoints.forEach((d, i) => {
+    const x = padL + (chartW / (dataPoints.length - 1)) * i;
+    const y = padT + chartH - ((d.price - yMin) / (yMax - yMin)) * chartH;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = lineColor;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  
+  // Last point dot
+  const last = dataPoints[dataPoints.length - 1];
+  const lastX = padL + chartW;
+  const lastY = padT + chartH - ((last.price - yMin) / (yMax - yMin)) * chartH;
+  ctx.beginPath();
+  ctx.arc(lastX, lastY, 4, 0, Math.PI * 2);
+  ctx.fillStyle = lineColor;
+  ctx.fill();
+  ctx.strokeStyle = '#0a0e1a';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
 
-            // Render Chart
-            renderPriceChart(country);
+// Chart timeframe buttons
+document.querySelectorAll('.tf-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tf = btn.dataset.tf;
+    state.chartTimeframe = tf === 'all' ? 'all' : parseInt(tf);
+    drawChart();
+  });
+});
 
-            // Populate specific country news log
-            const logsContainer = document.getElementById('country-news-logs');
-            logsContainer.innerHTML = '';
-            
-            if (country.newsLog.length === 0) {
-                logsContainer.innerHTML = `<div class="text-xs text-slate-500 py-4 text-center">아직 정산반영된 뉴스가 없습니다.</div>`;
-            } else {
-                country.newsLog.forEach(log => {
-                    logsContainer.innerHTML += `
-                        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800/40 text-[11px] leading-relaxed text-slate-300">
-                            ${log}
-                        </div>
-                    `;
-                });
-            }
-        }
+// Resize handler
+window.addEventListener('resize', () => drawChart());
 
-        // Draw Interactive Chart
-        function renderPriceChart(country) {
-            const ctx = document.getElementById('active-price-chart').getContext('2d');
-            
-            if (priceChartInstance) {
-                priceChartInstance.destroy();
-            }
+// ============================================================
+// === NEWS RENDERING ===
+// ============================================================
+function renderNews() {
+  const list = document.getElementById('newsList');
+  document.getElementById('newsCount').textContent = state.news.length;
+  
+  if (state.news.length === 0) {
+    list.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px;">아직 뉴스가 없습니다.<br>AI가 분석을 시작하면 표시됩니다.</div>';
+    return;
+  }
+  
+  list.innerHTML = state.news.slice(0, 30).map(n => {
+    const isGlobal = n.country === 'GLOBAL';
+    const country = isGlobal ? null : COUNTRIES.find(c => c.code === n.country);
+    const flag = isGlobal ? '🌐' : (country ? country.flag : '🌐');
+    const code = isGlobal ? 'GLOBAL' : n.country;
+    
+    return `
+      <div class="news-item ${n.impact}" onclick="${isGlobal ? '' : `selectCountry('${n.country}')`}">
+        <div class="news-header">
+          <span class="news-flag">${flag}</span>
+          <span class="news-country-code">${code}</span>
+          <span class="news-impact ${n.impact}">
+            ${n.impact === 'positive' ? '+ 호재' : n.impact === 'negative' ? '− 악재' : '중립'}
+          </span>
+        </div>
+        <div class="news-title">${n.title}</div>
+        <div class="news-time">${n.timestamp}</div>
+      </div>
+    `;
+  }).join('');
+}
 
-            const chartLabels = country.priceHistory.map((_, index) => `${index + 1}회 정산`);
-            const chartData = country.priceHistory;
+// ============================================================
+// === TRADING ===
+// ============================================================
+function switchTradeTab(mode) {
+  state.tradeMode = mode;
+  document.getElementById('tabBuy').classList.toggle('active', mode === 'BUY');
+  document.getElementById('tabSell').classList.toggle('active', mode === 'SELL');
+  const btn = document.getElementById('tradeBtn');
+  btn.className = `trade-button ${mode.toLowerCase()}`;
+  btn.textContent = mode === 'BUY' ? '매수 주문' : '매도 주문';
+  updateTradeSummary();
+}
 
-            const isUp = country.currentPrice >= country.prevPrice;
-            const lineColor = isUp ? 'rgba(16, 185, 129, 1)' : 'rgba(239, 68, 68, 1)';
-            const fillColor = isUp ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.05)';
+function setQty(n) {
+  document.getElementById('tradeQty').value = n;
+  updateTradeSummary();
+}
 
-            priceChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                        label: '국가 가치 추이',
-                        data: chartData,
-                        borderColor: lineColor,
-                        backgroundColor: fillColor,
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.3,
-                        pointBackgroundColor: lineColor,
-                        pointBorderColor: '#0b0f19',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        x: {
-                            grid: { color: 'rgba(51, 65, 85, 0.1)' },
-                            ticks: { color: '#64748b', font: { size: 10 } }
-                        },
-                        y: {
-                            grid: { color: 'rgba(51, 65, 85, 0.1)' },
-                            ticks: { 
-                                color: '#64748b', 
-                                font: { size: 10 },
-                                callback: function(value) { return '₩' + value.toLocaleString(); }
-                            }
-                        }
-                    }
-                }
-            });
-        }
+function setMaxQty() {
+  const p = state.prices[state.selectedCountry];
+  if (state.tradeMode === 'BUY') {
+    const maxQty = Math.floor(state.cash / (p.current * 1.001));
+    document.getElementById('tradeQty').value = maxQty;
+  } else {
+    const holding = state.holdings[state.selectedCountry];
+    document.getElementById('tradeQty').value = holding ? holding.qty : 0;
+  }
+  updateTradeSummary();
+}
 
-        // Live News ticker mock generator
-        function updateNewsTicker() {
-            const ticker = document.getElementById('news-ticker-text');
-            if (pendingNews.length > 0) {
-                const randomNews = pendingNews[Math.floor(Math.random() * pendingNews.length)];
-                ticker.innerText = `[대기 정산 소식] ${randomNews.headline} (출처: ${randomNews.source})`;
-            } else {
-                ticker.innerText = `[시장 안내] 모든 세계 뉴스가 안전하게 국가 가치평가에 정산 반영되어 평형 상태입니다.`;
-            }
-        }
+function updateTradeSummary() {
+  const p = state.prices[state.selectedCountry];
+  if (!p) return;
+  const qty = parseInt(document.getElementById('tradeQty').value) || 0;
+  const total = qty * p.current;
+  const fee = total * 0.001;
+  
+  document.getElementById('estPrice').textContent = `$${p.current.toFixed(2)}`;
+  document.getElementById('estTotal').textContent = `$${total.toFixed(2)}`;
+  document.getElementById('estFee').textContent = `$${fee.toFixed(2)}`;
+  
+  const btn = document.getElementById('tradeBtn');
+  let canTrade = true;
+  if (qty <= 0) canTrade = false;
+  if (state.tradeMode === 'BUY' && (total + fee) > state.cash) canTrade = false;
+  if (state.tradeMode === 'SELL') {
+    const h = state.holdings[state.selectedCountry];
+    if (!h || h.qty < qty) canTrade = false;
+  }
+  btn.disabled = !canTrade;
+}
 
-        // Refresh dynamic UI widgets
-        function updateHeaderWidget() {
-            document.getElementById('cash-text').innerText = "₩" + userWallet.cash.toLocaleString();
-            
-            // Calculate total assets: cash + sum(shares * current market price)
-            let totalValue = userWallet.cash;
-            for (let id in userWallet.shares) {
-                const country = countries.find(c => c.id === id);
-                if (country) {
-                    totalValue += userWallet.shares[id].qty * country.currentPrice;
-                }
-            }
+function executeTrade() {
+  const qty = parseInt(document.getElementById('tradeQty').value);
+  if (!qty || qty <= 0) {
+    showToast('error', '잘못된 수량', '수량을 확인하세요.');
+    return;
+  }
+  
+  const code = state.selectedCountry;
+  const country = COUNTRIES.find(c => c.code === code);
+  const p = state.prices[code];
+  const price = p.current;
+  const total = qty * price;
+  const fee = total * 0.001;
+  
+  if (state.tradeMode === 'BUY') {
+    const totalCost = total + fee;
+    if (totalCost > state.cash) {
+      showToast('error', '잔액 부족', '보유 현금이 부족합니다.');
+      return;
+    }
+    state.cash -= totalCost;
+    
+    if (!state.holdings[code]) {
+      state.holdings[code] = { qty: 0, avgPrice: 0 };
+    }
+    const h = state.holdings[code];
+    const newAvg = (h.avgPrice * h.qty + price * qty) / (h.qty + qty);
+    h.qty += qty;
+    h.avgPrice = newAvg;
+    
+    state.trades.push({
+      type: 'BUY', code, qty, price, total, fee,
+      time: new Date().toLocaleString('ko-KR'),
+    });
+    
+    showToast('success', '매수 체결', `${country.flag} ${country.name} ${qty}주 매수 완료`);
+  } else {
+    const h = state.holdings[code];
+    if (!h || h.qty < qty) {
+      showToast('error', '보유량 부족', '보유 수량보다 많이 매도할 수 없습니다.');
+      return;
+    }
+    const proceeds = total - fee;
+    state.cash += proceeds;
+    h.qty -= qty;
+    if (h.qty === 0) delete state.holdings[code];
+    
+    const profit = (price - h.avgPrice) * qty - fee;
+    state.trades.push({
+      type: 'SELL', code, qty, price, total, fee, profit,
+      time: new Date().toLocaleString('ko-KR'),
+    });
+    
+    showToast(profit >= 0 ? 'success' : 'warning', 
+              '매도 체결', 
+              `${country.flag} ${country.name} ${qty}주 매도 / 손익: ${profit >= 0 ? '+' : ''}$${profit.toFixed(2)}`);
+  }
+  
+  updatePortfolioStats();
+  updateTradeSummary();
+  saveState();
+}
 
-            document.getElementById('total-asset-text').innerText = "₩" + totalValue.toLocaleString();
+// ============================================================
+// === PORTFOLIO ===
+// ============================================================
+function updatePortfolioStats() {
+  let holdingsValue = 0;
+  Object.entries(state.holdings).forEach(([code, h]) => {
+    holdingsValue += h.qty * state.prices[code].current;
+  });
+  const total = state.cash + holdingsValue;
+  const pl = total - state.initialCash;
+  const returnPct = (pl / state.initialCash) * 100;
+  
+  document.getElementById('cashBalance').textContent = `$${state.cash.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+  document.getElementById('portfolioValue').textContent = `$${total.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0})}`;
+  
+  const plEl = document.getElementById('totalPL');
+  plEl.textContent = `${pl >= 0 ? '+' : ''}$${pl.toFixed(2)}`;
+  plEl.style.color = pl >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+  
+  const retEl = document.getElementById('returnPct');
+  retEl.textContent = `${returnPct >= 0 ? '+' : ''}${returnPct.toFixed(2)}%`;
+  retEl.style.color = returnPct >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+}
 
-            // Calculate profit rate (Initial assets starting benchmark: 100,000,000 KRW)
-            const profitRate = (((totalValue - 100000000) / 100000000) * 100).toFixed(2);
-            const rateText = document.getElementById('total-profit-rate');
-            rateText.innerText = `${profitRate >= 0 ? '+' : ''}${profitRate}%`;
-            if (profitRate > 0) {
-                rateText.className = "text-base font-bold text-emerald-400";
-            } else if (profitRate < 0) {
-                rateText.className = "text-base font-bold text-rose-400";
-            } else {
-                rateText.className = "text-base font-bold text-slate-400";
-            }
-        }
+function openPortfolio() {
+  const modal = document.getElementById('portfolioModal');
+  const body = document.getElementById('portfolioBody');
+  
+  const holdings = Object.entries(state.holdings);
+  let holdingsValue = 0;
+  let totalProfit = 0;
+  
+  let holdingsHTML = '';
+  if (holdings.length === 0) {
+    holdingsHTML = '<div style="padding: 40px; text-align: center; color: var(--text-muted);">아직 보유한 국가가 없습니다.<br>국가를 매수해서 포트폴리오를 구성해보세요!</div>';
+  } else {
+    holdingsHTML = `
+      <h3 style="font-family: var(--font-display); font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">보유 종목</h3>
+      <table class="holdings-table">
+        <thead>
+          <tr>
+            <th>국가</th>
+            <th class="right">수량</th>
+            <th class="right">평단가</th>
+            <th class="right">현재가</th>
+            <th class="right">평가액</th>
+            <th class="right">손익</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+    holdings.forEach(([code, h]) => {
+      const c = COUNTRIES.find(x => x.code === code);
+      const cur = state.prices[code].current;
+      const val = h.qty * cur;
+      const profit = (cur - h.avgPrice) * h.qty;
+      const pctChange = ((cur - h.avgPrice) / h.avgPrice) * 100;
+      holdingsValue += val;
+      totalProfit += profit;
+      
+      const profitColor = profit >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+      holdingsHTML += `
+        <tr>
+          <td>${c.flag} ${c.name} <span style="color: var(--text-muted); font-size: 10px;">(${code})</span></td>
+          <td class="right">${h.qty}</td>
+          <td class="right">$${h.avgPrice.toFixed(2)}</td>
+          <td class="right">$${cur.toFixed(2)}</td>
+          <td class="right">$${val.toFixed(2)}</td>
+          <td class="right" style="color: ${profitColor};">${profit >= 0 ? '+' : ''}$${profit.toFixed(2)}<br><span style="font-size: 10px;">(${pctChange >= 0 ? '+' : ''}${pctChange.toFixed(2)}%)</span></td>
+        </tr>
+      `;
+    });
+    holdingsHTML += '</tbody></table>';
+  }
+  
+  const totalValue = state.cash + holdingsValue;
+  const totalReturn = totalValue - state.initialCash;
+  const returnPct = (totalReturn / state.initialCash) * 100;
+  
+  // Recent trades
+  let tradesHTML = '';
+  if (state.trades.length > 0) {
+    tradesHTML = `
+      <h3 style="font-family: var(--font-display); font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px 0;">최근 거래 내역 (${state.trades.length})</h3>
+      <table class="holdings-table">
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>국가</th>
+            <th class="right">수량</th>
+            <th class="right">가격</th>
+            <th class="right">총액</th>
+            <th class="right">손익</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+    state.trades.slice(-15).reverse().forEach(t => {
+      const c = COUNTRIES.find(x => x.code === t.code);
+      const profitStr = t.type === 'SELL' && t.profit !== undefined ? 
+        `<span style="color: ${t.profit >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'};">${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)}</span>` : 
+        '<span style="color: var(--text-muted);">—</span>';
+      tradesHTML += `
+        <tr>
+          <td><span style="color: ${t.type === 'BUY' ? 'var(--accent-green)' : 'var(--accent-red)'}; font-weight: 600;">${t.type === 'BUY' ? '매수' : '매도'}</span></td>
+          <td>${c.flag} ${t.code}</td>
+          <td class="right">${t.qty}</td>
+          <td class="right">$${t.price.toFixed(2)}</td>
+          <td class="right">$${t.total.toFixed(2)}</td>
+          <td class="right">${profitStr}</td>
+        </tr>
+      `;
+    });
+    tradesHTML += '</tbody></table>';
+  }
+  
+  body.innerHTML = `
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;">
+      <div style="background: var(--bg-tertiary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-default);">
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">현금</div>
+        <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700;">$${state.cash.toFixed(2)}</div>
+      </div>
+      <div style="background: var(--bg-tertiary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-default);">
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">보유종목 평가액</div>
+        <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700;">$${holdingsValue.toFixed(2)}</div>
+      </div>
+      <div style="background: var(--bg-tertiary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-default);">
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">총 자산</div>
+        <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--accent-blue);">$${totalValue.toFixed(2)}</div>
+      </div>
+      <div style="background: var(--bg-tertiary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-default);">
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">총 수익률</div>
+        <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: ${returnPct >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'};">${returnPct >= 0 ? '+' : ''}${returnPct.toFixed(2)}%</div>
+      </div>
+    </div>
+    ${holdingsHTML}
+    ${tradesHTML}
+    <div style="margin-top: 24px; text-align: center;">
+      <button onclick="resetGame()" style="background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: var(--font-display); font-size: 11px; font-weight: 600;">⚠️ 게임 리셋 (모든 데이터 초기화)</button>
+    </div>
+  `;
+  
+  modal.classList.add('active');
+}
 
-        function updatePendingNewsBadge() {
-            const badge = document.getElementById('pending-news-badge');
-            document.getElementById('ai-status-news-count').innerText = pendingNews.length + "건";
-            if (pendingNews.length === 0) {
-                badge.classList.add('hidden');
-            } else {
-                badge.classList.remove('hidden');
-                badge.innerText = pendingNews.length;
-            }
-        }
+function closePortfolio() {
+  document.getElementById('portfolioModal').classList.remove('active');
+}
 
-        // ==========================================
-        // 4. TRANSACTION ENGINE (Buy/Sell Logic)
-        // ==========================================
-        function switchTradeMode(mode) {
-            tradeMode = mode;
-            const buyTab = document.getElementById('tab-buy');
-            const sellTab = document.getElementById('tab-sell');
-            const actionBtn = document.getElementById('trade-action-btn');
+function resetGame() {
+  if (!confirm('정말로 게임을 리셋하시겠습니까? 모든 거래 내역과 잔액이 초기화됩니다.')) return;
+  try { window.storage && window.storage.delete('nationvault_state'); } catch(e) {}
+  try { localStorage.removeItem('nationvault_state'); } catch(e) {}
+  location.reload();
+}
 
-            if (mode === "BUY") {
-                buyTab.className = "flex-1 py-3.5 text-center font-bold text-sm bg-[#0f172a] text-emerald-400 border-b-2 border-emerald-500";
-                sellTab.className = "flex-1 py-3.5 text-center font-bold text-sm text-slate-400 hover:text-slate-200";
-                actionBtn.className = "w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold py-3.5 rounded-xl transition duration-200 text-center text-sm glow-green";
-                actionBtn.innerText = "시장가 매수 주문";
-            } else {
-                buyTab.className = "flex-1 py-3.5 text-center font-bold text-sm text-slate-400 hover:text-slate-200";
-                sellTab.className = "flex-1 py-3.5 text-center font-bold text-sm bg-[#0f172a] text-rose-400 border-b-2 border-rose-500";
-                actionBtn.className = "w-full bg-rose-500 hover:bg-rose-400 text-slate-950 font-extrabold py-3.5 rounded-xl transition duration-200 text-center text-sm glow-red";
-                actionBtn.innerText = "시장가 매도 주문";
-            }
-            calculateEstimatedOrder();
-        }
+// ============================================================
+// === FILTERING ===
+// ============================================================
+function filterCountries() {
+  state.searchQuery = document.getElementById('searchInput').value;
+  renderCountryList();
+}
 
-        function calculateEstimatedOrder() {
-            const country = countries.find(c => c.id === selectedCountryId);
-            if (!country) return;
+function filterByTier(tier) {
+  state.tierFilter = tier;
+  document.querySelectorAll('.tier-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tier === tier);
+  });
+  renderCountryList();
+}
 
-            const qty = parseInt(document.getElementById('trade-qty').value) || 0;
-            const estPrice = country.currentPrice;
-            const total = qty * estPrice;
+// ============================================================
+// === SPEED CONTROL ===
+// ============================================================
+function setSpeed(speed) {
+  state.speed = speed;
+  document.querySelectorAll('.speed-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.speed) === speed);
+  });
+  startGameLoop();
+}
 
-            document.getElementById('trade-est-price').innerText = `₩${estPrice.toLocaleString()} / 1주`;
-            document.getElementById('trade-total-est').innerText = `₩${total.toLocaleString()}`;
-        }
+function updateClock() {
+  const h = Math.floor(state.simTime / 3600);
+  const m = Math.floor((state.simTime % 3600) / 60);
+  const s = state.simTime % 60;
+  document.getElementById('simClock').textContent = 
+    `Day ${Math.floor(h / 24) + 1} ${String(h % 24).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(Math.floor(s)).padStart(2,'0')}`;
+}
 
-        function setQtyPct(pct) {
-            const country = countries.find(c => c.id === selectedCountryId);
-            if (!country) return;
+// ============================================================
+// === UTILITIES ===
+// ============================================================
+function formatGDP(billions) {
+  if (billions >= 1000) return `$${(billions/1000).toFixed(1)}T`;
+  return `$${billions.toFixed(0)}B`;
+}
+function formatNum(n) {
+  if (n >= 1e9) return `${(n/1e9).toFixed(2)}B`;
+  if (n >= 1e6) return `${(n/1e6).toFixed(2)}M`;
+  if (n >= 1e3) return `${(n/1e3).toFixed(1)}K`;
+  return n.toString();
+}
 
-            if (tradeMode === "BUY") {
-                // Max buy possible
-                const maxBuyQty = Math.floor(userWallet.cash / country.currentPrice);
-                const targetQty = Math.floor(maxBuyQty * (pct / 100));
-                document.getElementById('trade-qty').value = Math.max(1, targetQty);
-            } else {
-                // Max sell possible
-                const owned = userWallet.shares[selectedCountryId];
-                if (!owned) {
-                    document.getElementById('trade-qty').value = 0;
-                } else {
-                    const targetQty = Math.floor(owned.qty * (pct / 100));
-                    document.getElementById('trade-qty').value = targetQty;
-                }
-            }
-            calculateEstimatedOrder();
-        }
+function showToast(type, title, msg) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <div class="toast-title">${title}</div>
+    <div class="toast-msg">${msg}</div>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)';
+    toast.style.transition = 'all 0.3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
 
-        // Main Executer for Trades
-        function executeTrade() {
-            const country = countries.find(c => c.id === selectedCountryId);
-            if (!country) return;
+// ============================================================
+// === PERSISTENCE ===
+// ============================================================
+async function saveState() {
+  const data = JSON.stringify({
+    cash: state.cash,
+    holdings: state.holdings,
+    trades: state.trades.slice(-50),
+    prices: state.prices,
+    priceHistory: state.priceHistory,
+    news: state.news.slice(0, 30),
+    selectedCountry: state.selectedCountry,
+    simTime: state.simTime,
+    sentiment: state.sentiment,
+  });
+  try {
+    if (window.storage && window.storage.set) {
+      await window.storage.set('nationvault_state', data);
+    } else {
+      localStorage.setItem('nationvault_state', data);
+    }
+  } catch(e) { /* silent */ }
+}
 
-            const qty = parseInt(document.getElementById('trade-qty').value) || 0;
-            if (qty <= 0) {
-                showToast("주문 수량을 확인해주세요.", "error");
-                return;
-            }
+async function loadState() {
+  try {
+    let data = null;
+    if (window.storage && window.storage.get) {
+      const result = await window.storage.get('nationvault_state');
+      if (result && result.value) data = result.value;
+    } else {
+      data = localStorage.getItem('nationvault_state');
+    }
+    if (data) {
+      const parsed = JSON.parse(data);
+      Object.assign(state, parsed);
+    }
+  } catch(e) { /* silent - start fresh */ }
+}
 
-            const totalAmount = qty * country.currentPrice;
+// ============================================================
+// === START ===
+// ============================================================
+function startGame() {
+  document.getElementById('welcomeOverlay').classList.add('hidden');
+  initGame();
+}
 
-            if (tradeMode === "BUY") {
-                if (totalAmount > userWallet.cash) {
-                    showToast("가용 현금이 부족합니다.", "error");
-                    return;
-                }
+// Auto-init if data exists (skip welcome on reload)
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    let hasData = false;
+    if (window.storage && window.storage.get) {
+      const r = await window.storage.get('nationvault_state');
+      hasData = !!(r && r.value);
+    } else {
+      hasData = !!localStorage.getItem('nationvault_state');
+    }
+    if (hasData) {
+      document.getElementById('welcomeOverlay').classList.add('hidden');
+      initGame();
+    }
+  } catch(e) { /* show welcome */ }
+});
 
-                // Deduct cash
-                userWallet.cash -= totalAmount;
-                
-                // Add to inventory
-                if (!userWallet.shares[country.id]) {
-                    userWallet.shares[country.id] = { qty: 0, avgPrice: 0 };
-                }
-                const oldShare = userWallet.shares[country.id];
-                const totalCost = (oldShare.qty * oldShare.avgPrice) + totalAmount;
-                const newQty = oldShare.qty + qty;
-                
-                userWallet.shares[country.id].qty = newQty;
-                userWallet.shares[country.id].avgPrice = Math.floor(totalCost / newQty);
-
-                showToast(`${country.name} ${qty}주를 성공적으로 매수하였습니다!`, "success");
-            } else {
-                // SELL Mode
-                const oldShare = userWallet.shares[country.id];
-                if (!oldShare || oldShare.qty < qty) {
-                    showToast("보유 수량이 매도하려는 양보다 부족합니다.", "error");
-                    return;
-                }
-
-                // Add cash
-                userWallet.cash += totalAmount;
-                
-                // Deduct inventory
-                userWallet.shares[country.id].qty -= qty;
-                if (userWallet.shares[country.id].qty === 0) {
-                    delete userWallet.shares[country.id];
-                }
-
-                showToast(`${country.name} ${qty}주를 시장가 매도 성공하였습니다.`, "success");
-            }
-
-            updateHeaderWidget();
-            renderPortfolio();
-        }
-
-        // Render Portfolio Inventory
-        function renderPortfolio() {
-            const container = document.getElementById('portfolio-list');
-            container.innerHTML = '';
-
-            let count = 0;
-            for (let id in userWallet.shares) {
-                count++;
-                const share = userWallet.shares[id];
-                const country = countries.find(c => c.id === id);
-                if (!country) continue;
-
-                const currentVal = share.qty * country.currentPrice;
-                const buyVal = share.qty * share.avgPrice;
-                const profitVal = currentVal - buyVal;
-                const profitRate = ((profitVal / buyVal) * 100).toFixed(2);
-                const isPlus = profitVal >= 0;
-
-                const cardHtml = `
-                    <div class="p-4 bg-slate-900/30 hover:bg-slate-900 transition border-b border-slate-900/50 flex flex-col gap-2">
-                        <div class="flex justify-between items-center">
-                            <span onclick="selectCountry('${country.id}')" class="text-xs font-bold text-slate-200 cursor-pointer hover:underline flex items-center gap-1.5">
-                                <span class="text-lg">${country.flag}</span>
-                                <span>${country.name}</span>
-                                <span class="text-[9px] text-slate-500">${country.id}</span>
-                            </span>
-                            <span class="text-[11px] font-bold ${isPlus ? 'text-emerald-400' : 'text-rose-400'}">
-                                ${isPlus ? '+' : ''}${profitRate}%
-                            </span>
-                        </div>
-                        <div class="grid grid-cols-3 gap-1 text-[11px] text-slate-400">
-                            <div>
-                                <span class="text-[9px] text-slate-500 block">보유수량</span>
-                                <span class="font-bold text-slate-300 font-mono">${share.qty}주</span>
-                            </div>
-                            <div>
-                                <span class="text-[9px] text-slate-500 block">평균단가</span>
-                                <span class="font-bold text-slate-300 font-mono">₩${share.avgPrice.toLocaleString()}</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-[9px] text-slate-500 block">평가손익</span>
-                                <span class="font-bold ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-mono">
-                                    ${isPlus ? '▲' : '▼'}₩${Math.abs(profitVal).toLocaleString()}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += cardHtml;
-            }
-
-            document.getElementById('portfolio-count').innerText = `${count}개 종목`;
-            if (count === 0) {
-                container.innerHTML = `
-                    <div class="p-8 text-center text-xs text-slate-500 leading-relaxed">
-                        <i class="fa-solid fa-scale-unbalanced-stroke text-slate-700 text-xl block mb-2"></i>
-                        현재 보유 중인 국가 자산이 없습니다.<br>뉴스 분석 후 유망 국가를 매수하세요!
-                    </div>
-                `;
-            }
-        }
-
-        // ==========================================
-        // 5. AI SIMULATED ANALYSIS PROCESS
-        // ==========================================
-        function openAiSessionModal() {
-            document.getElementById('ai-session-modal').classList.remove('hidden');
-        }
-
-        function closeAiSessionModal() {
-            document.getElementById('ai-session-modal').classList.add('hidden');
-        }
-
-        function startAiProcessSimulation() {
-            if (pendingNews.length === 0) {
-                showToast("현재 대기 중인 새로운 경제 뉴스가 없습니다. 새 뉴스를 생성합니다.", "success");
-                pendingNews = [...globalNewsTemplates];
-                updatePendingNewsBadge();
-                return;
-            }
-
-            // Lock Start Button
-            const startBtn = document.getElementById('ai-start-btn');
-            startBtn.disabled = true;
-            startBtn.classList.add('opacity-40');
-
-            const container = document.getElementById('ai-logs-container');
-            const spinner = document.getElementById('ai-loading-spinner');
-            container.innerHTML = '';
-            spinner.classList.remove('hidden');
-
-            // Simulated AI Logs steps with setTimeout
-            appendAiLog("📡 Global LLM Macro Economics Engine (v4.1) 연결 성공...", "text-blue-400");
-            
-            setTimeout(() => {
-                appendAiLog("🔍 미정산 실시간 경제 뉴스 텍스트 벡터 변환 진행 중...", "text-slate-400");
-                appendAiLog(`📊 대상 총 ${pendingNews.length}개의 정세 뉴스를 검출하였습니다.`, "text-yellow-400");
-            }, 800);
-
-            let logTimer = 1600;
-
-            // Loop and process pending news sequentially
-            pendingNews.forEach((news, idx) => {
-                setTimeout(() => {
-                    appendAiLog(`\n[분석 뉴스 #${idx + 1}]: "${news.headline}"`, "text-white font-bold border-t border-slate-800 pt-2");
-                    appendAiLog(`  - 원본 신뢰도: S등급 (출처: ${news.source})`, "text-slate-500");
-                }, logTimer);
-                
-                logTimer += 1000;
-
-                news.impacts.forEach(impact => {
-                    setTimeout(() => {
-                        const targetCountry = countries.find(c => c.id === impact.countryId);
-                        const arrow = impact.change >= 0 ? "▲" : "▼";
-                        const changeColor = impact.change >= 0 ? "text-emerald-400" : "text-rose-400";
-                        
-                        appendAiLog(`  🧠 AI 경제 해석: "${impact.reasoning}"`, "text-purple-300");
-                        appendAiLog(`  ➡️ 파급결과: ${targetCountry.name} (${targetCountry.id}) 가치평가 점수 ${arrow} ${Math.abs(impact.change)}% 적용`, changeColor);
-                        
-                        // Execute actual financial impact on countries variables!
-                        applyFinancialImpact(impact.countryId, impact.change, news.headline);
-
-                    }, logTimer);
-                    logTimer += 1200;
-                });
-            });
-
-            // Finish Phase
-            setTimeout(() => {
-                spinner.classList.add('hidden');
-                appendAiLog("\n==============================================", "text-slate-600");
-                appendAiLog("🏆 AI 거시경제 정산 연산 처리 프로세스 완수!", "text-emerald-400 font-extrabold text-sm");
-                appendAiLog("📈 각 나라의 새로운 호가 및 역사적 변동 트랙 차트 업데이트가 완료되었습니다.", "text-slate-300");
-                
-                // Clear state
-                pendingNews = [];
-                updatePendingNewsBadge();
-                
-                // Re-enable trigger button
-                startBtn.disabled = false;
-                startBtn.classList.remove('opacity-40');
-
-                // Refresh application UI to match new economic model
-                updateHeaderWidget();
-                renderCountryList();
-                renderActiveCountry();
-                renderPortfolio();
-                showToast("AI 정산 세션이 끝나고 시장 가격이 즉시 갱신되었습니다!", "success");
-
-            }, logTimer);
-        }
-
-        // Apply real-time changes computed by simulated AI
-        function applyFinancialImpact(countryId, changePct, headline) {
-            const country = countries.find(c => c.id === countryId);
-            if (!country) return;
-
-            country.prevPrice = country.currentPrice;
-            const delta = Math.floor(country.currentPrice * (changePct / 100));
-            country.currentPrice += delta;
-            
-            // Push history point
-            country.priceHistory.push(country.currentPrice);
-            if (country.priceHistory.length > 10) {
-                country.priceHistory.shift(); // keep graph length consistent
-            }
-
-            // Formulate standard news log on specific country
-            const arrow = changePct >= 0 ? "호재 +" : "악재 ";
-            country.newsLog.unshift(`${headline} [AI 평점: ${arrow}${changePct}%]`);
-            if (country.newsLog.length > 5) {
-                country.newsLog.pop();
-            }
-        }
-
-        function appendAiLog(text, className) {
-            const container = document.getElementById('ai-logs-container');
-            const element = document.createElement('div');
-            element.className = className + " whitespace-pre-line";
-            element.innerText = text;
-            container.appendChild(element);
-            
-            // Auto scroll container
-            const p = container.parentElement;
-            p.scrollTop = p.scrollHeight;
-        }
-
-        // ==========================================
-        // 6. HELPER TOOLS (Toast System)
-        // ==========================================
-        function showToast(message, type = "success") {
-            const stack = document.getElementById('toast-stack');
-            const toast = document.createElement('div');
-            
-            const isSuccess = type === "success";
-            const borderCol = isSuccess ? 'border-emerald-500 text-emerald-400' : 'border-rose-500 text-rose-400';
-            const icon = isSuccess ? 'fa-circle-check' : 'fa-triangle-exclamation';
-
-            toast.className = `bg-slate-900 border ${borderCol} px-5 py-3.5 rounded-2xl flex items-center gap-3 shadow-lg text-xs font-semibold max-w-[320px] transition duration-300 transform translate-y-2 opacity-0`;
-            toast.innerHTML = `
-                <i class="fa-solid ${icon} text-sm"></i>
-                <div class="flex-1">${message}</div>
-            `;
-
-            stack.appendChild(toast);
-            
-            // animate in
-            setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
-            }, 10);
-
-            // remove out
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-2');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }, 3000);
-        }
-    </script>
+</script>
 </body>
 </html>

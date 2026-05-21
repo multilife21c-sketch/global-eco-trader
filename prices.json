@@ -1,29 +1,29 @@
 {
-  "generated_at": "2026-05-20T22:43:32.054642+00:00",
-  "hour_seed": "2026052022",
+  "generated_at": "2026-05-21T12:30:07.289535+00:00",
+  "hour_seed": "2026052112",
   "countries": {
     "USA": {
-      "price": 798.69,
-      "seed_price": 798.69,
+      "price": 823.85,
+      "seed_price": 823.85,
       "prev_price": 798.69,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 3.15,
+      "sentiment": 30.0,
       "volatility": 0.6
     },
     "CHN": {
-      "price": 765.06,
-      "seed_price": 765.06,
+      "price": 781.93,
+      "seed_price": 781.93,
       "prev_price": 765.06,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 2.21,
+      "sentiment": 21.0,
       "volatility": 0.6
     },
     "DEU": {
-      "price": 599.35,
-      "seed_price": 599.35,
-      "prev_price": 634.17,
-      "change_pct": -5.49,
-      "sentiment": -55.5,
+      "price": 656.83,
+      "seed_price": 656.83,
+      "prev_price": 656.83,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 0.8
     },
     "JPN": {
@@ -67,27 +67,27 @@
       "volatility": 0.8
     },
     "BRA": {
-      "price": 638.88,
-      "seed_price": 638.88,
-      "prev_price": 615.24,
-      "change_pct": 3.84,
-      "sentiment": 38.8,
+      "price": 600.73,
+      "seed_price": 600.73,
+      "prev_price": 600.73,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 0.8
     },
     "CAN": {
-      "price": 659.84,
-      "seed_price": 659.84,
-      "prev_price": 622.26,
-      "change_pct": 6.04,
-      "sentiment": 61.0,
+      "price": 587.1,
+      "seed_price": 587.1,
+      "prev_price": 599.51,
+      "change_pct": -2.07,
+      "sentiment": -18.0,
       "volatility": 0.8
     },
     "RUS": {
-      "price": 532.84,
-      "seed_price": 532.84,
-      "prev_price": 570.42,
-      "change_pct": -6.59,
-      "sentiment": -66.6,
+      "price": 595.06,
+      "seed_price": 595.06,
+      "prev_price": 595.06,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 0.8
     },
     "MEX": {
@@ -115,19 +115,19 @@
       "volatility": 0.8
     },
     "ESP": {
-      "price": 527.21,
-      "seed_price": 527.21,
-      "prev_price": 557.84,
-      "change_pct": -5.49,
-      "sentiment": -55.5,
+      "price": 595.71,
+      "seed_price": 595.71,
+      "prev_price": 577.77,
+      "change_pct": 3.11,
+      "sentiment": 27.0,
       "volatility": 0.8
     },
     "IDN": {
-      "price": 567.76,
-      "seed_price": 567.76,
-      "prev_price": 565.9,
-      "change_pct": 0.33,
-      "sentiment": 3.3,
+      "price": 564.73,
+      "seed_price": 564.73,
+      "prev_price": 564.73,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 0.8
     },
     "NLD": {
@@ -147,19 +147,19 @@
       "volatility": 0.8
     },
     "SAU": {
-      "price": 548.12,
-      "seed_price": 548.12,
-      "prev_price": 546.32,
-      "change_pct": 0.33,
-      "sentiment": 3.3,
+      "price": 545.19,
+      "seed_price": 545.19,
+      "prev_price": 545.19,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 0.8
     },
     "CHE": {
-      "price": 561.32,
-      "seed_price": 561.32,
-      "prev_price": 542.47,
-      "change_pct": 3.47,
-      "sentiment": 33.3,
+      "price": 530.53,
+      "seed_price": 530.53,
+      "prev_price": 530.53,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.1
     },
     "POL": {
@@ -171,11 +171,11 @@
       "volatility": 1.1
     },
     "ARG": {
-      "price": 476.78,
-      "seed_price": 476.78,
-      "prev_price": 493.94,
-      "change_pct": -3.47,
-      "sentiment": -33.3,
+      "price": 505.31,
+      "seed_price": 505.31,
+      "prev_price": 505.31,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.1
     },
     "BEL": {
@@ -187,27 +187,27 @@
       "volatility": 1.1
     },
     "SWE": {
-      "price": 452.77,
-      "seed_price": 452.77,
-      "prev_price": 480.6,
-      "change_pct": -5.79,
-      "sentiment": -55.5,
+      "price": 499.32,
+      "seed_price": 499.32,
+      "prev_price": 499.32,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.1
     },
     "IRL": {
-      "price": 451.33,
-      "seed_price": 451.33,
-      "prev_price": 476.14,
-      "change_pct": -5.21,
-      "sentiment": -50.0,
+      "price": 474.29,
+      "seed_price": 474.29,
+      "prev_price": 492.77,
+      "change_pct": -3.75,
+      "sentiment": -30.0,
       "volatility": 1.1
     },
     "ISR": {
-      "price": 489.28,
-      "seed_price": 489.28,
+      "price": 505.79,
+      "seed_price": 505.79,
       "prev_price": 489.28,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 3.37,
+      "sentiment": 27.0,
       "volatility": 1.1
     },
     "AUT": {
@@ -219,11 +219,11 @@
       "volatility": 1.1
     },
     "THA": {
-      "price": 516.6,
-      "seed_price": 516.6,
-      "prev_price": 499.26,
-      "change_pct": 3.47,
-      "sentiment": 33.3,
+      "price": 488.27,
+      "seed_price": 488.27,
+      "prev_price": 488.27,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.1
     },
     "NGA": {
@@ -235,11 +235,11 @@
       "volatility": 1.1
     },
     "ARE": {
-      "price": 489.4,
-      "seed_price": 489.4,
-      "prev_price": 487.71,
-      "change_pct": 0.35,
-      "sentiment": 3.3,
+      "price": 486.62,
+      "seed_price": 486.62,
+      "prev_price": 486.62,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.1
     },
     "SGP": {
@@ -259,11 +259,11 @@
       "volatility": 1.1
     },
     "BGD": {
-      "price": 432.64,
-      "seed_price": 432.64,
-      "prev_price": 459.23,
-      "change_pct": -5.79,
-      "sentiment": -55.5,
+      "price": 477.12,
+      "seed_price": 477.12,
+      "prev_price": 477.12,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.1
     },
     "PHL": {
@@ -275,19 +275,19 @@
       "volatility": 1.1
     },
     "VNM": {
-      "price": 447.39,
-      "seed_price": 447.39,
-      "prev_price": 463.49,
-      "change_pct": -3.47,
-      "sentiment": -33.3,
+      "price": 484.83,
+      "seed_price": 484.83,
+      "prev_price": 474.16,
+      "change_pct": 2.25,
+      "sentiment": 18.0,
       "volatility": 1.1
     },
     "MYS": {
-      "price": 498.92,
-      "seed_price": 498.92,
-      "prev_price": 482.17,
-      "change_pct": 3.47,
-      "sentiment": 33.3,
+      "price": 448.57,
+      "seed_price": 448.57,
+      "prev_price": 471.56,
+      "change_pct": -4.88,
+      "sentiment": -39.0,
       "volatility": 1.1
     },
     "DNK": {
@@ -299,11 +299,11 @@
       "volatility": 1.1
     },
     "EGY": {
-      "price": 419.91,
-      "seed_price": 419.91,
-      "prev_price": 448.47,
-      "change_pct": -6.37,
-      "sentiment": -61.0,
+      "price": 467.77,
+      "seed_price": 467.77,
+      "prev_price": 467.77,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.1
     },
     "IRN": {
@@ -315,11 +315,11 @@
       "volatility": 1.1
     },
     "HKG": {
-      "price": 496.54,
-      "seed_price": 496.54,
-      "prev_price": 477.2,
-      "change_pct": 4.05,
-      "sentiment": 38.8,
+      "price": 464.99,
+      "seed_price": 464.99,
+      "prev_price": 464.99,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.1
     },
     "ZAF": {
@@ -331,19 +331,19 @@
       "volatility": 1.1
     },
     "COL": {
-      "price": 506.1,
-      "seed_price": 506.1,
-      "prev_price": 478.4,
-      "change_pct": 5.79,
-      "sentiment": 55.5,
+      "price": 461.11,
+      "seed_price": 461.11,
+      "prev_price": 461.11,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.1
     },
     "ROU": {
-      "price": 415.53,
-      "seed_price": 415.53,
-      "prev_price": 441.07,
-      "change_pct": -5.79,
-      "sentiment": -55.5,
+      "price": 458.94,
+      "seed_price": 458.94,
+      "prev_price": 458.25,
+      "change_pct": 0.15,
+      "sentiment": 1.2,
       "volatility": 1.1
     },
     "PAK": {
@@ -355,35 +355,35 @@
       "volatility": 1.1
     },
     "CHL": {
-      "price": 456.6,
-      "seed_price": 456.6,
-      "prev_price": 455.54,
-      "change_pct": 0.23,
-      "sentiment": 2.2,
+      "price": 444.63,
+      "seed_price": 444.63,
+      "prev_price": 454.86,
+      "change_pct": -2.25,
+      "sentiment": -18.0,
       "volatility": 1.1
     },
     "CZE": {
-      "price": 475.66,
-      "seed_price": 475.66,
-      "prev_price": 462.28,
-      "change_pct": 2.89,
-      "sentiment": 27.8,
+      "price": 454.45,
+      "seed_price": 454.45,
+      "prev_price": 453.77,
+      "change_pct": 0.15,
+      "sentiment": 1.2,
       "volatility": 1.1
     },
     "FIN": {
-      "price": 444.97,
-      "seed_price": 444.97,
+      "price": 453.65,
+      "seed_price": 453.65,
       "prev_price": 444.97,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 1.95,
+      "sentiment": 15.0,
       "volatility": 1.5
     },
     "PRT": {
-      "price": 445.33,
-      "seed_price": 445.33,
-      "prev_price": 443.75,
-      "change_pct": 0.36,
-      "sentiment": 3.3,
+      "price": 442.71,
+      "seed_price": 442.71,
+      "prev_price": 442.71,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "PER": {
@@ -395,43 +395,43 @@
       "volatility": 1.5
     },
     "KAZ": {
-      "price": 434.78,
-      "seed_price": 434.78,
+      "price": 421.21,
+      "seed_price": 421.21,
       "prev_price": 434.78,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -3.12,
+      "sentiment": -24.0,
       "volatility": 1.5
     },
     "IRQ": {
-      "price": 432.19,
-      "seed_price": 432.19,
+      "price": 411.96,
+      "seed_price": 411.96,
       "prev_price": 432.19,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -4.68,
+      "sentiment": -36.0,
       "volatility": 1.5
     },
     "DZA": {
-      "price": 432.9,
-      "seed_price": 432.9,
-      "prev_price": 431.87,
-      "change_pct": 0.24,
-      "sentiment": 2.2,
+      "price": 431.2,
+      "seed_price": 431.2,
+      "prev_price": 431.2,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "GRC": {
-      "price": 462.52,
-      "seed_price": 462.52,
-      "prev_price": 441.54,
-      "change_pct": 4.75,
-      "sentiment": 44.4,
+      "price": 428.18,
+      "seed_price": 428.18,
+      "prev_price": 428.18,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "QAT": {
-      "price": 427.29,
-      "seed_price": 427.29,
+      "price": 412.29,
+      "seed_price": 412.29,
       "prev_price": 427.29,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -3.51,
+      "sentiment": -27.0,
       "volatility": 1.5
     },
     "HUN": {
@@ -443,19 +443,19 @@
       "volatility": 1.5
     },
     "UKR": {
-      "price": 374.5,
-      "seed_price": 374.5,
-      "prev_price": 393.18,
-      "change_pct": -4.75,
-      "sentiment": -44.4,
+      "price": 405.84,
+      "seed_price": 405.84,
+      "prev_price": 405.84,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "KWT": {
-      "price": 417.89,
-      "seed_price": 417.89,
-      "prev_price": 405.84,
-      "change_pct": 2.97,
-      "sentiment": 27.8,
+      "price": 381.0,
+      "seed_price": 381.0,
+      "prev_price": 398.08,
+      "change_pct": -4.29,
+      "sentiment": -33.0,
       "volatility": 1.5
     },
     "ETH": {
@@ -467,35 +467,35 @@
       "volatility": 1.5
     },
     "MAR": {
-      "price": 366.61,
-      "seed_price": 366.61,
-      "prev_price": 380.16,
-      "change_pct": -3.56,
-      "sentiment": -33.3,
+      "price": 389.27,
+      "seed_price": 389.27,
+      "prev_price": 389.27,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "SVK": {
-      "price": 383.98,
-      "seed_price": 383.98,
-      "prev_price": 383.07,
-      "change_pct": 0.24,
-      "sentiment": 2.2,
+      "price": 382.47,
+      "seed_price": 382.47,
+      "prev_price": 382.47,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "DOM": {
-      "price": 332.7,
-      "seed_price": 332.7,
-      "prev_price": 358.24,
-      "change_pct": -7.13,
-      "sentiment": -66.6,
+      "price": 384.62,
+      "seed_price": 384.62,
+      "prev_price": 375.83,
+      "change_pct": 2.34,
+      "sentiment": 18.0,
       "volatility": 1.5
     },
     "ECU": {
-      "price": 343.16,
-      "seed_price": 343.16,
-      "prev_price": 362.54,
-      "change_pct": -5.35,
-      "sentiment": -50.0,
+      "price": 375.73,
+      "seed_price": 375.73,
+      "prev_price": 375.73,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "KEN": {
@@ -507,19 +507,19 @@
       "volatility": 1.5
     },
     "OMN": {
-      "price": 368.31,
-      "seed_price": 368.31,
-      "prev_price": 367.44,
-      "change_pct": 0.24,
-      "sentiment": 2.2,
+      "price": 381.18,
+      "seed_price": 381.18,
+      "prev_price": 366.87,
+      "change_pct": 3.9,
+      "sentiment": 30.0,
       "volatility": 1.5
     },
     "CUB": {
-      "price": 366.27,
-      "seed_price": 366.27,
+      "price": 367.13,
+      "seed_price": 367.13,
       "prev_price": 366.27,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 0.23,
+      "sentiment": 1.8,
       "volatility": 1.5
     },
     "BGR": {
@@ -531,11 +531,11 @@
       "volatility": 1.5
     },
     "GTM": {
-      "price": 334.55,
-      "seed_price": 334.55,
-      "prev_price": 351.24,
-      "change_pct": -4.75,
-      "sentiment": -44.4,
+      "price": 345.58,
+      "seed_price": 345.58,
+      "prev_price": 362.55,
+      "change_pct": -4.68,
+      "sentiment": -36.0,
       "volatility": 1.5
     },
     "AGO": {
@@ -547,59 +547,59 @@
       "volatility": 1.5
     },
     "VEN": {
-      "price": 354.5,
-      "seed_price": 354.5,
+      "price": 362.8,
+      "seed_price": 362.8,
       "prev_price": 354.5,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 2.34,
+      "sentiment": 18.0,
       "volatility": 1.5
     },
     "UZB": {
-      "price": 374.55,
-      "seed_price": 374.55,
-      "prev_price": 361.66,
-      "change_pct": 3.56,
-      "sentiment": 33.3,
+      "price": 361.66,
+      "seed_price": 361.66,
+      "prev_price": 353.39,
+      "change_pct": 2.34,
+      "sentiment": 18.0,
       "volatility": 1.5
     },
     "LUX": {
-      "price": 351.84,
-      "seed_price": 351.84,
+      "price": 365.56,
+      "seed_price": 365.56,
       "prev_price": 351.84,
+      "change_pct": 3.9,
+      "sentiment": 30.0,
+      "volatility": 1.5
+    },
+    "CRI": {
+      "price": 349.53,
+      "seed_price": 349.53,
+      "prev_price": 349.53,
       "change_pct": 0.0,
       "sentiment": 0.0,
       "volatility": 1.5
     },
-    "CRI": {
-      "price": 319.23,
-      "seed_price": 319.23,
-      "prev_price": 337.26,
-      "change_pct": -5.35,
-      "sentiment": -50.0,
-      "volatility": 1.5
-    },
     "LKA": {
-      "price": 349.68,
-      "seed_price": 349.68,
-      "prev_price": 348.44,
-      "change_pct": 0.36,
-      "sentiment": 3.3,
+      "price": 331.36,
+      "seed_price": 331.36,
+      "prev_price": 347.63,
+      "change_pct": -4.68,
+      "sentiment": -36.0,
       "volatility": 1.5
     },
     "PAN": {
-      "price": 377.03,
-      "seed_price": 377.03,
-      "prev_price": 357.9,
-      "change_pct": 5.35,
-      "sentiment": 50.0,
+      "price": 346.3,
+      "seed_price": 346.3,
+      "prev_price": 345.76,
+      "change_pct": 0.16,
+      "sentiment": 1.2,
       "volatility": 1.5
     },
     "TKM": {
-      "price": 325.16,
-      "seed_price": 325.16,
-      "prev_price": 337.18,
-      "change_pct": -3.56,
-      "sentiment": -33.3,
+      "price": 345.26,
+      "seed_price": 345.26,
+      "prev_price": 345.26,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "HRV": {
@@ -611,11 +611,11 @@
       "volatility": 1.5
     },
     "LTU": {
-      "price": 343.32,
-      "seed_price": 343.32,
+      "price": 351.35,
+      "seed_price": 351.35,
       "prev_price": 343.32,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 2.34,
+      "sentiment": 18.0,
       "volatility": 1.5
     },
     "CIV": {
@@ -635,11 +635,11 @@
       "volatility": 1.5
     },
     "AZE": {
-      "price": 343.62,
-      "seed_price": 343.62,
-      "prev_price": 342.81,
-      "change_pct": 0.24,
-      "sentiment": 2.2,
+      "price": 342.28,
+      "seed_price": 342.28,
+      "prev_price": 342.28,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "URY": {
@@ -651,11 +651,11 @@
       "volatility": 1.5
     },
     "GHA": {
-      "price": 298.02,
-      "seed_price": 298.02,
-      "prev_price": 322.96,
-      "change_pct": -7.72,
-      "sentiment": -72.2,
+      "price": 340.21,
+      "seed_price": 340.21,
+      "prev_price": 340.21,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "SRB": {
@@ -675,11 +675,11 @@
       "volatility": 1.5
     },
     "SVN": {
-      "price": 333.39,
-      "seed_price": 333.39,
-      "prev_price": 332.21,
-      "change_pct": 0.36,
-      "sentiment": 3.3,
+      "price": 331.43,
+      "seed_price": 331.43,
+      "prev_price": 331.43,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 1.5
     },
     "COD": {
@@ -699,11 +699,11 @@
       "volatility": 1.5
     },
     "MMR": {
-      "price": 295.27,
-      "seed_price": 295.27,
-      "prev_price": 313.92,
-      "change_pct": -5.94,
-      "sentiment": -55.5,
+      "price": 327.42,
+      "seed_price": 327.42,
+      "prev_price": 326.66,
+      "change_pct": 0.23,
+      "sentiment": 1.8,
       "volatility": 1.5
     },
     "JOR": {
@@ -723,19 +723,19 @@
       "volatility": 2.0
     },
     "UGA": {
-      "price": 281.88,
-      "seed_price": 281.88,
-      "prev_price": 296.32,
-      "change_pct": -4.87,
-      "sentiment": -44.4,
+      "price": 306.24,
+      "seed_price": 306.24,
+      "prev_price": 306.24,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "TUN": {
-      "price": 323.91,
-      "seed_price": 323.91,
-      "prev_price": 312.49,
-      "change_pct": 3.65,
-      "sentiment": 33.3,
+      "price": 313.73,
+      "seed_price": 313.73,
+      "prev_price": 305.08,
+      "change_pct": 2.84,
+      "sentiment": 21.0,
       "volatility": 2.0
     },
     "MAC": {
@@ -747,35 +747,35 @@
       "volatility": 2.0
     },
     "LVA": {
-      "price": 302.08,
-      "seed_price": 302.08,
+      "price": 289.85,
+      "seed_price": 289.85,
       "prev_price": 302.08,
+      "change_pct": -4.05,
+      "sentiment": -30.0,
+      "volatility": 2.0
+    },
+    "BOL": {
+      "price": 300.73,
+      "seed_price": 300.73,
+      "prev_price": 300.73,
       "change_pct": 0.0,
       "sentiment": 0.0,
       "volatility": 2.0
     },
-    "BOL": {
-      "price": 262.34,
-      "seed_price": 262.34,
-      "prev_price": 284.9,
-      "change_pct": -7.92,
-      "sentiment": -72.2,
-      "volatility": 2.0
-    },
     "LBY": {
-      "price": 322.26,
-      "seed_price": 322.26,
-      "prev_price": 309.08,
-      "change_pct": 4.26,
-      "sentiment": 38.8,
+      "price": 300.56,
+      "seed_price": 300.56,
+      "prev_price": 300.56,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "BHR": {
-      "price": 299.45,
-      "seed_price": 299.45,
-      "prev_price": 298.72,
+      "price": 298.96,
+      "seed_price": 298.96,
+      "prev_price": 298.24,
       "change_pct": 0.24,
-      "sentiment": 2.2,
+      "sentiment": 1.8,
       "volatility": 2.0
     },
     "PRY": {
@@ -787,19 +787,19 @@
       "volatility": 2.0
     },
     "EST": {
-      "price": 294.58,
-      "seed_price": 294.58,
-      "prev_price": 293.51,
-      "change_pct": 0.36,
-      "sentiment": 3.3,
+      "price": 292.8,
+      "seed_price": 292.8,
+      "prev_price": 292.8,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "NPL": {
-      "price": 292.02,
-      "seed_price": 292.02,
+      "price": 303.85,
+      "seed_price": 303.85,
       "prev_price": 292.02,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 4.05,
+      "sentiment": 30.0,
       "volatility": 2.0
     },
     "SLV": {
@@ -819,43 +819,43 @@
       "volatility": 2.0
     },
     "CYP": {
-      "price": 273.4,
-      "seed_price": 273.4,
+      "price": 285.58,
+      "seed_price": 285.58,
       "prev_price": 273.4,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 4.46,
+      "sentiment": 33.0,
       "volatility": 2.0
     },
     "SEN": {
-      "price": 292.85,
-      "seed_price": 292.85,
-      "prev_price": 280.88,
-      "change_pct": 4.26,
-      "sentiment": 38.8,
+      "price": 273.14,
+      "seed_price": 273.14,
+      "prev_price": 273.14,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "KHM": {
-      "price": 272.79,
-      "seed_price": 272.79,
+      "price": 259.53,
+      "seed_price": 259.53,
       "prev_price": 272.79,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -4.86,
+      "sentiment": -36.0,
       "volatility": 2.0
     },
     "PNG": {
-      "price": 271.8,
-      "seed_price": 271.8,
+      "price": 279.51,
+      "seed_price": 279.51,
       "prev_price": 271.8,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 2.84,
+      "sentiment": 21.0,
       "volatility": 2.0
     },
     "ISL": {
-      "price": 249.43,
-      "seed_price": 249.43,
-      "prev_price": 262.2,
-      "change_pct": -4.87,
-      "sentiment": -44.4,
+      "price": 270.98,
+      "seed_price": 270.98,
+      "prev_price": 270.98,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "GEO": {
@@ -867,27 +867,27 @@
       "volatility": 2.0
     },
     "ZMB": {
-      "price": 263.66,
-      "seed_price": 263.66,
+      "price": 275.41,
+      "seed_price": 275.41,
       "prev_price": 263.66,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 4.46,
+      "sentiment": 33.0,
       "volatility": 2.0
     },
     "TTO": {
-      "price": 263.8,
-      "seed_price": 263.8,
+      "price": 255.25,
+      "seed_price": 255.25,
       "prev_price": 263.8,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -3.24,
+      "sentiment": -24.0,
       "volatility": 2.0
     },
     "BIH": {
-      "price": 240.39,
-      "seed_price": 240.39,
-      "prev_price": 252.7,
-      "change_pct": -4.87,
-      "sentiment": -44.4,
+      "price": 261.16,
+      "seed_price": 261.16,
+      "prev_price": 261.16,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "ZWE": {
@@ -907,11 +907,11 @@
       "volatility": 2.0
     },
     "GIN": {
-      "price": 275.38,
-      "seed_price": 275.38,
-      "prev_price": 259.57,
-      "change_pct": 6.09,
-      "sentiment": 55.5,
+      "price": 249.47,
+      "seed_price": 249.47,
+      "prev_price": 249.47,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "LBN": {
@@ -931,43 +931,43 @@
       "volatility": 2.0
     },
     "MOZ": {
-      "price": 246.41,
-      "seed_price": 246.41,
-      "prev_price": 245.51,
-      "change_pct": 0.37,
-      "sentiment": 3.3,
+      "price": 245.31,
+      "seed_price": 245.31,
+      "prev_price": 244.91,
+      "change_pct": 0.16,
+      "sentiment": 1.2,
       "volatility": 2.0
     },
     "MLI": {
-      "price": 223.43,
-      "seed_price": 223.43,
-      "prev_price": 234.87,
-      "change_pct": -4.87,
-      "sentiment": -44.4,
-      "volatility": 2.0
-    },
-    "GAB": {
-      "price": 241.88,
-      "seed_price": 241.88,
-      "prev_price": 241.88,
+      "price": 242.73,
+      "seed_price": 242.73,
+      "prev_price": 242.73,
       "change_pct": 0.0,
       "sentiment": 0.0,
       "volatility": 2.0
     },
+    "GAB": {
+      "price": 251.68,
+      "seed_price": 251.68,
+      "prev_price": 241.88,
+      "change_pct": 4.05,
+      "sentiment": 30.0,
+      "volatility": 2.0
+    },
     "YEM": {
-      "price": 220.23,
-      "seed_price": 220.23,
-      "prev_price": 233.0,
-      "change_pct": -5.48,
-      "sentiment": -50.0,
+      "price": 233.0,
+      "seed_price": 233.0,
+      "prev_price": 241.81,
+      "change_pct": -3.64,
+      "sentiment": -27.0,
       "volatility": 2.0
     },
     "MLT": {
-      "price": 256.4,
-      "seed_price": 256.4,
-      "prev_price": 247.36,
-      "change_pct": 3.65,
-      "sentiment": 33.3,
+      "price": 241.49,
+      "seed_price": 241.49,
+      "prev_price": 241.49,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "BFA": {
@@ -979,11 +979,11 @@
       "volatility": 2.0
     },
     "BWA": {
-      "price": 224.95,
-      "seed_price": 224.95,
-      "prev_price": 233.48,
-      "change_pct": -3.65,
-      "sentiment": -33.3,
+      "price": 239.29,
+      "seed_price": 239.29,
+      "prev_price": 239.29,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "BEN": {
@@ -995,11 +995,11 @@
       "volatility": 2.0
     },
     "HTI": {
-      "price": 238.89,
-      "seed_price": 238.89,
-      "prev_price": 238.02,
-      "change_pct": 0.37,
-      "sentiment": 3.3,
+      "price": 237.82,
+      "seed_price": 237.82,
+      "prev_price": 237.44,
+      "change_pct": 0.16,
+      "sentiment": 1.2,
       "volatility": 2.0
     },
     "JAM": {
@@ -1011,11 +1011,11 @@
       "volatility": 2.0
     },
     "MNG": {
-      "price": 219.33,
-      "seed_price": 219.33,
-      "prev_price": 227.65,
-      "change_pct": -3.65,
-      "sentiment": -33.3,
+      "price": 233.7,
+      "seed_price": 233.7,
+      "prev_price": 233.32,
+      "change_pct": 0.16,
+      "sentiment": 1.2,
       "volatility": 2.0
     },
     "PRK": {
@@ -1027,19 +1027,19 @@
       "volatility": 2.0
     },
     "NIC": {
-      "price": 227.28,
-      "seed_price": 227.28,
+      "price": 232.8,
+      "seed_price": 232.8,
       "prev_price": 227.28,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 2.43,
+      "sentiment": 18.0,
       "volatility": 2.0
     },
     "NER": {
-      "price": 226.53,
-      "seed_price": 226.53,
-      "prev_price": 225.71,
-      "change_pct": 0.36,
-      "sentiment": 3.3,
+      "price": 225.16,
+      "seed_price": 225.16,
+      "prev_price": 225.16,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "GUY": {
@@ -1051,19 +1051,19 @@
       "volatility": 2.0
     },
     "MDG": {
-      "price": 195.48,
-      "seed_price": 195.48,
-      "prev_price": 210.89,
-      "change_pct": -7.31,
-      "sentiment": -66.6,
+      "price": 221.66,
+      "seed_price": 221.66,
+      "prev_price": 221.66,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "MDA": {
-      "price": 244.48,
-      "seed_price": 244.48,
-      "prev_price": 230.45,
-      "change_pct": 6.09,
-      "sentiment": 55.5,
+      "price": 221.48,
+      "seed_price": 221.48,
+      "prev_price": 221.48,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "BRN": {
@@ -1075,11 +1075,11 @@
       "volatility": 2.0
     },
     "MKD": {
-      "price": 215.56,
-      "seed_price": 215.56,
+      "price": 207.7,
+      "seed_price": 207.7,
       "prev_price": 215.56,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -3.65,
+      "sentiment": -27.0,
       "volatility": 2.0
     },
     "AFG": {
@@ -1099,11 +1099,11 @@
       "volatility": 2.0
     },
     "BHS": {
-      "price": 214.42,
-      "seed_price": 214.42,
-      "prev_price": 213.9,
-      "change_pct": 0.24,
-      "sentiment": 2.2,
+      "price": 213.55,
+      "seed_price": 213.55,
+      "prev_price": 213.55,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "COG": {
@@ -1123,11 +1123,11 @@
       "volatility": 2.0
     },
     "TCD": {
-      "price": 208.4,
-      "seed_price": 208.4,
-      "prev_price": 207.64,
-      "change_pct": 0.37,
-      "sentiment": 3.3,
+      "price": 207.14,
+      "seed_price": 207.14,
+      "prev_price": 207.14,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "MWI": {
@@ -1139,19 +1139,19 @@
       "volatility": 2.0
     },
     "KGZ": {
-      "price": 204.55,
-      "seed_price": 204.55,
+      "price": 197.92,
+      "seed_price": 197.92,
       "prev_price": 204.55,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -3.24,
+      "sentiment": -24.0,
       "volatility": 2.0
     },
     "NAM": {
-      "price": 215.28,
-      "seed_price": 215.28,
-      "prev_price": 207.69,
-      "change_pct": 3.65,
-      "sentiment": 33.3,
+      "price": 202.76,
+      "seed_price": 202.76,
+      "prev_price": 202.76,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "GNQ": {
@@ -1163,19 +1163,19 @@
       "volatility": 2.0
     },
     "TJK": {
-      "price": 182.94,
-      "seed_price": 182.94,
-      "prev_price": 193.55,
-      "change_pct": -5.48,
-      "sentiment": -50.0,
+      "price": 193.55,
+      "seed_price": 193.55,
+      "prev_price": 200.87,
+      "change_pct": -3.64,
+      "sentiment": -27.0,
       "volatility": 2.0
     },
     "SOM": {
-      "price": 194.45,
-      "seed_price": 194.45,
+      "price": 200.75,
+      "seed_price": 200.75,
       "prev_price": 194.45,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 3.24,
+      "sentiment": 24.0,
       "volatility": 2.0
     },
     "XKX": {
@@ -1195,11 +1195,11 @@
       "volatility": 2.0
     },
     "TGO": {
-      "price": 180.86,
-      "seed_price": 180.86,
+      "price": 188.18,
+      "seed_price": 188.18,
       "prev_price": 180.86,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 4.05,
+      "sentiment": 30.0,
       "volatility": 2.0
     },
     "SYR": {
@@ -1219,27 +1219,27 @@
       "volatility": 2.0
     },
     "MNE": {
-      "price": 166.37,
-      "seed_price": 166.37,
+      "price": 159.63,
+      "seed_price": 159.63,
       "prev_price": 166.37,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -4.05,
+      "sentiment": -30.0,
       "volatility": 2.0
     },
     "MDV": {
-      "price": 162.26,
-      "seed_price": 162.26,
+      "price": 156.35,
+      "seed_price": 156.35,
       "prev_price": 162.26,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -3.64,
+      "sentiment": -27.0,
       "volatility": 2.0
     },
     "LIE": {
-      "price": 174.3,
-      "seed_price": 174.3,
-      "prev_price": 166.2,
-      "change_pct": 4.87,
-      "sentiment": 44.4,
+      "price": 161.37,
+      "seed_price": 161.37,
+      "prev_price": 160.98,
+      "change_pct": 0.24,
+      "sentiment": 1.8,
       "volatility": 2.0
     },
     "BRB": {
@@ -1259,35 +1259,35 @@
       "volatility": 2.0
     },
     "FJI": {
-      "price": 146.68,
-      "seed_price": 146.68,
+      "price": 152.03,
+      "seed_price": 152.03,
       "prev_price": 146.68,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 3.65,
+      "sentiment": 27.0,
       "volatility": 2.0
     },
     "SWZ": {
-      "price": 137.28,
-      "seed_price": 137.28,
+      "price": 140.62,
+      "seed_price": 140.62,
       "prev_price": 137.28,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 2.43,
+      "sentiment": 18.0,
       "volatility": 2.0
     },
     "LBR": {
-      "price": 139.62,
-      "seed_price": 139.62,
-      "prev_price": 133.91,
-      "change_pct": 4.26,
-      "sentiment": 38.8,
+      "price": 130.22,
+      "seed_price": 130.22,
+      "prev_price": 130.22,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "SLE": {
-      "price": 123.43,
-      "seed_price": 123.43,
+      "price": 126.43,
+      "seed_price": 126.43,
       "prev_price": 123.43,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 2.43,
+      "sentiment": 18.0,
       "volatility": 2.0
     },
     "DJI": {
@@ -1307,51 +1307,51 @@
       "volatility": 2.0
     },
     "SUR": {
-      "price": 107.71,
-      "seed_price": 107.71,
-      "prev_price": 113.96,
-      "change_pct": -5.48,
-      "sentiment": -50.0,
+      "price": 118.27,
+      "seed_price": 118.27,
+      "prev_price": 118.27,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "BLZ": {
-      "price": 118.32,
-      "seed_price": 118.32,
-      "prev_price": 114.15,
-      "change_pct": 3.65,
-      "sentiment": 33.3,
+      "price": 111.44,
+      "seed_price": 111.44,
+      "prev_price": 111.44,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "BDI": {
-      "price": 101.88,
-      "seed_price": 101.88,
-      "prev_price": 106.42,
-      "change_pct": -4.27,
-      "sentiment": -38.8,
+      "price": 109.53,
+      "seed_price": 109.53,
+      "prev_price": 109.53,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "ANT": {
-      "price": 110.3,
-      "seed_price": 110.3,
+      "price": 112.98,
+      "seed_price": 112.98,
       "prev_price": 110.3,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": 2.43,
+      "sentiment": 18.0,
       "volatility": 2.0
     },
     "BTN": {
-      "price": 106.79,
-      "seed_price": 106.79,
+      "price": 102.03,
+      "seed_price": 102.03,
       "prev_price": 106.79,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -4.46,
+      "sentiment": -33.0,
       "volatility": 2.0
     },
     "CPV": {
-      "price": 100.53,
-      "seed_price": 100.53,
-      "prev_price": 100.16,
-      "change_pct": 0.37,
-      "sentiment": 3.3,
+      "price": 99.92,
+      "seed_price": 99.92,
+      "prev_price": 99.92,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "CAF": {
@@ -1363,11 +1363,11 @@
       "volatility": 2.0
     },
     "ERI": {
-      "price": 91.31,
-      "seed_price": 91.31,
-      "prev_price": 95.38,
-      "change_pct": -4.27,
-      "sentiment": -38.8,
+      "price": 93.39,
+      "seed_price": 93.39,
+      "prev_price": 98.16,
+      "change_pct": -4.86,
+      "sentiment": -36.0,
       "volatility": 2.0
     },
     "LCA": {
@@ -1379,27 +1379,27 @@
       "volatility": 2.0
     },
     "LSO": {
-      "price": 95.55,
-      "seed_price": 95.55,
-      "prev_price": 95.2,
-      "change_pct": 0.37,
-      "sentiment": 3.3,
-      "volatility": 2.0
-    },
-    "GMB": {
-      "price": 92.86,
-      "seed_price": 92.86,
-      "prev_price": 92.86,
+      "price": 94.97,
+      "seed_price": 94.97,
+      "prev_price": 94.97,
       "change_pct": 0.0,
       "sentiment": 0.0,
       "volatility": 2.0
     },
+    "GMB": {
+      "price": 88.35,
+      "seed_price": 88.35,
+      "prev_price": 92.86,
+      "change_pct": -4.86,
+      "sentiment": -36.0,
+      "volatility": 2.0
+    },
     "SYC": {
-      "price": 94.31,
-      "seed_price": 94.31,
-      "prev_price": 91.52,
-      "change_pct": 3.05,
-      "sentiment": 27.8,
+      "price": 89.7,
+      "seed_price": 89.7,
+      "prev_price": 89.7,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "GNB": {
@@ -1411,11 +1411,11 @@
       "volatility": 2.0
     },
     "TLS": {
-      "price": 91.45,
-      "seed_price": 91.45,
-      "prev_price": 88.23,
-      "change_pct": 3.65,
-      "sentiment": 33.3,
+      "price": 86.28,
+      "seed_price": 86.28,
+      "prev_price": 86.14,
+      "change_pct": 0.16,
+      "sentiment": 1.2,
       "volatility": 2.0
     },
     "ATG": {
@@ -1427,11 +1427,11 @@
       "volatility": 2.0
     },
     "SMR": {
-      "price": 74.02,
-      "seed_price": 74.02,
-      "prev_price": 78.82,
-      "change_pct": -6.09,
-      "sentiment": -55.5,
+      "price": 79.16,
+      "seed_price": 79.16,
+      "prev_price": 82.15,
+      "change_pct": -3.64,
+      "sentiment": -27.0,
       "volatility": 2.0
     },
     "SLB": {
@@ -1443,35 +1443,35 @@
       "volatility": 2.0
     },
     "GRD": {
-      "price": 65.45,
-      "seed_price": 65.45,
+      "price": 62.27,
+      "seed_price": 62.27,
       "prev_price": 65.45,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -4.86,
+      "sentiment": -36.0,
       "volatility": 2.0
     },
     "COM": {
-      "price": 58.67,
-      "seed_price": 58.67,
-      "prev_price": 62.47,
-      "change_pct": -6.08,
-      "sentiment": -55.5,
+      "price": 66.96,
+      "seed_price": 66.96,
+      "prev_price": 65.11,
+      "change_pct": 2.84,
+      "sentiment": 21.0,
       "volatility": 2.0
     },
     "VUT": {
-      "price": 59.11,
-      "seed_price": 59.11,
+      "price": 56.0,
+      "seed_price": 56.0,
       "prev_price": 59.11,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "change_pct": -5.26,
+      "sentiment": -39.0,
       "volatility": 2.0
     },
     "WSM": {
-      "price": 52.12,
-      "seed_price": 52.12,
-      "prev_price": 51.93,
-      "change_pct": 0.37,
-      "sentiment": 3.3,
+      "price": 50.12,
+      "seed_price": 50.12,
+      "prev_price": 51.8,
+      "change_pct": -3.24,
+      "sentiment": -24.0,
       "volatility": 2.0
     },
     "STP": {
@@ -1499,19 +1499,19 @@
       "volatility": 2.0
     },
     "FSM": {
-      "price": 32.34,
-      "seed_price": 32.34,
-      "prev_price": 30.66,
-      "change_pct": 5.48,
-      "sentiment": 50.0,
+      "price": 28.14,
+      "seed_price": 28.14,
+      "prev_price": 29.58,
+      "change_pct": -4.87,
+      "sentiment": -36.0,
       "volatility": 2.0
     },
     "PLW": {
-      "price": 22.81,
-      "seed_price": 22.81,
-      "prev_price": 22.14,
-      "change_pct": 3.03,
-      "sentiment": 27.8,
+      "price": 22.14,
+      "seed_price": 22.14,
+      "prev_price": 21.7,
+      "change_pct": 2.03,
+      "sentiment": 15.0,
       "volatility": 2.0
     },
     "MHL": {
@@ -1523,11 +1523,11 @@
       "volatility": 2.0
     },
     "KIR": {
-      "price": 17.54,
-      "seed_price": 17.54,
-      "prev_price": 17.48,
-      "change_pct": 0.34,
-      "sentiment": 3.3,
+      "price": 17.44,
+      "seed_price": 17.44,
+      "prev_price": 17.44,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
       "volatility": 2.0
     },
     "NRU": {
@@ -1539,286 +1539,309 @@
       "volatility": 2.0
     },
     "TUV": {
-      "price": 5.0,
-      "seed_price": 5.0,
-      "prev_price": 5.0,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "price": 5.01,
+      "seed_price": 5.01,
+      "prev_price": 5,
+      "change_pct": 0.2,
+      "sentiment": 1.8,
       "volatility": 2.0
     },
     "VAT": {
-      "price": 5.0,
-      "seed_price": 5.0,
-      "prev_price": 5.0,
-      "change_pct": 0.0,
-      "sentiment": 0.0,
+      "price": 4.8,
+      "seed_price": 4.8,
+      "prev_price": 5,
+      "change_pct": -4.0,
+      "sentiment": -30.0,
       "volatility": 2.0
     }
   },
   "news": [
     {
-      "code": "DEU",
-      "name": "독일",
-      "flag": "🇩🇪",
-      "title": "독일 정치 불안 심화, 의회 충돌",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "code": "USA",
+      "name": "미국",
+      "flag": "🇺🇸",
+      "title": "미국 신기술 분야 선도, 외국인 투자 급증",
+      "category": "positive",
+      "summary": "미국가 반도체·AI 등 첨단 기술 분야를 선도하며 외국인 직접투자가 몰리고 있습니다.",
+      "impact": "첨단 산업 경쟁력은 미래 성장 동력으로, 외국 자본 유입은 국가 가치를 크게 높입니다.",
+      "terms": [
+        "GDP성장률"
+      ],
+      "change_pct": 0.75,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
-      "code": "BRA",
-      "name": "브라질",
-      "flag": "🇧🇷",
-      "title": "브라질 중앙은행 금리 인하, 시장 환영",
+      "code": "CHN",
+      "name": "중국",
+      "flag": "🇨🇳",
+      "title": "중국 실업률 역대 최저치 갱신",
       "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "중국의 실업률이 역대 최저 수준으로 떨어지며 고용 시장이 활기를 띠고 있습니다.",
+      "impact": "낮은 실업률은 소비 여력을 키워 내수 경제를 살리는 긍정적 신호입니다.",
+      "terms": [
+        "GDP성장률"
+      ],
+      "change_pct": 0.53,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "CAN",
       "name": "캐나다",
       "flag": "🇨🇦",
-      "title": "캐나다 신용등급 상향 조정",
-      "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "RUS",
-      "name": "러시아",
-      "flag": "🇷🇺",
-      "title": "러시아 자연재해 발생, 경제 피해 확대",
+      "title": "캐나다 주요 수출 품목 단가 하락",
       "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "캐나다의 핵심 수출 품목 가격이 국제 시장에서 하락하고 있습니다.",
+      "impact": "수출 단가 하락은 무역수지를 악화시켜 외화 수입 감소로 이어집니다.",
+      "terms": [
+        "무역수지"
+      ],
+      "change_pct": -0.63,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "ESP",
       "name": "스페인",
       "flag": "🇪🇸",
-      "title": "스페인 정부 부채 한계, 국채 발행 난항",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "IDN",
-      "name": "인도네시아",
-      "flag": "🇮🇩",
-      "title": "인도네시아 중앙은행 회의 결과 예상치 부합",
-      "category": "neutral",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "SAU",
-      "name": "사우디아라비아",
-      "flag": "🇸🇦",
-      "title": "사우디아라비아 중앙은행 회의 결과 예상치 부합",
-      "category": "neutral",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "CHE",
-      "name": "스위스",
-      "flag": "🇨🇭",
-      "title": "스위스 대규모 인프라 투자 계획 발표",
+      "title": "스페인 수출 사상 최대, 무역수지 개선",
       "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "ARG",
-      "name": "아르헨티나",
-      "flag": "🇦🇷",
-      "title": "아르헨티나 주요 수출 품목 단가 하락",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "SWE",
-      "name": "스웨덴",
-      "flag": "🇸🇪",
-      "title": "스웨덴 정부 부채 한계, 국채 발행 난항",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "스페인의 수출이 사상 최대치를 기록하며 무역수지가 큰 폭으로 개선되었습니다.",
+      "impact": "수출 증가는 외화를 벌어들여 경제를 튼튼하게 만들고 화폐 가치를 안정시킵니다.",
+      "terms": [
+        "무역수지",
+        "환율"
+      ],
+      "change_pct": 0.94,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "IRL",
       "name": "아일랜드",
       "flag": "🇮🇪",
-      "title": "아일랜드 통화 약세, 자본 유출 심화",
+      "title": "아일랜드 정치 불안 심화, 의회 충돌",
       "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "아일랜드의 정치적 갈등이 격화되며 정책 운영에 불확실성이 커지고 있습니다.",
+      "impact": "정치 불안은 투자자에게 가장 큰 위험 요소로, 자본 이탈과 가치 하락을 부릅니다.",
+      "terms": [
+        "변동성"
+      ],
+      "change_pct": -1.35,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
-      "code": "THA",
-      "name": "태국",
-      "flag": "🇹🇭",
-      "title": "태국 관광 산업 회복, 외화 유입 증가",
+      "code": "ISR",
+      "name": "이스라엘",
+      "flag": "🇮🇱",
+      "title": "이스라엘 수출 사상 최대, 무역수지 개선",
       "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "ARE",
-      "name": "아랍에미리트",
-      "flag": "🇦🇪",
-      "title": "아랍에미리트 정부 신규 정책 발표, 영향 분석 중",
-      "category": "neutral",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "BGD",
-      "name": "방글라데시",
-      "flag": "🇧🇩",
-      "title": "방글라데시 정부 부채 한계, 국채 발행 난항",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "이스라엘의 수출이 사상 최대치를 기록하며 무역수지가 큰 폭으로 개선되었습니다.",
+      "impact": "수출 증가는 외화를 벌어들여 경제를 튼튼하게 만들고 화폐 가치를 안정시킵니다.",
+      "terms": [
+        "무역수지",
+        "환율"
+      ],
+      "change_pct": 1.22,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "VNM",
       "name": "베트남",
       "flag": "🇻🇳",
-      "title": "베트남 주요 수출 품목 단가 하락",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "title": "베트남 대규모 인프라 투자 계획 발표",
+      "category": "positive",
+      "summary": "베트남 정부가 도로·항만·통신 등 사회기반시설에 대규모 투자 계획을 발표했습니다.",
+      "impact": "인프라 투자는 일자리를 만들고 장기 성장 기반을 다져 국가 경쟁력을 끌어올립니다.",
+      "terms": [
+        "GDP성장률"
+      ],
+      "change_pct": 0.81,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "MYS",
       "name": "말레이시아",
       "flag": "🇲🇾",
-      "title": "말레이시아 관광 산업 회복, 외화 유입 증가",
-      "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "EGY",
-      "name": "이집트",
-      "flag": "🇪🇬",
-      "title": "이집트 신용등급 강등 위기",
+      "title": "말레이시아 대형 은행 부실 우려, 금융 충격",
       "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "HKG",
-      "name": "홍콩",
-      "flag": "🇭🇰",
-      "title": "홍콩 중앙은행 금리 인하, 시장 환영",
-      "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "COL",
-      "name": "콜롬비아",
-      "flag": "🇨🇴",
-      "title": "콜롬비아 신기술 분야 선도, 외국인 투자 급증",
-      "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "말레이시아의 주요 은행에서 부실 우려가 제기되며 금융 시장이 흔들리고 있습니다.",
+      "impact": "금융 시스템 불안은 경제 전반으로 위기가 번질 수 있는 심각한 악재입니다.",
+      "terms": [
+        "변동성"
+      ],
+      "change_pct": -1.76,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "ROU",
       "name": "루마니아",
       "flag": "🇷🇴",
-      "title": "루마니아 정부 부채 한계, 국채 발행 난항",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "title": "루마니아 분기 경제지표 발표 예정",
+      "category": "neutral",
+      "summary": "루마니아의 주요 분기 경제지표 발표가 예정되어 투자자들이 주목하고 있습니다.",
+      "impact": "지표 발표 전에는 불확실성으로 가격 변동이 제한적인 경우가 많습니다.",
+      "terms": [
+        "GDP"
+      ],
+      "change_pct": 0.05,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "CHL",
       "name": "칠레",
       "flag": "🇨🇱",
-      "title": "칠레 분기 경제지표 발표 예정",
-      "category": "neutral",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "title": "칠레 주요 수출 품목 단가 하락",
+      "category": "negative",
+      "summary": "칠레의 핵심 수출 품목 가격이 국제 시장에서 하락하고 있습니다.",
+      "impact": "수출 단가 하락은 무역수지를 악화시켜 외화 수입 감소로 이어집니다.",
+      "terms": [
+        "무역수지"
+      ],
+      "change_pct": -0.81,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "CZE",
       "name": "체코",
       "flag": "🇨🇿",
-      "title": "체코 글로벌 정상회의 개최, 외교 입지 강화",
-      "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "PRT",
-      "name": "포르투갈",
-      "flag": "🇵🇹",
-      "title": "포르투갈 정부 신규 정책 발표, 영향 분석 중",
+      "title": "체코 분기 경제지표 발표 예정",
       "category": "neutral",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "체코의 주요 분기 경제지표 발표가 예정되어 투자자들이 주목하고 있습니다.",
+      "impact": "지표 발표 전에는 불확실성으로 가격 변동이 제한적인 경우가 많습니다.",
+      "terms": [
+        "GDP"
+      ],
+      "change_pct": 0.05,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
-      "code": "DZA",
-      "name": "알제리",
-      "flag": "🇩🇿",
-      "title": "알제리 분기 경제지표 발표 예정",
-      "category": "neutral",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "GRC",
-      "name": "그리스",
-      "flag": "🇬🇷",
-      "title": "그리스 GDP 예상치 상회, 경제 호조세",
+      "code": "FIN",
+      "name": "핀란드",
+      "flag": "🇫🇮",
+      "title": "핀란드 글로벌 정상회의 개최, 외교 입지 강화",
       "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "핀란드가 주요국 정상회의를 성공적으로 개최하며 국제 무대에서 위상을 높였습니다.",
+      "impact": "외교 입지 강화는 무역 협상과 투자 유치에 유리해 경제에 간접적 호재로 작용합니다.",
+      "terms": [],
+      "change_pct": 0.75,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
-      "code": "UKR",
-      "name": "우크라이나",
-      "flag": "🇺🇦",
-      "title": "우크라이나 인플레이션 우려 확대, 물가 급등",
+      "code": "KAZ",
+      "name": "카자흐스탄",
+      "flag": "🇰🇿",
+      "title": "카자흐스탄 인플레이션 우려 확대, 물가 급등",
       "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "카자흐스탄의 소비자물가가 급등하며 인플레이션 우려가 커지고 있습니다.",
+      "impact": "과도한 물가 상승은 화폐 가치를 떨어뜨리고 소비를 위축시켜 경제에 부담을 줍니다.",
+      "terms": [
+        "인플레이션",
+        "금리"
+      ],
+      "change_pct": -1.2,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "IRQ",
+      "name": "이라크",
+      "flag": "🇮🇶",
+      "title": "이라크 자연재해 발생, 경제 피해 확대",
+      "category": "negative",
+      "summary": "이라크에서 대규모 자연재해가 발생해 경제적 피해가 확산되고 있습니다.",
+      "impact": "재해는 생산 시설과 인프라를 파괴해 단기적으로 경제 활동을 크게 위축시킵니다.",
+      "terms": [],
+      "change_pct": -1.8,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "QAT",
+      "name": "카타르",
+      "flag": "🇶🇦",
+      "title": "카타르 무역 분쟁 격화, 관세 우려",
+      "category": "negative",
+      "summary": "카타르와 주요 교역국 간 무역 분쟁이 격화되며 관세 인상 우려가 커집니다.",
+      "impact": "관세 장벽은 수출을 어렵게 만들어 무역 의존도가 높은 경제에 타격을 줍니다.",
+      "terms": [
+        "무역수지"
+      ],
+      "change_pct": -1.35,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "KWT",
       "name": "쿠웨이트",
       "flag": "🇰🇼",
-      "title": "쿠웨이트 글로벌 정상회의 개최, 외교 입지 강화",
-      "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "MAR",
-      "name": "모로코",
-      "flag": "🇲🇦",
-      "title": "모로코 주요 수출 품목 단가 하락",
+      "title": "쿠웨이트 신용등급 강등 위기",
       "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "SVK",
-      "name": "슬로바키아",
-      "flag": "🇸🇰",
-      "title": "슬로바키아 분기 경제지표 발표 예정",
-      "category": "neutral",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "국제 신용평가사가 쿠웨이트의 신용등급에 부정적 전망을 제시했습니다.",
+      "impact": "신용등급 강등은 자금 조달 비용을 높이고 외국 투자자 이탈을 가속화합니다.",
+      "terms": [
+        "신용등급"
+      ],
+      "change_pct": -1.65,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "DOM",
       "name": "도미니카공화국",
       "flag": "🇩🇴",
-      "title": "도미니카공화국 자연재해 발생, 경제 피해 확대",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "ECU",
-      "name": "에콰도르",
-      "flag": "🇪🇨",
-      "title": "에콰도르 통화 약세, 자본 유출 심화",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "title": "도미니카공화국 관광 산업 회복, 외화 유입 증가",
+      "category": "positive",
+      "summary": "도미니카공화국의 관광 산업이 빠르게 회복되며 외국인 관광객 소비가 늘고 있습니다.",
+      "impact": "관광 수입은 외화를 벌어들여 무역수지와 내수에 모두 도움이 됩니다.",
+      "terms": [
+        "무역수지"
+      ],
+      "change_pct": 0.9,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "OMN",
       "name": "오만",
       "flag": "🇴🇲",
-      "title": "오만 분기 경제지표 발표 예정",
+      "title": "오만 신기술 분야 선도, 외국인 투자 급증",
+      "category": "positive",
+      "summary": "오만가 반도체·AI 등 첨단 기술 분야를 선도하며 외국인 직접투자가 몰리고 있습니다.",
+      "impact": "첨단 산업 경쟁력은 미래 성장 동력으로, 외국 자본 유입은 국가 가치를 크게 높입니다.",
+      "terms": [
+        "GDP성장률"
+      ],
+      "change_pct": 1.5,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "CUB",
+      "name": "쿠바",
+      "flag": "🇨🇺",
+      "title": "쿠바 정부 신규 정책 발표, 영향 분석 중",
       "category": "neutral",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "쿠바 정부가 새로운 경제 정책을 발표했으며 시장이 영향을 분석 중입니다.",
+      "impact": "정책의 방향에 따라 호재나 악재가 될 수 있어 시장은 관망세를 보입니다.",
+      "terms": [],
+      "change_pct": 0.09,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "GTM",
       "name": "과테말라",
       "flag": "🇬🇹",
-      "title": "과테말라 인플레이션 우려 확대, 물가 급등",
+      "title": "과테말라 자연재해 발생, 경제 피해 확대",
       "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "과테말라에서 대규모 자연재해가 발생해 경제적 피해가 확산되고 있습니다.",
+      "impact": "재해는 생산 시설과 인프라를 파괴해 단기적으로 경제 활동을 크게 위축시킵니다.",
+      "terms": [],
+      "change_pct": -1.8,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "VEN",
+      "name": "베네수엘라",
+      "flag": "🇻🇪",
+      "title": "베네수엘라 친환경 에너지 전환 가속",
+      "category": "positive",
+      "summary": "베네수엘라가 태양광·풍력 등 재생에너지로의 전환을 빠르게 추진하고 있습니다.",
+      "impact": "친환경 전환은 미래 산업 주도권과 에너지 자립도를 높이는 장기 성장 전략입니다.",
+      "terms": [],
+      "change_pct": 0.9,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "UZB",
@@ -1826,55 +1849,257 @@
       "flag": "🇺🇿",
       "title": "우즈베키스탄 친환경 에너지 전환 가속",
       "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "우즈베키스탄가 태양광·풍력 등 재생에너지로의 전환을 빠르게 추진하고 있습니다.",
+      "impact": "친환경 전환은 미래 산업 주도권과 에너지 자립도를 높이는 장기 성장 전략입니다.",
+      "terms": [],
+      "change_pct": 0.9,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
-      "code": "CRI",
-      "name": "코스타리카",
-      "flag": "🇨🇷",
-      "title": "코스타리카 무역 분쟁 격화, 관세 우려",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "code": "LUX",
+      "name": "룩셈부르크",
+      "flag": "🇱🇺",
+      "title": "룩셈부르크 신기술 분야 선도, 외국인 투자 급증",
+      "category": "positive",
+      "summary": "룩셈부르크가 반도체·AI 등 첨단 기술 분야를 선도하며 외국인 직접투자가 몰리고 있습니다.",
+      "impact": "첨단 산업 경쟁력은 미래 성장 동력으로, 외국 자본 유입은 국가 가치를 크게 높입니다.",
+      "terms": [
+        "GDP성장률"
+      ],
+      "change_pct": 1.5,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "LKA",
       "name": "스리랑카",
       "flag": "🇱🇰",
-      "title": "스리랑카 정부 신규 정책 발표, 영향 분석 중",
-      "category": "neutral",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "title": "스리랑카 자연재해 발생, 경제 피해 확대",
+      "category": "negative",
+      "summary": "스리랑카에서 대규모 자연재해가 발생해 경제적 피해가 확산되고 있습니다.",
+      "impact": "재해는 생산 시설과 인프라를 파괴해 단기적으로 경제 활동을 크게 위축시킵니다.",
+      "terms": [],
+      "change_pct": -1.8,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
       "code": "PAN",
       "name": "파나마",
       "flag": "🇵🇦",
-      "title": "파나마 수출 사상 최대, 무역수지 개선",
-      "category": "positive",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "TKM",
-      "name": "투르크메니스탄",
-      "flag": "🇹🇲",
-      "title": "투르크메니스탄 주요 수출 품목 단가 하락",
-      "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
-    },
-    {
-      "code": "AZE",
-      "name": "아제르바이잔",
-      "flag": "🇦🇿",
-      "title": "아제르바이잔 분기 경제지표 발표 예정",
+      "title": "파나마 분기 경제지표 발표 예정",
       "category": "neutral",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "파나마의 주요 분기 경제지표 발표가 예정되어 투자자들이 주목하고 있습니다.",
+      "impact": "지표 발표 전에는 불확실성으로 가격 변동이 제한적인 경우가 많습니다.",
+      "terms": [
+        "GDP"
+      ],
+      "change_pct": 0.06,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     },
     {
-      "code": "GHA",
-      "name": "가나",
-      "flag": "🇬🇭",
-      "title": "가나 대형 은행 부실 우려, 금융 충격",
+      "code": "LTU",
+      "name": "리투아니아",
+      "flag": "🇱🇹",
+      "title": "리투아니아 관광 산업 회복, 외화 유입 증가",
+      "category": "positive",
+      "summary": "리투아니아의 관광 산업이 빠르게 회복되며 외국인 관광객 소비가 늘고 있습니다.",
+      "impact": "관광 수입은 외화를 벌어들여 무역수지와 내수에 모두 도움이 됩니다.",
+      "terms": [
+        "무역수지"
+      ],
+      "change_pct": 0.9,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "MMR",
+      "name": "미얀마",
+      "flag": "🇲🇲",
+      "title": "미얀마 정부 신규 정책 발표, 영향 분석 중",
+      "category": "neutral",
+      "summary": "미얀마 정부가 새로운 경제 정책을 발표했으며 시장이 영향을 분석 중입니다.",
+      "impact": "정책의 방향에 따라 호재나 악재가 될 수 있어 시장은 관망세를 보입니다.",
+      "terms": [],
+      "change_pct": 0.09,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "TUN",
+      "name": "튀니지",
+      "flag": "🇹🇳",
+      "title": "튀니지 중앙은행 금리 인하, 시장 환영",
+      "category": "positive",
+      "summary": "튀니지 중앙은행이 기준금리를 인하하면서 기업 투자와 소비 진작 기대가 커졌습니다.",
+      "impact": "금리 인하는 대출 부담을 줄여 경제를 활성화시키므로 단기적으로 자산 가치에 긍정적입니다.",
+      "terms": [
+        "금리",
+        "중앙은행"
+      ],
+      "change_pct": 1.16,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "LVA",
+      "name": "라트비아",
+      "flag": "🇱🇻",
+      "title": "라트비아 정부 부채 한계, 국채 발행 난항",
       "category": "negative",
-      "time": "2026-05-20T22:43:32.054642+00:00"
+      "summary": "라트비아 정부의 부채가 한계에 다다라 국채 발행에 어려움을 겪고 있습니다.",
+      "impact": "과도한 국가 부채는 재정 위기로 번질 수 있어 국가 가치를 떨어뜨립니다.",
+      "terms": [
+        "신용등급"
+      ],
+      "change_pct": -1.65,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "BHR",
+      "name": "바레인",
+      "flag": "🇧🇭",
+      "title": "바레인 정부 신규 정책 발표, 영향 분석 중",
+      "category": "neutral",
+      "summary": "바레인 정부가 새로운 경제 정책을 발표했으며 시장이 영향을 분석 중입니다.",
+      "impact": "정책의 방향에 따라 호재나 악재가 될 수 있어 시장은 관망세를 보입니다.",
+      "terms": [],
+      "change_pct": 0.1,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "NPL",
+      "name": "네팔",
+      "flag": "🇳🇵",
+      "title": "네팔 신기술 분야 선도, 외국인 투자 급증",
+      "category": "positive",
+      "summary": "네팔가 반도체·AI 등 첨단 기술 분야를 선도하며 외국인 직접투자가 몰리고 있습니다.",
+      "impact": "첨단 산업 경쟁력은 미래 성장 동력으로, 외국 자본 유입은 국가 가치를 크게 높입니다.",
+      "terms": [
+        "GDP성장률"
+      ],
+      "change_pct": 1.65,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "CYP",
+      "name": "키프로스",
+      "flag": "🇨🇾",
+      "title": "키프로스 신용등급 상향 조정",
+      "category": "positive",
+      "summary": "국제 신용평가사가 키프로스의 국가 신용등급을 한 단계 상향 조정했습니다.",
+      "impact": "신용등급 상승은 낮은 비용으로 자금을 조달할 수 있게 해 투자자 신뢰를 높입니다.",
+      "terms": [
+        "신용등급"
+      ],
+      "change_pct": 1.82,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "KHM",
+      "name": "캄보디아",
+      "flag": "🇰🇭",
+      "title": "캄보디아 자연재해 발생, 경제 피해 확대",
+      "category": "negative",
+      "summary": "캄보디아에서 대규모 자연재해가 발생해 경제적 피해가 확산되고 있습니다.",
+      "impact": "재해는 생산 시설과 인프라를 파괴해 단기적으로 경제 활동을 크게 위축시킵니다.",
+      "terms": [],
+      "change_pct": -1.98,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "PNG",
+      "name": "파푸아뉴기니",
+      "flag": "🇵🇬",
+      "title": "파푸아뉴기니 실업률 역대 최저치 갱신",
+      "category": "positive",
+      "summary": "파푸아뉴기니의 실업률이 역대 최저 수준으로 떨어지며 고용 시장이 활기를 띠고 있습니다.",
+      "impact": "낮은 실업률은 소비 여력을 키워 내수 경제를 살리는 긍정적 신호입니다.",
+      "terms": [
+        "GDP성장률"
+      ],
+      "change_pct": 1.16,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "ZMB",
+      "name": "잠비아",
+      "flag": "🇿🇲",
+      "title": "잠비아 신용등급 상향 조정",
+      "category": "positive",
+      "summary": "국제 신용평가사가 잠비아의 국가 신용등급을 한 단계 상향 조정했습니다.",
+      "impact": "신용등급 상승은 낮은 비용으로 자금을 조달할 수 있게 해 투자자 신뢰를 높입니다.",
+      "terms": [
+        "신용등급"
+      ],
+      "change_pct": 1.82,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "TTO",
+      "name": "트리니다드토바고",
+      "flag": "🇹🇹",
+      "title": "트리니다드토바고 인플레이션 우려 확대, 물가 급등",
+      "category": "negative",
+      "summary": "트리니다드토바고의 소비자물가가 급등하며 인플레이션 우려가 커지고 있습니다.",
+      "impact": "과도한 물가 상승은 화폐 가치를 떨어뜨리고 소비를 위축시켜 경제에 부담을 줍니다.",
+      "terms": [
+        "인플레이션",
+        "금리"
+      ],
+      "change_pct": -1.32,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "MOZ",
+      "name": "모잠비크",
+      "flag": "🇲🇿",
+      "title": "모잠비크 분기 경제지표 발표 예정",
+      "category": "neutral",
+      "summary": "모잠비크의 주요 분기 경제지표 발표가 예정되어 투자자들이 주목하고 있습니다.",
+      "impact": "지표 발표 전에는 불확실성으로 가격 변동이 제한적인 경우가 많습니다.",
+      "terms": [
+        "GDP"
+      ],
+      "change_pct": 0.07,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "GAB",
+      "name": "가봉",
+      "flag": "🇬🇦",
+      "title": "가봉 신기술 분야 선도, 외국인 투자 급증",
+      "category": "positive",
+      "summary": "가봉가 반도체·AI 등 첨단 기술 분야를 선도하며 외국인 직접투자가 몰리고 있습니다.",
+      "impact": "첨단 산업 경쟁력은 미래 성장 동력으로, 외국 자본 유입은 국가 가치를 크게 높입니다.",
+      "terms": [
+        "GDP성장률"
+      ],
+      "change_pct": 1.65,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "YEM",
+      "name": "예멘",
+      "flag": "🇾🇪",
+      "title": "예멘 무역 분쟁 격화, 관세 우려",
+      "category": "negative",
+      "summary": "예멘와 주요 교역국 간 무역 분쟁이 격화되며 관세 인상 우려가 커집니다.",
+      "impact": "관세 장벽은 수출을 어렵게 만들어 무역 의존도가 높은 경제에 타격을 줍니다.",
+      "terms": [
+        "무역수지"
+      ],
+      "change_pct": -1.49,
+      "time": "2026-05-21T12:30:07.289535+00:00"
+    },
+    {
+      "code": "HTI",
+      "name": "아이티",
+      "flag": "🇭🇹",
+      "title": "아이티 분기 경제지표 발표 예정",
+      "category": "neutral",
+      "summary": "아이티의 주요 분기 경제지표 발표가 예정되어 투자자들이 주목하고 있습니다.",
+      "impact": "지표 발표 전에는 불확실성으로 가격 변동이 제한적인 경우가 많습니다.",
+      "terms": [
+        "GDP"
+      ],
+      "change_pct": 0.07,
+      "time": "2026-05-21T12:30:07.289535+00:00"
     }
   ]
 }

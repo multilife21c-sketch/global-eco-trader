@@ -142,11 +142,70 @@ python gen_countries.py   # countries.json 재생성
 ## 🎮 다음 발전 방향
 
 - [ ] 실제 뉴스 API + Gemini 연동 (별도 백엔드 필요)
-- [ ] 학습 퀴즈 모드
-- [ ] 친구/학교 리더보드 (Firestore 활용)
+- [x] 학습 퀴즈 모드
+- [x] 수익률 랭킹보드
+- [x] 배지·업적 시스템
+- [x] 경제 용어 사전 + 뉴스 상세 팝업
 - [ ] 캔들 차트 전환
 - [ ] 푸시 알림 (PWA)
 
 ---
 
-*Generated for Ryan · NationVault v2.0*
+## 🆕 v3.0 신규 기능
+
+### 🏆 수익률 랭킹
+- 상단 메뉴 → **랭킹** 클릭
+- 전체/학교/친구 탭으로 순위 확인
+- **Firebase 설정 전**: AI 트레이더 18명과 경쟁 (시간 기반 결정론적 수익률)
+- **Firebase 설정 후**: 실제 전 세계 플레이어와 경쟁 (아래 확장 가이드 참고)
+
+### 🎓 경제 퀴즈
+- 매일 5문제, 정답당 가상자금 $5,000 보상
+- 날짜별로 같은 문제 출제 (하루 1회 응시)
+- 만점 시 '퀴즈 마스터' 배지 획득
+
+### 🎖️ 배지 시스템
+- 9종 배지 (첫 거래, 분산 투자, 고수익, 세계 일주 등)
+- 조건 달성 시 자동 획득 + 알림
+
+### 📖 경제 용어 사전 + 뉴스 상세 팝업
+- 뉴스 클릭 → 화면 중앙에 **요약 + 영향 해설 + 관련 용어** 팝업
+- 관련 용어 칩 클릭 → 용어 설명 팝업
+- 상단 메뉴 → **사전**에서 12개 핵심 경제 용어 검색
+
+---
+
+## 🔓 랭킹보드 실제 사용자 연동 (Firebase 확장)
+
+현재 랭킹은 AI 트레이더와 경쟁하는 구조입니다. 실제 전 세계 사용자 랭킹을 원하면:
+
+### 1. Firestore에 공개 랭킹 컬렉션 추가
+`saveState()` 함수에서 사용자 데이터 저장 시, 별도의 공개 랭킹 문서도 갱신하도록 확장합니다. `index.html`의 `saveState`에 아래를 추가:
+
+```javascript
+// 공개 랭킹용 (수익률만 공개)
+if (currentUser && window.fb) {
+  await window.fb.setDoc(
+    window.fb.doc(window.fb.db, 'rankings', currentUser.uid),
+    { name: currentUser.displayName, return: getMyReturn(),
+      trades: state.stats.totalTrades, updatedAt: Date.now() }
+  );
+}
+```
+
+### 2. 랭킹 읽기 (renderRanking 확장)
+`getDocs`로 `rankings` 컬렉션을 불러와 봇 대신 실제 사용자를 표시합니다.
+
+### 3. Firestore 규칙 추가
+```javascript
+match /rankings/{userId} {
+  allow read: if true;                       // 누구나 랭킹 조회 가능
+  allow write: if request.auth != null && request.auth.uid == userId;
+}
+```
+
+> 이렇게 하면 게스트는 AI 트레이더와, 로그인 사용자는 실제 전 세계 플레이어와 경쟁합니다.
+
+---
+
+*Generated for Ryan · NationVault v3.0*

@@ -61,6 +61,13 @@
     border: 1px solid var(--border-default); padding: 5px 10px; border-radius: 6px;
     cursor: pointer; font-family: var(--font-kr); font-size: 12px; color: var(--text-primary); }
   .user-btn:hover { border-color: var(--border-strong); }
+
+  .topbar-menu { display: flex; gap: 4px; margin-left: 8px; }
+  .menu-btn { display: flex; align-items: center; gap: 5px; background: transparent;
+    border: 1px solid transparent; padding: 6px 10px; border-radius: 6px; cursor: pointer;
+    color: var(--text-secondary); font-family: var(--font-kr); font-size: 12px; }
+  .menu-btn:hover { background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-default); }
+  .menu-btn i { font-style: normal; font-size: 14px; }
   .user-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-blue); }
   .user-avatar img { width: 100%; height: 100%; border-radius: 50%; }
 
@@ -262,6 +269,76 @@
   .toast-title { font-weight: 600; margin-bottom: 2px; font-family: var(--font-display); font-size: 12px; }
   .toast-msg { color: var(--text-secondary); font-size: 11px; }
 
+  /* RANKING */
+  .rank-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+  .rank-tab { flex: 1; padding: 9px; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    color: var(--text-secondary); font-family: var(--font-kr); font-size: 12px; font-weight: 600;
+    cursor: pointer; border-radius: 6px; }
+  .rank-tab.active { background: var(--accent-amber); color: #0a0e1a; border-color: var(--accent-amber); }
+  .rank-row { display: grid; grid-template-columns: 44px 1fr auto auto; gap: 12px; align-items: center;
+    padding: 11px 14px; border-radius: 8px; margin-bottom: 6px; background: var(--bg-tertiary);
+    border: 1px solid var(--border-default); }
+  .rank-row.me { border-color: var(--accent-blue); background: rgba(59,130,246,0.08); }
+  .rank-num { font-family: var(--font-mono); font-size: 16px; font-weight: 700; text-align: center; }
+  .rank-num.gold { color: #ffd700; } .rank-num.silver { color: #c0c0c0; } .rank-num.bronze { color: #cd7f32; }
+  .rank-name { font-size: 13px; font-weight: 600; }
+  .rank-bot-tag { font-size: 9px; color: var(--text-muted); background: var(--bg-elevated); padding: 1px 5px; border-radius: 3px; margin-left: 6px; }
+  .rank-trades { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+  .rank-return { font-family: var(--font-mono); font-size: 14px; font-weight: 700; text-align: right; min-width: 80px; }
+
+  /* QUIZ */
+  .quiz-progress { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); margin-bottom: 14px; text-align: center; }
+  .quiz-question { font-size: 15px; font-weight: 600; line-height: 1.5; margin-bottom: 18px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt { padding: 12px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.15s; text-align: left; color: var(--text-primary); }
+  .quiz-opt:hover { border-color: var(--accent-blue); }
+  .quiz-opt.correct { background: rgba(16,185,129,0.15); border-color: var(--accent-green); }
+  .quiz-opt.wrong { background: rgba(239,68,68,0.15); border-color: var(--accent-red); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-explain { margin-top: 16px; padding: 14px; background: var(--bg-tertiary); border-radius: 8px;
+    border-left: 3px solid var(--accent-blue); font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+  .quiz-next { width: 100%; margin-top: 16px; padding: 12px; background: var(--accent-blue); color: white;
+    border: none; border-radius: 6px; font-family: var(--font-display); font-weight: 700; cursor: pointer; font-size: 13px; }
+
+  /* BADGES */
+  .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .badge-card { padding: 16px 12px; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    border-radius: 10px; text-align: center; opacity: 0.45; transition: all 0.2s; }
+  .badge-card.earned { opacity: 1; border-color: var(--accent-amber); background: rgba(245,158,11,0.06); }
+  .badge-icon { font-size: 32px; margin-bottom: 8px; filter: grayscale(1); }
+  .badge-card.earned .badge-icon { filter: none; }
+  .badge-name { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+  .badge-desc { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+
+  /* GLOSSARY */
+  .glossary-search { width: 100%; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    color: var(--text-primary); padding: 10px 14px; border-radius: 8px; font-family: var(--font-kr);
+    font-size: 13px; outline: none; margin-bottom: 16px; }
+  .glossary-item { padding: 14px; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    border-radius: 8px; margin-bottom: 8px; }
+  .glossary-term { font-size: 14px; font-weight: 700; color: var(--accent-blue); margin-bottom: 4px; }
+  .glossary-short { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .glossary-detail { font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
+  .glossary-example { font-size: 12px; color: var(--accent-green); font-style: italic; }
+
+  /* NEWS DETAIL */
+  .news-detail-flag { font-size: 40px; }
+  .news-detail-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .news-detail-title { font-size: 17px; font-weight: 700; line-height: 1.4; }
+  .news-detail-badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-top: 6px; }
+  .news-section-box { padding: 14px; border-radius: 8px; margin-bottom: 12px; }
+  .news-section-label { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; }
+  .news-section-text { font-size: 13px; line-height: 1.6; }
+  .news-term-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .news-term-chip { padding: 4px 10px; background: rgba(59,130,246,0.12); color: var(--accent-blue);
+    border-radius: 14px; font-size: 12px; cursor: pointer; border: 1px solid rgba(59,130,246,0.3); }
+  .news-term-chip:hover { background: rgba(59,130,246,0.22); }
+  .news-impact-positive { background: rgba(16,185,129,0.1); border-left: 3px solid var(--accent-green); }
+  .news-impact-negative { background: rgba(239,68,68,0.1); border-left: 3px solid var(--accent-red); }
+  .news-goto-btn { width: 100%; padding: 11px; background: var(--accent-blue); color: white; border: none;
+    border-radius: 6px; font-family: var(--font-display); font-weight: 600; cursor: pointer; font-size: 13px; margin-top: 8px; }
+
   /* TOOLTIP */
   [data-tip] { position: relative; }
   [data-tip]:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 5px);
@@ -321,6 +398,9 @@
     .topbar { padding: 0 12px; gap: 10px; }
     .market-status { display: none; }
     .top-clock { display: none; }
+    .topbar-menu .menu-btn span { display: none; }
+    .topbar-menu { margin-left: 0; gap: 0; }
+    .menu-btn { padding: 6px 7px; }
     .balance-label { display: none; }
     .balance-display { padding: 4px 8px; }
     .ticker-tape { height: 30px; }
@@ -375,6 +455,12 @@
     <div class="logo-text">Nation<span>Vault</span></div>
   </div>
   <div class="market-status"><div class="pulse-dot"></div><span>LIVE MARKET</span></div>
+  <div class="topbar-menu">
+    <button class="menu-btn" onclick="openRanking()" data-tip="수익률 랭킹"><i class="ti">🏆</i><span>랭킹</span></button>
+    <button class="menu-btn" onclick="openQuiz()" data-tip="경제 퀴즈"><i class="ti">🎓</i><span>퀴즈</span></button>
+    <button class="menu-btn" onclick="openBadges()" data-tip="배지 수집"><i class="ti">🎖️</i><span>배지</span></button>
+    <button class="menu-btn" onclick="openGlossary()" data-tip="용어 사전"><i class="ti">📖</i><span>사전</span></button>
+  </div>
   <div class="top-right">
     <div class="top-clock" id="realClock">--:--:--</div>
     <div class="balance-display">
@@ -523,6 +609,72 @@
   </div>
 </div>
 
+<!-- Ranking Modal -->
+<div class="modal-backdrop" id="rankingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🏆 수익률 랭킹</div>
+      <button class="modal-close" onclick="closeModal('rankingModal')">×</button>
+    </div>
+    <div class="modal-body" id="rankingBody"></div>
+  </div>
+</div>
+
+<!-- Quiz Modal -->
+<div class="modal-backdrop" id="quizModal">
+  <div class="modal" style="width:520px;">
+    <div class="modal-header">
+      <div class="modal-title">🎓 오늘의 경제 퀴즈</div>
+      <button class="modal-close" onclick="closeModal('quizModal')">×</button>
+    </div>
+    <div class="modal-body" id="quizBody"></div>
+  </div>
+</div>
+
+<!-- Badges Modal -->
+<div class="modal-backdrop" id="badgesModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🎖️ 배지 컬렉션</div>
+      <button class="modal-close" onclick="closeModal('badgesModal')">×</button>
+    </div>
+    <div class="modal-body" id="badgesBody"></div>
+  </div>
+</div>
+
+<!-- Glossary Modal -->
+<div class="modal-backdrop" id="glossaryModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📖 경제 용어 사전</div>
+      <button class="modal-close" onclick="closeModal('glossaryModal')">×</button>
+    </div>
+    <div class="modal-body" id="glossaryBody"></div>
+  </div>
+</div>
+
+<!-- News Detail Modal -->
+<div class="modal-backdrop" id="newsModal">
+  <div class="modal" style="width:560px;">
+    <div class="modal-header">
+      <div class="modal-title">📰 뉴스 상세</div>
+      <button class="modal-close" onclick="closeModal('newsModal')">×</button>
+    </div>
+    <div class="modal-body" id="newsBody"></div>
+  </div>
+</div>
+
+<!-- Term Popup (작은 용어 설명) -->
+<div class="modal-backdrop" id="termModal">
+  <div class="modal" style="width:420px;">
+    <div class="modal-header">
+      <div class="modal-title" id="termTitle">용어</div>
+      <button class="modal-close" onclick="closeModal('termModal')">×</button>
+    </div>
+    <div class="modal-body" id="termBody"></div>
+  </div>
+</div>
+
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- ============ FIREBASE CONFIG ============ -->
@@ -530,13 +682,14 @@
   // ⚠️ 아래 firebaseConfig를 본인의 Firebase 프로젝트 설정으로 교체하세요.
   // 설정 방법은 README_SETUP.md 참고. 비워두면 자동으로 게스트(로컬) 모드로 작동합니다.
   const firebaseConfig = {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
-  };
+  apiKey: "AIzaSyDVHOri8UljixEE1dlPJGlcG8XGetW_nIo",
+  authDomain: "infinity-universe-bb54c.firebaseapp.com",
+  projectId: "infinity-universe-bb54c",
+  storageBucket: "infinity-universe-bb54c.firebasestorage.app",
+  messagingSenderId: "304263640416",
+  appId: "1:304263640416:web:7230809cc0b9d9a62a1a05",
+  measurementId: "G-NRT42LQDX7"
+};
 
   window.FIREBASE_ENABLED = !!firebaseConfig.apiKey;
 
@@ -569,6 +722,8 @@
 let COUNTRIES = [];
 let COUNTRY_MAP = {};
 let SEED_DATA = null; // prices.json content
+let GLOSSARY = {};    // 경제 용어 사전
+let QUIZ = [];        // 퀴즈 문제
 
 let state = {
   cash: 1000000,
@@ -580,6 +735,10 @@ let state = {
   chartTimeframe: 360,
   tierFilter: 'ALL',
   searchQuery: '',
+  badges: [],          // 획득한 배지 id 목록
+  quizLog: {},         // 날짜별 퀴즈 응시 기록
+  stats: { wins: 0, losses: 0, bestTrade: 0, worstTrade: 0, totalTrades: 0 },
+  nickname: '',        // 랭킹 표시용 닉네임
 };
 
 let runtimePrices = {}; // 현재 시각 기준 계산된 가격
@@ -704,6 +863,17 @@ async function loadGameData() {
   } catch(e) {
     console.warn('prices.json 없음 — 기준가로 시작');
     SEED_DATA = null;
+  }
+
+  // glossary.json (경제 용어 사전 + 퀴즈)
+  try {
+    const res = await fetch('glossary.json');
+    const g = await res.json();
+    GLOSSARY = g.glossary || {};
+    QUIZ = g.quiz || [];
+  } catch(e) {
+    console.warn('glossary.json 없음');
+    GLOSSARY = {}; QUIZ = [];
   }
 
   // 초기 히스토리 구성
@@ -903,10 +1073,10 @@ function renderNews() {
     list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:12px;">아직 뉴스가 없습니다.<br>매시간 AI 평가가 반영됩니다.</div>';
     return;
   }
-  list.innerHTML = news.map(n => {
+  list.innerHTML = news.map((n, idx) => {
     const t = new Date(n.time);
     const timeStr = t.toLocaleString('ko-KR', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-    return `<div class="news-item ${n.category}" onclick="selectCountry('${n.code}')">
+    return `<div class="news-item ${n.category}" onclick="openNewsDetail(${idx})">
       <div class="news-header">
         <span class="news-flag">${n.flag}</span>
         <span class="news-country-code">${n.code}</span>
@@ -916,6 +1086,62 @@ function renderNews() {
       <div class="news-time">${timeStr}</div>
     </div>`;
   }).join('');
+}
+
+// ============================================================
+// === NEWS DETAIL POPUP ===
+// ============================================================
+function openNewsDetail(idx) {
+  const news = (SEED_DATA && SEED_DATA.news) ? SEED_DATA.news : [];
+  const n = news[idx];
+  if (!n) return;
+  const catLabel = n.category==='positive'?'호재 (가치 상승 요인)':n.category==='negative'?'악재 (가치 하락 요인)':'중립';
+  const catColor = n.category==='positive'?'background:rgba(16,185,129,0.15);color:var(--accent-green);':
+                   n.category==='negative'?'background:rgba(239,68,68,0.15);color:var(--accent-red);':
+                   'background:rgba(156,163,175,0.15);color:var(--text-secondary);';
+  const changeStr = n.change_pct !== undefined ? `${n.change_pct>=0?'+':''}${n.change_pct}%` : '';
+  const termChips = (n.terms && n.terms.length>0) ? 
+    `<div class="news-section-box" style="background:var(--bg-tertiary);">
+       <div class="news-section-label">📚 관련 경제 용어 (클릭하면 설명)</div>
+       <div class="news-term-chips">
+         ${n.terms.map(term => `<span class="news-term-chip" onclick="showTerm('${term}')">${GLOSSARY[term]?GLOSSARY[term].term:term}</span>`).join('')}
+       </div>
+     </div>` : '';
+
+  document.getElementById('newsBody').innerHTML = `
+    <div class="news-detail-header">
+      <span class="news-detail-flag">${n.flag}</span>
+      <div>
+        <div class="news-detail-title">${n.title}</div>
+        <span class="news-detail-badge" style="${catColor}">${catLabel} ${changeStr}</span>
+      </div>
+    </div>
+    <div class="news-section-box" style="background:var(--bg-tertiary);">
+      <div class="news-section-label">📄 요약</div>
+      <div class="news-section-text">${n.summary || n.title}</div>
+    </div>
+    <div class="news-section-box news-impact-${n.category}" style="border-radius:0 8px 8px 0;">
+      <div class="news-section-label">💡 이 뉴스가 국가 가치에 미치는 영향</div>
+      <div class="news-section-text">${n.impact || '시장 영향을 분석 중입니다.'}</div>
+    </div>
+    ${termChips}
+    <button class="news-goto-btn" onclick="closeModal('newsModal'); selectCountry('${n.code}');">
+      ${n.flag} ${n.name} 차트 보러가기 →
+    </button>
+  `;
+  document.getElementById('newsModal').classList.add('active');
+}
+
+function showTerm(termKey) {
+  const g = GLOSSARY[termKey];
+  if (!g) { showToast('warning','용어 없음','해당 용어 설명이 준비 중입니다.'); return; }
+  document.getElementById('termTitle').textContent = '📖 ' + g.term;
+  document.getElementById('termBody').innerHTML = `
+    <div style="font-size:13px;color:var(--accent-blue);font-weight:600;margin-bottom:10px;">${g.short}</div>
+    <div style="font-size:13px;line-height:1.7;margin-bottom:12px;">${g.detail}</div>
+    <div style="font-size:12px;color:var(--accent-green);font-style:italic;padding:10px;background:var(--bg-tertiary);border-radius:6px;">예) ${g.example}</div>
+  `;
+  document.getElementById('termModal').classList.add('active');
 }
 
 // ============================================================
@@ -964,6 +1190,7 @@ function executeTrade() {
     const h=state.holdings[code];
     h.avgPrice = (h.avgPrice*h.qty + price*qty)/(h.qty+qty); h.qty += qty;
     state.trades.push({type:'BUY',code,qty,price,total,fee,time:Date.now()});
+    state.stats.totalTrades++;
     showToast('success','매수 체결',`${c.flag} ${c.name} ${qty}주 매수 완료`);
   } else {
     const h=state.holdings[code];
@@ -972,9 +1199,12 @@ function executeTrade() {
     const profit=(price-h.avgPrice)*qty-fee;
     h.qty-=qty; if(h.qty===0) delete state.holdings[code];
     state.trades.push({type:'SELL',code,qty,price,total,fee,profit,time:Date.now()});
+    state.stats.totalTrades++;
+    if (profit >= 0) { state.stats.wins++; state.stats.bestTrade = Math.max(state.stats.bestTrade, profit); }
+    else { state.stats.losses++; state.stats.worstTrade = Math.min(state.stats.worstTrade, profit); }
     showToast(profit>=0?'success':'warning','매도 체결',`${c.flag} ${c.name} ${qty}주 / 손익 ${profit>=0?'+':''}$${profit.toFixed(2)}`);
   }
-  updatePortfolioStats(); updateTradeSummary(); updateCenterPanel(); scheduleSave();
+  updatePortfolioStats(); updateTradeSummary(); updateCenterPanel(); checkBadges(); scheduleSave();
 }
 
 // ============================================================
@@ -1035,6 +1265,249 @@ function openPortfolio() {
   document.getElementById('portfolioModal').classList.add('active');
 }
 function closePortfolio(){ document.getElementById('portfolioModal').classList.remove('active'); }
+function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+
+// ============================================================
+// === 수익률 계산 ===
+// ============================================================
+function getMyReturn() {
+  let hv = 0;
+  Object.entries(state.holdings).forEach(([code,h]) => { hv += h.qty*runtimePrices[code].current; });
+  const total = state.cash + hv;
+  return (total - state.initialCash) / state.initialCash * 100;
+}
+
+// ============================================================
+// === 봇 트레이더 (게스트 모드 랭킹용) ===
+// ============================================================
+const BOT_NAMES = [
+  '워런 김','이코노미스트','글로벌헌터','매크로마스터','신중한곰','불꽃황소',
+  '데이터분석가','월스트리트박','펀드매니저K','리스크테이커','가치투자자','퀀트여우',
+  '경제반장','트레이더민','지수추종자','역발상투자','버블헌터','안전제일'
+];
+// 봇 수익률은 시간 기반으로 결정론적 생성 (날짜별로 천천히 변동)
+function getBotTraders() {
+  const dayKey = new Date().toISOString().slice(0,10);
+  const hourKey = new Date().getUTCHours();
+  return BOT_NAMES.map((name, i) => {
+    const r = hashStr(name + dayKey + '_base');
+    const rh = hashStr(name + dayKey + hourKey + '_h');
+    // -25% ~ +45% 범위, 시간마다 약간 변동
+    const base = (r - 0.35) * 70;
+    const hourly = (rh - 0.5) * 6;
+    const ret = base + hourly;
+    const trades = Math.floor(hashStr(name+dayKey+'_t') * 80) + 5;
+    return { name, return: ret, trades, isBot: true };
+  });
+}
+
+// ============================================================
+// === RANKING ===
+// ============================================================
+let rankScope = 'global';
+function openRanking() {
+  document.getElementById('rankingModal').classList.add('active');
+  renderRanking();
+}
+function renderRanking() {
+  const body = document.getElementById('rankingBody');
+  const myReturn = getMyReturn();
+  const myName = (currentUser && currentUser.displayName) ? currentUser.displayName : (state.nickname || '나 (게스트)');
+  const myEntry = { name: myName, return: myReturn, trades: state.stats.totalTrades, isMe: true };
+
+  let entries;
+  let scopeNote = '';
+  if (rankScope === 'global') {
+    // 봇 + 나 (Firebase 연동 시 실제 사용자로 대체 예정)
+    entries = [...getBotTraders(), myEntry];
+    scopeNote = window.FIREBASE_ENABLED ?
+      '전 세계 플레이어 + AI 트레이더와 경쟁 중' :
+      '※ Firebase 설정 전이라 AI 트레이더와 경쟁합니다. 설정하면 실제 전 세계 랭킹으로 전환됩니다.';
+  } else if (rankScope === 'friends') {
+    entries = [myEntry, ...getBotTraders().slice(0, 5).map(b => ({...b, name: '친구: '+b.name}))];
+    scopeNote = '※ 친구 기능은 Firebase 설정 후 친구를 추가하면 활성화됩니다.';
+  } else {
+    entries = [myEntry, ...getBotTraders().slice(0, 9).map(b => ({...b, name: '같은학교: '+b.name}))];
+    scopeNote = '※ 학교 랭킹은 같은 학교 코드를 입력한 학생들끼리 경쟁합니다.';
+  }
+
+  entries.sort((a,b) => b.return - a.return);
+  const myRank = entries.findIndex(e => e.isMe) + 1;
+
+  body.innerHTML = `
+    <div class="rank-tabs">
+      <button class="rank-tab ${rankScope==='global'?'active':''}" onclick="setRankScope('global')">🌍 전체</button>
+      <button class="rank-tab ${rankScope==='school'?'active':''}" onclick="setRankScope('school')">🏫 학교</button>
+      <button class="rank-tab ${rankScope==='friends'?'active':''}" onclick="setRankScope('friends')">👥 친구</button>
+    </div>
+    <div style="background:rgba(59,130,246,0.08);border:1px solid var(--accent-blue);border-radius:8px;padding:12px 14px;margin-bottom:16px;text-align:center;">
+      <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;">내 순위</div>
+      <div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--accent-blue);">${myRank}위 <span style="font-size:13px;color:var(--text-secondary);">/ ${entries.length}명</span></div>
+      <div style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:${myReturn>=0?'var(--accent-green)':'var(--accent-red)'};margin-top:4px;">수익률 ${myReturn>=0?'+':''}${myReturn.toFixed(2)}%</div>
+    </div>
+    ${entries.slice(0, 20).map((e, i) => {
+      const rank = i+1;
+      const rankCls = rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
+      const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+      return `<div class="rank-row ${e.isMe?'me':''}">
+        <div class="rank-num ${rankCls}">${medal}</div>
+        <div class="rank-name">${e.name}${e.isBot?'<span class="rank-bot-tag">AI</span>':''}${e.isMe?'<span class="rank-bot-tag" style="background:var(--accent-blue);color:white;">ME</span>':''}</div>
+        <div class="rank-trades">${e.trades}회</div>
+        <div class="rank-return" style="color:${e.return>=0?'var(--accent-green)':'var(--accent-red)'};">${e.return>=0?'+':''}${e.return.toFixed(2)}%</div>
+      </div>`;
+    }).join('')}
+    <div style="font-size:11px;color:var(--text-muted);margin-top:14px;text-align:center;line-height:1.5;">${scopeNote}</div>
+  `;
+}
+function setRankScope(scope) { rankScope = scope; renderRanking(); }
+
+// ============================================================
+// === QUIZ ===
+// ============================================================
+let quizState = { idx: 0, score: 0, todayQuestions: [], answered: false };
+function openQuiz() {
+  const today = new Date().toISOString().slice(0,10);
+  // 오늘 이미 풀었는지 확인
+  if (state.quizLog[today] && state.quizLog[today].completed) {
+    document.getElementById('quizBody').innerHTML = `
+      <div style="text-align:center;padding:30px 20px;">
+        <div style="font-size:40px;margin-bottom:12px;">✅</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">오늘의 퀴즈 완료!</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:6px;">점수: ${state.quizLog[today].score} / ${state.quizLog[today].total}</div>
+        <div style="font-size:12px;color:var(--text-muted);">내일 새로운 퀴즈로 만나요. (보상: 가상자금 지급 완료)</div>
+      </div>`;
+    document.getElementById('quizModal').classList.add('active');
+    return;
+  }
+  // 오늘의 5문제 선택 (날짜 기반 결정론적)
+  const shuffled = [...QUIZ].map((q,i)=>({q, sort: hashStr(today+'_q'+i)})).sort((a,b)=>a.sort-b.sort).map(x=>x.q);
+  quizState = { idx: 0, score: 0, todayQuestions: shuffled.slice(0, 5), answered: false };
+  document.getElementById('quizModal').classList.add('active');
+  renderQuiz();
+}
+function renderQuiz() {
+  const body = document.getElementById('quizBody');
+  const q = quizState.todayQuestions[quizState.idx];
+  if (!q) return;
+  body.innerHTML = `
+    <div class="quiz-progress">문제 ${quizState.idx+1} / ${quizState.todayQuestions.length} · 현재 점수 ${quizState.score}</div>
+    <div class="quiz-question">${q.q}</div>
+    <div class="quiz-options" id="quizOptions">
+      ${q.options.map((opt, i) => `<button class="quiz-opt" onclick="answerQuiz(${i})">${opt}</button>`).join('')}
+    </div>
+    <div id="quizExplain"></div>
+  `;
+}
+function answerQuiz(choice) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = quizState.todayQuestions[quizState.idx];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((o, i) => {
+    o.disabled = true;
+    if (i === q.answer) o.classList.add('correct');
+    if (i === choice && choice !== q.answer) o.classList.add('wrong');
+  });
+  const correct = choice === q.answer;
+  if (correct) quizState.score++;
+  const isLast = quizState.idx === quizState.todayQuestions.length - 1;
+  document.getElementById('quizExplain').innerHTML = `
+    <div class="quiz-explain">
+      <strong style="color:${correct?'var(--accent-green)':'var(--accent-red)'};">${correct?'정답입니다! 🎉':'아쉬워요 😅'}</strong><br>${q.explain}
+    </div>
+    <button class="quiz-next" onclick="${isLast?'finishQuiz()':'nextQuiz()'}">${isLast?'결과 보기':'다음 문제 →'}</button>
+  `;
+}
+function nextQuiz() { quizState.idx++; quizState.answered = false; renderQuiz(); }
+function finishQuiz() {
+  const today = new Date().toISOString().slice(0,10);
+  const reward = quizState.score * 5000; // 정답당 5천 가상자금
+  state.cash += reward;
+  state.quizLog[today] = { completed: true, score: quizState.score, total: quizState.todayQuestions.length };
+  checkBadges();
+  updatePortfolioStats();
+  scheduleSave();
+  document.getElementById('quizBody').innerHTML = `
+    <div style="text-align:center;padding:30px 20px;">
+      <div style="font-size:40px;margin-bottom:12px;">${quizState.score>=4?'🏆':quizState.score>=2?'👍':'📚'}</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px;">${quizState.score} / ${quizState.todayQuestions.length} 정답</div>
+      <div style="font-size:14px;color:var(--accent-green);font-weight:600;margin-bottom:16px;">💰 보상: $${reward.toLocaleString()} 지급!</div>
+      <div style="font-size:12px;color:var(--text-muted);">매일 새로운 퀴즈로 경제 지식을 쌓아보세요.</div>
+    </div>`;
+}
+
+// ============================================================
+// === BADGES ===
+// ============================================================
+const BADGE_DEFS = [
+  { id: 'first_trade', icon: '🌱', name: '첫 거래', desc: '첫 매수 또는 매도 완료', check: s => s.stats.totalTrades >= 1 },
+  { id: 'ten_trades', icon: '📊', name: '활발한 거래자', desc: '거래 10회 달성', check: s => s.stats.totalTrades >= 10 },
+  { id: 'profit_10', icon: '💰', name: '첫 수익', desc: '수익률 +10% 돌파', check: s => getMyReturn() >= 10 },
+  { id: 'profit_30', icon: '🚀', name: '고수익 투자자', desc: '수익률 +30% 돌파', check: s => getMyReturn() >= 30 },
+  { id: 'diversify', icon: '🌍', name: '분산 투자자', desc: '5개국 이상 동시 보유', check: s => Object.keys(s.holdings).length >= 5 },
+  { id: 'tier_s', icon: '👑', name: '강대국 투자', desc: 'Tier S 국가 보유', check: s => Object.keys(s.holdings).some(c => COUNTRY_MAP[c] && COUNTRY_MAP[c].tier==='S') },
+  { id: 'quiz_master', icon: '🎓', name: '퀴즈 마스터', desc: '퀴즈 만점 달성', check: s => Object.values(s.quizLog).some(q => q.completed && q.score === q.total && q.total >= 5) },
+  { id: 'continent', icon: '🗺️', name: '세계 일주', desc: '10개국 이상 거래 경험', check: s => new Set(s.trades.map(t=>t.code)).size >= 10 },
+  { id: 'comeback', icon: '🔥', name: '역전의 명수', desc: '손실 후 수익 전환', check: s => s.stats.losses > 0 && getMyReturn() > 0 },
+];
+function checkBadges() {
+  let newBadges = [];
+  BADGE_DEFS.forEach(b => {
+    if (!state.badges.includes(b.id) && b.check(state)) {
+      state.badges.push(b.id);
+      newBadges.push(b);
+    }
+  });
+  newBadges.forEach(b => showToast('success', `🎖️ 배지 획득: ${b.name}`, b.desc));
+  if (newBadges.length > 0) scheduleSave();
+}
+function openBadges() {
+  checkBadges();
+  const earned = state.badges.length;
+  document.getElementById('badgesBody').innerHTML = `
+    <div style="text-align:center;margin-bottom:18px;">
+      <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary);">획득한 배지</div>
+      <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--accent-amber);">${earned} / ${BADGE_DEFS.length}</div>
+    </div>
+    <div class="badge-grid">
+      ${BADGE_DEFS.map(b => `
+        <div class="badge-card ${state.badges.includes(b.id)?'earned':''}">
+          <div class="badge-icon">${b.icon}</div>
+          <div class="badge-name">${b.name}</div>
+          <div class="badge-desc">${b.desc}</div>
+        </div>`).join('')}
+    </div>`;
+  document.getElementById('badgesModal').classList.add('active');
+}
+
+// ============================================================
+// === GLOSSARY ===
+// ============================================================
+function openGlossary() {
+  renderGlossary('');
+  document.getElementById('glossaryModal').classList.add('active');
+}
+function renderGlossary(query) {
+  const body = document.getElementById('glossaryBody');
+  const entries = Object.entries(GLOSSARY).filter(([k,g]) => {
+    if (!query) return true;
+    const q = query.toLowerCase();
+    return g.term.toLowerCase().includes(q) || g.short.toLowerCase().includes(q) || g.detail.toLowerCase().includes(q);
+  });
+  body.innerHTML = `
+    <input type="text" class="glossary-search" placeholder="용어 검색..." oninput="renderGlossary(this.value)" value="${query}" id="glossarySearchInput">
+    ${entries.length === 0 ? '<div style="text-align:center;padding:30px;color:var(--text-muted);">검색 결과가 없습니다.</div>' :
+      entries.map(([k,g]) => `
+        <div class="glossary-item">
+          <div class="glossary-term">${g.term}</div>
+          <div class="glossary-short">${g.short}</div>
+          <div class="glossary-detail">${g.detail}</div>
+          <div class="glossary-example">예) ${g.example}</div>
+        </div>`).join('')}
+  `;
+  // 검색 입력 포커스 유지
+  if (query) { const inp = document.getElementById('glossarySearchInput'); if(inp){ inp.focus(); inp.setSelectionRange(query.length, query.length);} }
+}
 
 async function resetGame() {
   if(!confirm('정말 리셋하시겠습니까? 모든 거래 내역과 잔액이 초기화됩니다.')) return;
@@ -1095,7 +1568,8 @@ function showToast(type,title,msg){
 // ============================================================
 function getSaveData() {
   return { cash:state.cash, holdings:state.holdings, trades:state.trades.slice(-50),
-           selectedCountry:state.selectedCountry, updatedAt:Date.now() };
+           selectedCountry:state.selectedCountry, badges:state.badges, quizLog:state.quizLog,
+           stats:state.stats, nickname:state.nickname, updatedAt:Date.now() };
 }
 function scheduleSave() {
   clearTimeout(saveTimeout);
@@ -1132,6 +1606,10 @@ async function loadState() {
     state.holdings = data.holdings || {};
     state.trades = data.trades || [];
     state.selectedCountry = data.selectedCountry || 'USA';
+    state.badges = data.badges || [];
+    state.quizLog = data.quizLog || {};
+    state.stats = data.stats || { wins:0, losses:0, bestTrade:0, worstTrade:0, totalTrades:0 };
+    state.nickname = data.nickname || '';
   }
 }
 function setSyncStatus(status) {
@@ -1193,6 +1671,13 @@ function startGame() {
   updateClock();
   setInterval(updateClock, 1000);
   setInterval(liveLoop, 1000);  // 1초마다 갱신 (현실시간, 가속 없음)
+
+  checkBadges();  // 초기 배지 상태 확인
+
+  // 모달 백드롭 클릭 시 닫기
+  document.querySelectorAll('.modal-backdrop').forEach(bd => {
+    bd.addEventListener('click', e => { if (e.target === bd) bd.classList.remove('active'); });
+  });
 }
 
 // 초기 로드

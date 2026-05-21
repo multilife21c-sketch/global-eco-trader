@@ -222,7 +222,7 @@
   .news-title { font-size: 12px; line-height: 1.4; margin-bottom: 3px; }
   .news-time { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); }
 
-  /* BOTTOM BAR */
+  /* BOX PORTFOLIO BAR */
   .bottom-bar { position: fixed; bottom: 16px; right: 356px; background: var(--bg-secondary);
     border: 1px solid var(--border-default); border-radius: 8px; padding: 10px 18px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 20px; z-index: 100; }
@@ -270,11 +270,6 @@
   .toast-msg { color: var(--text-secondary); font-size: 11px; }
 
   /* RANKING */
-  .rank-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
-  .rank-tab { flex: 1; padding: 9px; background: var(--bg-tertiary); border: 1px solid var(--border-default);
-    color: var(--text-secondary); font-family: var(--font-kr); font-size: 12px; font-weight: 600;
-    cursor: pointer; border-radius: 6px; }
-  .rank-tab.active { background: var(--accent-amber); color: #0a0e1a; border-color: var(--accent-amber); }
   .rank-row { display: grid; grid-template-columns: 44px 1fr auto auto; gap: 12px; align-items: center;
     padding: 11px 14px; border-radius: 8px; margin-bottom: 6px; background: var(--bg-tertiary);
     border: 1px solid var(--border-default); }
@@ -386,14 +381,13 @@
   .sync-dot.syncing { background: var(--accent-amber); animation: pulse 1s infinite; }
   .sync-dot.offline { background: var(--text-muted); }
 
-  /* === RESPONSIVE: TABLET === */
+  /* === RESPONSIVE === */
   @media (max-width: 1100px) {
     .main-container { grid-template-columns: 260px 1fr 300px; }
     .bottom-bar { right: 316px; gap: 14px; padding: 8px 14px; }
     .chart-stats { grid-template-columns: repeat(3, 1fr); gap: 12px; }
   }
 
-  /* === RESPONSIVE: MOBILE === */
   @media (max-width: 768px) {
     .topbar { padding: 0 12px; gap: 10px; }
     .market-status { display: none; }
@@ -422,7 +416,6 @@
 </head>
 <body>
 
-<!-- Login Overlay -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-content">
     <div class="login-logo">NationVault</div>
@@ -433,7 +426,7 @@
         <li>전 세계 194개국이 GDP 기반으로 상장</li>
         <li>가상자금 $1,000,000으로 투자 시작</li>
         <li>실제 시각과 동기화된 시세 — 매시간 뉴스 평가 반영</li>
-        <li>구글 로그인 시 모든 기기에서 거래내역 동기화</li>
+        <li>구글 로그인 시 실시간 전 세계 유저 랭킹 반영</li>
       </ul>
     </div>
     <button class="google-btn" id="googleLoginBtn" onclick="signInWithGoogle()">
@@ -442,13 +435,11 @@
     </button>
     <button class="guest-btn" onclick="playAsGuest()">게스트로 플레이 (이 기기에만 저장)</button>
     <div class="login-note" id="loginNote">
-      ※ Firebase 설정 전에는 게스트 모드로만 플레이됩니다.<br>
-      설정 방법은 함께 제공된 README를 참고하세요.
+      구글 로그인 시 모든 기기에서 실시간으로 자산이 동기화됩니다.
     </div>
   </div>
 </div>
 
-<!-- Top Bar -->
 <div class="topbar">
   <div class="logo">
     <div class="logo-icon">N</div>
@@ -456,7 +447,7 @@
   </div>
   <div class="market-status"><div class="pulse-dot"></div><span>LIVE MARKET</span></div>
   <div class="topbar-menu">
-    <button class="menu-btn" onclick="openRanking()" data-tip="수익률 랭킹"><i class="ti">🏆</i><span>랭킹</span></button>
+    <button class="menu-btn" onclick="openRanking()" data-tip="글로벌 실시간 랭킹"><i class="ti">🏆</i><span>랭킹</span></button>
     <button class="menu-btn" onclick="openQuiz()" data-tip="경제 퀴즈"><i class="ti">🎓</i><span>퀴즈</span></button>
     <button class="menu-btn" onclick="openBadges()" data-tip="배지 수집"><i class="ti">🎖️</i><span>배지</span></button>
     <button class="menu-btn" onclick="openGlossary()" data-tip="용어 사전"><i class="ti">📖</i><span>사전</span></button>
@@ -474,12 +465,9 @@
   </div>
 </div>
 
-<!-- Ticker -->
 <div class="ticker-tape"><div class="ticker-track" id="tickerTrack"></div></div>
 
-<!-- Main -->
 <div class="main-container">
-  <!-- LEFT -->
   <div class="left-panel mobile-active" id="leftPanel">
     <div class="panel-header">
       <div class="panel-title">📊 Markets</div>
@@ -499,7 +487,6 @@
     <div class="country-list" id="countryList"></div>
   </div>
 
-  <!-- CENTER -->
   <div class="center-panel" id="centerPanel">
     <div class="chart-header">
       <div class="selected-country">
@@ -538,7 +525,6 @@
     </div>
   </div>
 
-  <!-- RIGHT -->
   <div class="right-panel" id="rightPanel">
     <div class="trade-panel">
       <div class="trade-tabs">
@@ -576,7 +562,6 @@
   </div>
 </div>
 
-<!-- Bottom Portfolio Bar (desktop) -->
 <div class="bottom-bar">
   <div class="stat-block"><div class="sb-label">총 자산</div><div class="sb-value" id="portfolioValue" style="color: var(--accent-green);">$1,000,000</div></div>
   <div class="stat-block"><div class="sb-label" data-tip="실현+미실현 손익">손익</div><div class="sb-value" id="totalPL">$0.00</div></div>
@@ -584,13 +569,11 @@
   <button class="portfolio-btn" onclick="openPortfolio()">📊 포트폴리오</button>
 </div>
 
-<!-- Sync indicator -->
 <div class="sync-indicator">
   <div class="sync-dot" id="syncDot"></div>
   <span id="syncText">로컬 저장</span>
 </div>
 
-<!-- Mobile Nav -->
 <div class="mobile-nav">
   <button class="active" data-panel="left" onclick="switchMobilePanel('left')"><span class="nav-icon">📊</span>마켓</button>
   <button data-panel="center" onclick="switchMobilePanel('center')"><span class="nav-icon">📈</span>차트</button>
@@ -598,7 +581,6 @@
   <button onclick="openPortfolio()"><span class="nav-icon">💼</span>자산</button>
 </div>
 
-<!-- Portfolio Modal -->
 <div class="modal-backdrop" id="portfolioModal">
   <div class="modal">
     <div class="modal-header">
@@ -609,18 +591,16 @@
   </div>
 </div>
 
-<!-- Ranking Modal -->
 <div class="modal-backdrop" id="rankingModal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">🏆 수익률 랭킹</div>
+      <div class="modal-title">🏆 실시간 글로벌 랭킹</div>
       <button class="modal-close" onclick="closeModal('rankingModal')">×</button>
     </div>
     <div class="modal-body" id="rankingBody"></div>
   </div>
 </div>
 
-<!-- Quiz Modal -->
 <div class="modal-backdrop" id="quizModal">
   <div class="modal" style="width:520px;">
     <div class="modal-header">
@@ -631,7 +611,6 @@
   </div>
 </div>
 
-<!-- Badges Modal -->
 <div class="modal-backdrop" id="badgesModal">
   <div class="modal">
     <div class="modal-header">
@@ -642,7 +621,6 @@
   </div>
 </div>
 
-<!-- Glossary Modal -->
 <div class="modal-backdrop" id="glossaryModal">
   <div class="modal">
     <div class="modal-header">
@@ -653,7 +631,6 @@
   </div>
 </div>
 
-<!-- News Detail Modal -->
 <div class="modal-backdrop" id="newsModal">
   <div class="modal" style="width:560px;">
     <div class="modal-header">
@@ -664,7 +641,6 @@
   </div>
 </div>
 
-<!-- Term Popup (작은 용어 설명) -->
 <div class="modal-backdrop" id="termModal">
   <div class="modal" style="width:420px;">
     <div class="modal-header">
@@ -677,19 +653,16 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- ============ FIREBASE CONFIG ============ -->
 <script type="module">
-  // ⚠️ 아래 firebaseConfig를 본인의 Firebase 프로젝트 설정으로 교체하세요.
-  // 설정 방법은 README_SETUP.md 참고. 비워두면 자동으로 게스트(로컬) 모드로 작동합니다.
   const firebaseConfig = {
-  apiKey: "AIzaSyDVHOri8UljixEE1dlPJGlcG8XGetW_nIo",
-  authDomain: "infinity-universe-bb54c.firebaseapp.com",
-  projectId: "infinity-universe-bb54c",
-  storageBucket: "infinity-universe-bb54c.firebasestorage.app",
-  messagingSenderId: "304263640416",
-  appId: "1:304263640416:web:7230809cc0b9d9a62a1a05",
-  measurementId: "G-NRT42LQDX7"
-};
+    apiKey: "AIzaSyDVHOri8UljixEE1dlPJGlcG8XGetW_nIo",
+    authDomain: "infinity-universe-bb54c.firebaseapp.com",
+    projectId: "infinity-universe-bb54c",
+    storageBucket: "infinity-universe-bb54c.firebasestorage.app",
+    messagingSenderId: "304263640416",
+    appId: "1:304263640416:web:7230809cc0b9d9a62a1a05",
+    measurementId: "G-NRT42LQDX7"
+  };
 
   window.FIREBASE_ENABLED = !!firebaseConfig.apiKey;
 
@@ -697,7 +670,7 @@
     const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
     const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } =
       await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
-    const { getFirestore, doc, getDoc, setDoc } =
+    const { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs } =
       await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
 
     const app = initializeApp(firebaseConfig);
@@ -705,7 +678,8 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    window.fb = { auth, db, provider, signInWithPopup, signOut, onAuthStateChanged, doc, getDoc, setDoc };
+    // 랭킹 처리에 필요한 Firestore 메서드 추가 노출
+    window.fb = { auth, db, provider, signInWithPopup, signOut, onAuthStateChanged, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs };
 
     onAuthStateChanged(auth, (user) => {
       if (user) window.onUserLogin(user);
@@ -714,16 +688,15 @@
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
-<!-- ============ GAME LOGIC ============ -->
 <script>
 // ============================================================
 // === GLOBALS ===
 // ============================================================
 let COUNTRIES = [];
 let COUNTRY_MAP = {};
-let SEED_DATA = null; // prices.json content
-let GLOSSARY = {};    // 경제 용어 사전
-let QUIZ = [];        // 퀴즈 문제
+let SEED_DATA = null; 
+let GLOSSARY = {};    
+let QUIZ = [];        
 
 let state = {
   cash: 1000000,
@@ -735,35 +708,29 @@ let state = {
   chartTimeframe: 360,
   tierFilter: 'ALL',
   searchQuery: '',
-  badges: [],          // 획득한 배지 id 목록
-  quizLog: {},         // 날짜별 퀴즈 응시 기록
+  badges: [],          
+  quizLog: {},         
   stats: { wins: 0, losses: 0, bestTrade: 0, worstTrade: 0, totalTrades: 0 },
-  nickname: '',        // 랭킹 표시용 닉네임
+  nickname: '',        
 };
 
-let runtimePrices = {}; // 현재 시각 기준 계산된 가격
+let runtimePrices = {}; 
 let currentUser = null;
 let saveTimeout = null;
 
-// ============================================================
-// === DETERMINISTIC PRICE ENGINE (현실시간 동기화) ===
-// ============================================================
-// 핵심: 모든 사용자가 동일 시각에 동일 가격을 보도록,
-// seed 가격 + (현재 분 단위) 기반 결정론적 의사난수로 마이크로 변동 생성.
 function hashStr(str) {
   let h = 2166136261;
   for (let i = 0; i < str.length; i++) {
     h ^= str.charCodeAt(i);
     h = Math.imul(h, 16777619);
   }
-  return (h >>> 0) / 4294967296; // 0~1
+  return (h >>> 0) / 4294967296; 
 }
 
 function computeLivePrice(code) {
   const c = COUNTRY_MAP[code];
   if (!c) return 0;
 
-  // seed: prices.json에서 온 시간별 기준가 (없으면 basePrice)
   let seed = c.basePrice;
   let vol = c.volatility;
   let sentiment = 0;
@@ -772,11 +739,9 @@ function computeLivePrice(code) {
     sentiment = SEED_DATA.countries[code].sentiment || 0;
   }
 
-  // 현재 시각 기준 마이크로틱: 분 단위로 변동 (현실시간)
   const now = new Date();
   const minuteOfHour = now.getUTCMinutes();
   const second = now.getUTCSeconds();
-  // 매 분마다 결정론적 변동 누적
   let price = seed;
   const hourKey = now.getUTCFullYear() + '' + (now.getUTCMonth()+1) + '' + now.getUTCDate() + '' + now.getUTCHours();
   for (let m = 0; m <= minuteOfHour; m++) {
@@ -785,7 +750,6 @@ function computeLivePrice(code) {
     const noise = (r - 0.5) * vol * 0.0022;
     price = price * (1 + drift + noise);
   }
-  // 초 단위 미세 보간 (부드러운 움직임)
   const rSec = hashStr(code + hourKey + '_m' + minuteOfHour + '_s' + Math.floor(second/5));
   price = price * (1 + (rSec - 0.5) * vol * 0.0006);
 
@@ -809,17 +773,12 @@ function refreshRuntimePrices() {
     rp.changePct = prev ? ((newPrice - prev) / prev) * 100 : 0;
     rp.high = Math.max(rp.high, newPrice);
     rp.low = Math.min(rp.low, newPrice);
-    // history (최근 1440분 = 24시간)
     rp.history.push(newPrice);
     if (rp.history.length > 1500) rp.history.shift();
   });
 }
 
-// ============================================================
-// === SEED HISTORY (차트 초기 데이터 채우기) ===
-// ============================================================
 function buildInitialHistory(code) {
-  // 과거 60분치를 결정론적으로 재구성해 차트가 비어보이지 않게
   const c = COUNTRY_MAP[code];
   if (!c) return [];
   let seed = c.basePrice, sentiment = 0;
@@ -842,11 +801,7 @@ function buildInitialHistory(code) {
   return hist;
 }
 
-// ============================================================
-// === DATA LOADING ===
-// ============================================================
 async function loadGameData() {
-  // countries.json
   try {
     const res = await fetch('countries.json');
     COUNTRIES = await res.json();
@@ -856,7 +811,6 @@ async function loadGameData() {
   }
   COUNTRIES.forEach(c => COUNTRY_MAP[c.code] = c);
 
-  // prices.json (GitHub Actions가 생성, 없으면 basePrice 사용)
   try {
     const res = await fetch('prices.json?t=' + Date.now());
     SEED_DATA = await res.json();
@@ -865,7 +819,6 @@ async function loadGameData() {
     SEED_DATA = null;
   }
 
-  // glossary.json (경제 용어 사전 + 퀴즈)
   try {
     const res = await fetch('glossary.json');
     const g = await res.json();
@@ -876,7 +829,6 @@ async function loadGameData() {
     GLOSSARY = {}; QUIZ = [];
   }
 
-  // 초기 히스토리 구성
   COUNTRIES.forEach(c => {
     const hist = buildInitialHistory(c.code);
     runtimePrices[c.code] = {
@@ -891,9 +843,6 @@ async function loadGameData() {
   });
 }
 
-// ============================================================
-// === RENDERING ===
-// ============================================================
 function renderCountryList() {
   const list = document.getElementById('countryList');
   let filtered = COUNTRIES.filter(c => {
@@ -927,7 +876,6 @@ function renderCountryList() {
 
 function renderTickerTape() {
   const track = document.getElementById('tickerTrack');
-  // 상위 40개국만 티커에 (성능)
   const top = COUNTRIES.slice(0, 40);
   const makeItems = () => top.map(c => {
     const p = runtimePrices[c.code];
@@ -936,7 +884,7 @@ function renderTickerTape() {
     const arrow = dayChange > 0 ? '▲' : dayChange < 0 ? '▼' : '';
     return `<div class="ticker-item"><span class="ticker-flag">${c.flag}</span><span class="ticker-code">${c.code}</span><span class="ticker-price">$${p.current.toFixed(2)}</span><span class="ticker-change ${cls}">${arrow}${Math.abs(dayChange).toFixed(2)}%</span></div>`;
   }).join('');
-  track.innerHTML = makeItems() + makeItems(); // 2x for seamless loop
+  track.innerHTML = makeItems() + makeItems(); 
 }
 
 function selectCountry(code) {
@@ -945,7 +893,6 @@ function selectCountry(code) {
   updateCenterPanel();
   updateTradeSummary();
   scheduleSave();
-  // 모바일: 차트로 전환
   if (window.innerWidth <= 768) switchMobilePanel('center');
 }
 
@@ -977,7 +924,7 @@ function updateCenterPanel() {
   document.getElementById('statMcap').textContent = formatGDP(c.gdp);
   document.getElementById('statVol2').textContent = `${c.volatility.toFixed(1)}%`;
 
-  const sent = SEED_DATA && SEED_DATA.countries[c.code] ? Math.round(SEED_DATA.countries[c.code].sentiment) : 0;
+  let sent = SEED_DATA && SEED_DATA.countries[c.code] ? Math.round(SEED_DATA.countries[c.code].sentiment) : 0;
   const sentEl = document.getElementById('statSentiment');
   sentEl.textContent = (sent >= 0 ? '+' : '') + sent;
   sentEl.style.color = sent > 5 ? 'var(--accent-green)' : sent < -5 ? 'var(--accent-red)' : 'var(--text-secondary)';
@@ -989,9 +936,6 @@ function updateCenterPanel() {
   drawChart();
 }
 
-// ============================================================
-// === CHART ===
-// ============================================================
 function drawChart() {
   const canvas = document.getElementById('priceChart');
   if (!canvas) return;
@@ -1062,9 +1006,6 @@ document.querySelectorAll('.tf-btn').forEach(btn => {
 });
 window.addEventListener('resize', () => { drawChart(); });
 
-// ============================================================
-// === NEWS ===
-// ============================================================
 function renderNews() {
   const list = document.getElementById('newsList');
   const news = (SEED_DATA && SEED_DATA.news) ? SEED_DATA.news : [];
@@ -1088,9 +1029,6 @@ function renderNews() {
   }).join('');
 }
 
-// ============================================================
-// === NEWS DETAIL POPUP ===
-// ============================================================
 function openNewsDetail(idx) {
   const news = (SEED_DATA && SEED_DATA.news) ? SEED_DATA.news : [];
   const n = news[idx];
@@ -1144,9 +1082,6 @@ function showTerm(termKey) {
   document.getElementById('termModal').classList.add('active');
 }
 
-// ============================================================
-// === TRADING ===
-// ============================================================
 function switchTradeTab(mode) {
   state.tradeMode = mode;
   document.getElementById('tabBuy').classList.toggle('active', mode==='BUY');
@@ -1207,9 +1142,6 @@ function executeTrade() {
   updatePortfolioStats(); updateTradeSummary(); updateCenterPanel(); checkBadges(); scheduleSave();
 }
 
-// ============================================================
-// === PORTFOLIO ===
-// ============================================================
 function updatePortfolioStats() {
   let hv = 0;
   Object.entries(state.holdings).forEach(([code,h]) => { hv += h.qty*runtimePrices[code].current; });
@@ -1267,9 +1199,6 @@ function openPortfolio() {
 function closePortfolio(){ document.getElementById('portfolioModal').classList.remove('active'); }
 function closeModal(id){ document.getElementById(id).classList.remove('active'); }
 
-// ============================================================
-// === 수익률 계산 ===
-// ============================================================
 function getMyReturn() {
   let hv = 0;
   Object.entries(state.holdings).forEach(([code,h]) => { hv += h.qty*runtimePrices[code].current; });
@@ -1278,88 +1207,82 @@ function getMyReturn() {
 }
 
 // ============================================================
-// === 봇 트레이더 (게스트 모드 랭킹용) ===
+// === RANKING (Firestore 실시간 연동 및 가짜 봇 제거) ===
 // ============================================================
-const BOT_NAMES = [
-  '워런 김','이코노미스트','글로벌헌터','매크로마스터','신중한곰','불꽃황소',
-  '데이터분석가','월스트리트박','펀드매니저K','리스크테이커','가치투자자','퀀트여우',
-  '경제반장','트레이더민','지수추종자','역발상투자','버블헌터','안전제일'
-];
-// 봇 수익률은 시간 기반으로 결정론적 생성 (날짜별로 천천히 변동)
-function getBotTraders() {
-  const dayKey = new Date().toISOString().slice(0,10);
-  const hourKey = new Date().getUTCHours();
-  return BOT_NAMES.map((name, i) => {
-    const r = hashStr(name + dayKey + '_base');
-    const rh = hashStr(name + dayKey + hourKey + '_h');
-    // -25% ~ +45% 범위, 시간마다 약간 변동
-    const base = (r - 0.35) * 70;
-    const hourly = (rh - 0.5) * 6;
-    const ret = base + hourly;
-    const trades = Math.floor(hashStr(name+dayKey+'_t') * 80) + 5;
-    return { name, return: ret, trades, isBot: true };
-  });
-}
-
-// ============================================================
-// === RANKING ===
-// ============================================================
-let rankScope = 'global';
-function openRanking() {
+async function openRanking() {
   document.getElementById('rankingModal').classList.add('active');
-  renderRanking();
-}
-function renderRanking() {
   const body = document.getElementById('rankingBody');
-  const myReturn = getMyReturn();
-  const myName = (currentUser && currentUser.displayName) ? currentUser.displayName : (state.nickname || '나 (게스트)');
-  const myEntry = { name: myName, return: myReturn, trades: state.stats.totalTrades, isMe: true };
+  body.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary);font-size:13px;">🌐 실시간 글로벌 랭킹 분석 중...</div>';
+  
+  let entries = [];
 
-  let entries;
-  let scopeNote = '';
-  if (rankScope === 'global') {
-    // 봇 + 나 (Firebase 연동 시 실제 사용자로 대체 예정)
-    entries = [...getBotTraders(), myEntry];
-    scopeNote = window.FIREBASE_ENABLED ?
-      '전 세계 플레이어 + AI 트레이더와 경쟁 중' :
-      '※ Firebase 설정 전이라 AI 트레이더와 경쟁합니다. 설정하면 실제 전 세계 랭킹으로 전환됩니다.';
-  } else if (rankScope === 'friends') {
-    entries = [myEntry, ...getBotTraders().slice(0, 5).map(b => ({...b, name: '친구: '+b.name}))];
-    scopeNote = '※ 친구 기능은 Firebase 설정 후 친구를 추가하면 활성화됩니다.';
-  } else {
-    entries = [myEntry, ...getBotTraders().slice(0, 9).map(b => ({...b, name: '같은학교: '+b.name}))];
-    scopeNote = '※ 학교 랭킹은 같은 학교 코드를 입력한 학생들끼리 경쟁합니다.';
+  // 1. 파이어베이스가 세팅되어 있다면 'rankings' 컬렉션에서 실제 등록된 유저 데이터를 역순 정렬해 가져옴
+  if (window.FIREBASE_ENABLED && window.fb) {
+    try {
+      const q = window.fb.query(
+        window.fb.collection(window.fb.db, 'rankings'),
+        window.fb.orderBy('return', 'desc'),
+        window.fb.limit(30)
+      );
+      const querySnapshot = await window.fb.getDocs(q);
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        entries.push({
+          name: data.name || '알 수 없는 투자자',
+          return: data.return ?? 0,
+          trades: data.trades ?? 0,
+          isMe: currentUser && doc.id === currentUser.uid
+        });
+      });
+    } catch(e) {
+      console.error('글로벌 랭킹 수집 실패:', e);
+    }
   }
 
+  // 2. 현재 로그인한 본인 데이터 패칭 및 예외 핸들링
+  const myName = (currentUser && currentUser.displayName) ? currentUser.displayName : (state.nickname || '나 (게스트)');
+  const myReturn = getMyReturn();
+  const myEntry = { name: myName, return: myReturn, trades: state.stats.totalTrades, isMe: true };
+
+  // 불러온 데이터 리스트에 본인이 빠져있다면 추가
+  const alreadyHasMe = entries.some(e => e.isMe);
+  if (!alreadyHasMe) {
+    entries.push(myEntry);
+  }
+
+  // 실시간 최종 소팅 정렬
   entries.sort((a,b) => b.return - a.return);
   const myRank = entries.findIndex(e => e.isMe) + 1;
 
-  body.innerHTML = `
-    <div class="rank-tabs">
-      <button class="rank-tab ${rankScope==='global'?'active':''}" onclick="setRankScope('global')">🌍 전체</button>
-      <button class="rank-tab ${rankScope==='school'?'active':''}" onclick="setRankScope('school')">🏫 학교</button>
-      <button class="rank-tab ${rankScope==='friends'?'active':''}" onclick="setRankScope('friends')">👥 친구</button>
-    </div>
+  let html = `
     <div style="background:rgba(59,130,246,0.08);border:1px solid var(--accent-blue);border-radius:8px;padding:12px 14px;margin-bottom:16px;text-align:center;">
-      <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;">내 순위</div>
-      <div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--accent-blue);">${myRank}위 <span style="font-size:13px;color:var(--text-secondary);">/ ${entries.length}명</span></div>
+      <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;">내 현재 글로벌 순위</div>
+      <div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--accent-blue);">${myRank}위 <span style="font-size:13px;color:var(--text-secondary);">/ 총 ${entries.length}명</span></div>
       <div style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:${myReturn>=0?'var(--accent-green)':'var(--accent-red)'};margin-top:4px;">수익률 ${myReturn>=0?'+':''}${myReturn.toFixed(2)}%</div>
     </div>
-    ${entries.slice(0, 20).map((e, i) => {
+  `;
+
+  if (entries.length <= 1 && !currentUser) {
+    html += `<div style="text-align:center;padding:30px 10px;color:var(--text-muted);font-size:12px;line-height:1.6;">
+      현재 등록된 다른 실제 유저가 없습니다.<br>
+      구글 로그인 후 거래를 체결하시면 실시간 글로벌 순위 보드에 즉시 랭킹이 기록됩니다!
+    </div>`;
+  } else {
+    html += entries.map((e, i) => {
       const rank = i+1;
       const rankCls = rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
       const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
       return `<div class="rank-row ${e.isMe?'me':''}">
         <div class="rank-num ${rankCls}">${medal}</div>
-        <div class="rank-name">${e.name}${e.isBot?'<span class="rank-bot-tag">AI</span>':''}${e.isMe?'<span class="rank-bot-tag" style="background:var(--accent-blue);color:white;">ME</span>':''}</div>
-        <div class="rank-trades">${e.trades}회</div>
+        <div class="rank-name">${e.name}${e.isMe?'<span class="rank-bot-tag" style="background:var(--accent-blue);color:white;">ME</span>':''}</div>
+        <div class="rank-trades">${e.trades}회 거래</div>
         <div class="rank-return" style="color:${e.return>=0?'var(--accent-green)':'var(--accent-red)'};">${e.return>=0?'+':''}${e.return.toFixed(2)}%</div>
       </div>`;
-    }).join('')}
-    <div style="font-size:11px;color:var(--text-muted);margin-top:14px;text-align:center;line-height:1.5;">${scopeNote}</div>
-  `;
+    }).join('');
+  }
+
+  body.innerHTML = html;
 }
-function setRankScope(scope) { rankScope = scope; renderRanking(); }
 
 // ============================================================
 // === QUIZ ===
@@ -1367,7 +1290,6 @@ function setRankScope(scope) { rankScope = scope; renderRanking(); }
 let quizState = { idx: 0, score: 0, todayQuestions: [], answered: false };
 function openQuiz() {
   const today = new Date().toISOString().slice(0,10);
-  // 오늘 이미 풀었는지 확인
   if (state.quizLog[today] && state.quizLog[today].completed) {
     document.getElementById('quizBody').innerHTML = `
       <div style="text-align:center;padding:30px 20px;">
@@ -1379,7 +1301,6 @@ function openQuiz() {
     document.getElementById('quizModal').classList.add('active');
     return;
   }
-  // 오늘의 5문제 선택 (날짜 기반 결정론적)
   const shuffled = [...QUIZ].map((q,i)=>({q, sort: hashStr(today+'_q'+i)})).sort((a,b)=>a.sort-b.sort).map(x=>x.q);
   quizState = { idx: 0, score: 0, todayQuestions: shuffled.slice(0, 5), answered: false };
   document.getElementById('quizModal').classList.add('active');
@@ -1418,10 +1339,11 @@ function answerQuiz(choice) {
     <button class="quiz-next" onclick="${isLast?'finishQuiz()':'nextQuiz()'}">${isLast?'결과 보기':'다음 문제 →'}</button>
   `;
 }
+function defaultExplain() { document.getElementById('quizExplain').innerHTML = ''; }
 function nextQuiz() { quizState.idx++; quizState.answered = false; renderQuiz(); }
 function finishQuiz() {
   const today = new Date().toISOString().slice(0,10);
-  const reward = quizState.score * 5000; // 정답당 5천 가상자금
+  const reward = quizState.score * 5000; 
   state.cash += reward;
   state.quizLog[today] = { completed: true, score: quizState.score, total: quizState.todayQuestions.length };
   checkBadges();
@@ -1505,7 +1427,6 @@ function renderGlossary(query) {
           <div class="glossary-example">예) ${g.example}</div>
         </div>`).join('')}
   `;
-  // 검색 입력 포커스 유지
   if (query) { const inp = document.getElementById('glossarySearchInput'); if(inp){ inp.focus(); inp.setSelectionRange(query.length, query.length);} }
 }
 
@@ -1516,15 +1437,9 @@ async function resetGame() {
   location.reload();
 }
 
-// ============================================================
-// === FILTERS ===
-// ============================================================
 function filterCountries(){ state.searchQuery=document.getElementById('searchInput').value; renderCountryList(); }
 function filterByTier(t){ state.tierFilter=t; document.querySelectorAll('.tier-btn').forEach(b=>b.classList.toggle('active',b.dataset.tier===t)); renderCountryList(); }
 
-// ============================================================
-// === MOBILE NAV ===
-// ============================================================
 function switchMobilePanel(panel) {
   ['left','center','right'].forEach(p => {
     document.getElementById(p+'Panel').classList.toggle('mobile-active', p===panel);
@@ -1535,9 +1450,6 @@ function switchMobilePanel(panel) {
   if (panel==='center') setTimeout(drawChart, 50);
 }
 
-// ============================================================
-// === CLOCK & LIVE LOOP ===
-// ============================================================
 function updateClock() {
   const now = new Date();
   document.getElementById('realClock').textContent = now.toLocaleTimeString('ko-KR');
@@ -1552,9 +1464,6 @@ function liveLoop() {
   updateTradeSummary();
 }
 
-// ============================================================
-// === UTILITIES ===
-// ============================================================
 function formatGDP(b){ if(b>=1000) return `$${(b/1000).toFixed(1)}T`; if(b>=1) return `$${b.toFixed(0)}B`; return `$${(b*1000).toFixed(0)}M`; }
 function showToast(type,title,msg){
   const c=document.getElementById('toastContainer'); const t=document.createElement('div');
@@ -1564,7 +1473,7 @@ function showToast(type,title,msg){
 }
 
 // ============================================================
-// === PERSISTENCE (Firebase + localStorage) ===
+// === PERSISTENCE (Firebase 데이터 백업 및 연동) ===
 // ============================================================
 function getSaveData() {
   return { cash:state.cash, holdings:state.holdings, trades:state.trades.slice(-50),
@@ -1577,27 +1486,34 @@ function scheduleSave() {
 }
 async function saveState() {
   const data = getSaveData();
-  // 로컬은 항상 저장
   try { localStorage.setItem('nationvault_save', JSON.stringify(data)); } catch(e){}
-  // 로그인 상태면 Firestore에도
+  
   if (currentUser && window.fb) {
     setSyncStatus('syncing');
     try {
+      // 전체 자산 세이브 데이터 백업
       await window.fb.setDoc(window.fb.doc(window.fb.db,'users',currentUser.uid), data);
+      
+      // 실시간 글로벌 랭킹 보드용 단일 다큐먼트 갱신 연동
+      await window.fb.setDoc(window.fb.doc(window.fb.db, 'rankings', currentUser.uid), {
+        name: currentUser.displayName || '익명의 게스트',
+        return: getMyReturn(),
+        trades: state.stats.totalTrades,
+        updatedAt: Date.now()
+      });
+      
       setSyncStatus('synced');
     } catch(e){ console.error('Firestore 저장 실패',e); setSyncStatus('offline'); }
   }
 }
 async function loadState() {
   let data = null;
-  // 로그인 상태면 Firestore 우선
   if (currentUser && window.fb) {
     try {
       const snap = await window.fb.getDoc(window.fb.doc(window.fb.db,'users',currentUser.uid));
       if (snap.exists()) data = snap.data();
     } catch(e){ console.error('Firestore 로드 실패',e); }
   }
-  // 로컬 폴백
   if (!data) {
     try { const s=localStorage.getItem('nationvault_save'); if(s) data=JSON.parse(s); } catch(e){}
   }
@@ -1621,12 +1537,9 @@ function setSyncStatus(status) {
   else { txt.textContent = currentUser?'클라우드 동기화됨':'로컬 저장'; }
 }
 
-// ============================================================
-// === AUTH ===
-// ============================================================
 async function signInWithGoogle() {
   if (!window.FIREBASE_ENABLED || !window.fb) {
-    showToast('warning','Firebase 미설정','게스트 모드로 진행합니다. README 참고.');
+    showToast('warning','Firebase 미설정','게스트 모드로 진행합니다.');
     playAsGuest();
     return;
   }
@@ -1652,9 +1565,6 @@ function playAsGuest() {
   loadState().then(startGame);
 }
 
-// ============================================================
-// === START ===
-// ============================================================
 let gameStarted = false;
 function startGame() {
   if (gameStarted) return;
@@ -1670,34 +1580,25 @@ function startGame() {
 
   updateClock();
   setInterval(updateClock, 1000);
-  setInterval(liveLoop, 1000);  // 1초마다 갱신 (현실시간, 가속 없음)
+  setInterval(liveLoop, 1000);  
 
-  checkBadges();  // 초기 배지 상태 확인
+  checkBadges();  
 
-  // 모달 백드롭 클릭 시 닫기
   document.querySelectorAll('.modal-backdrop').forEach(bd => {
     bd.addEventListener('click', e => { if (e.target === bd) bd.classList.remove('active'); });
   });
 }
 
-// 초기 로드
 async function bootstrap() {
   await loadGameData();
   if (window.FIREBASE_ENABLED) {
-    document.getElementById('loginNote').textContent = '구글 로그인 시 모든 기기에서 거래내역이 동기화됩니다.';
-    // onAuthStateChanged가 로그인 상태면 자동 호출됨. 비로그인 시 로그인 화면 유지.
-  } else {
-    // Firebase 미설정 → 로컬 자동 시작 옵션 안내만 (로그인 화면 유지, 게스트 버튼 사용)
+    document.getElementById('loginNote').textContent = '구글 로그인 시 실시간 글로벌 랭킹 순위표에 자동 랭크됩니다.';
   }
 }
 
 window.addEventListener('firebase-ready', bootstrap);
-// firebase-ready 이벤트가 안 올 경우(스크립트 차단) 대비
 setTimeout(() => { if (COUNTRIES.length === 0) bootstrap(); }, 2000);
 
-// ============================================================
-// === FALLBACK DATA (countries.json 로드 실패 시) ===
-// ============================================================
 const FALLBACK_COUNTRIES = [
   {code:'USA',name:'미국',flag:'🇺🇸',tier:'S',gdp:27361,basePrice:798.69,volatility:0.6},
   {code:'CHN',name:'중국',flag:'🇨🇳',tier:'S',gdp:17795,basePrice:765.06,volatility:0.6},

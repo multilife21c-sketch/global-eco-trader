@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0e1a">
+<title>NationVault — 국가주식 거래소</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg-primary: #0a0e1a; --bg-secondary: #111827; --bg-tertiary: #1a2332;
+    --bg-elevated: #1f2937; --border-default: #2a3441; --border-strong: #3d4a5c;
+    --text-primary: #e5e7eb; --text-secondary: #9ca3af; --text-muted: #6b7280;
+    --accent-green: #10b981; --accent-red: #ef4444; --accent-amber: #f59e0b;
+    --accent-blue: #3b82f6; --accent-purple: #a855f7;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-kr: 'Noto Sans KR', sans-serif;
+  }
+
+  body {
+    background: var(--bg-primary); color: var(--text-primary);
+    font-family: var(--font-kr), var(--font-display), sans-serif;
+    overflow: hidden; height: 100vh; height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === TOP BAR === */
+  .topbar {
+    height: 56px; background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-default);
+    display: flex; align-items: center; padding: 0 16px; gap: 16px;
+  }
+  .logo { font-family: var(--font-display); font-weight: 700; font-size: 17px;
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .logo-icon { width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+    border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #0a0e1a; }
+  .logo-text span { color: var(--accent-green); }
+
+  .market-status { display: flex; align-items: center; gap: 6px; padding: 4px 10px;
+    background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 4px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; }
+  .pulse-dot { width: 6px; height: 6px; background: var(--accent-green);
+    border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .top-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .top-clock { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+  .balance-display { background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    padding: 5px 12px; border-radius: 6px; font-family: var(--font-mono); }
+  .balance-label { font-size: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .balance-value { font-size: 13px; font-weight: 600; color: var(--accent-green); }
+
+  .user-btn { display: flex; align-items: center; gap: 8px; background: var(--bg-tertiary);
+    border: 1px solid var(--border-default); padding: 5px 10px; border-radius: 6px;
+    cursor: pointer; font-family: var(--font-kr); font-size: 12px; color: var(--text-primary); }
+  .user-btn:hover { border-color: var(--border-strong); }
+  .user-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-blue); }
+  .user-avatar img { width: 100%; height: 100%; border-radius: 50%; }
+
+  /* === TICKER === */
+  .ticker-tape { height: 34px; background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-default); overflow: hidden;
+    position: relative; display: flex; align-items: center; }
+  .ticker-track { display: flex; gap: 28px; animation: ticker-scroll 120s linear infinite;
+    padding-left: 100%; white-space: nowrap; }
+  @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .ticker-item { display: flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 12px; }
+  .ticker-flag { font-size: 15px; }
+  .ticker-code { font-weight: 600; }
+  .ticker-price { color: var(--text-secondary); }
+  .ticker-change.up { color: var(--accent-green); }
+  .ticker-change.down { color: var(--accent-red); }
+
+  /* === LAYOUT === */
+  .main-container { display: grid; grid-template-columns: 300px 1fr 340px;
+    height: calc(100vh - 90px); height: calc(100dvh - 90px); }
+
+  .panel-header { padding: 12px 14px; border-bottom: 1px solid var(--border-default);
+    display: flex; align-items: center; justify-content: space-between; }
+  .panel-title { font-family: var(--font-display); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); }
+
+  /* LEFT */
+  .left-panel { background: var(--bg-secondary); border-right: 1px solid var(--border-default);
+    display: flex; flex-direction: column; overflow: hidden; }
+  .search-box { padding: 8px 14px; border-bottom: 1px solid var(--border-default); }
+  .search-input { width: 100%; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    color: var(--text-primary); padding: 8px 12px; border-radius: 6px; font-family: var(--font-kr);
+    font-size: 13px; outline: none; }
+  .search-input:focus { border-color: var(--accent-blue); }
+  .search-input::placeholder { color: var(--text-muted); }
+  .tier-filter { display: flex; gap: 4px; padding: 8px 14px; border-bottom: 1px solid var(--border-default); }
+  .tier-btn { flex: 1; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    color: var(--text-secondary); padding: 5px 0; font-family: var(--font-mono); font-size: 10px;
+    font-weight: 600; cursor: pointer; border-radius: 4px; }
+  .tier-btn.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+
+  .country-list { flex: 1; overflow-y: auto; scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent; }
+  .country-list::-webkit-scrollbar { width: 6px; }
+  .country-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+  .country-row { padding: 10px 14px; display: grid; grid-template-columns: auto 1fr auto;
+    gap: 10px; align-items: center; cursor: pointer;
+    border-bottom: 1px solid rgba(42, 52, 65, 0.4); }
+  .country-row:hover { background: var(--bg-tertiary); }
+  .country-row.selected { background: var(--bg-tertiary); border-left: 3px solid var(--accent-blue); padding-left: 11px; }
+  .country-flag { font-size: 20px; line-height: 1; }
+  .country-info { min-width: 0; }
+  .country-code { font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; gap: 5px; }
+  .tier-badge { font-size: 8px; padding: 1px 4px; border-radius: 2px; font-weight: 700; }
+  .tier-S { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+  .tier-A { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+  .tier-B { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+  .tier-C { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
+  .tier-D { background: rgba(156, 163, 175, 0.2); color: var(--text-secondary); }
+  .country-name { font-size: 11px; color: var(--text-secondary);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .country-price { text-align: right; }
+  .price-value { font-family: var(--font-mono); font-size: 13px; font-weight: 600; }
+  .price-change { font-family: var(--font-mono); font-size: 10px; font-weight: 500; }
+  .price-change.up { color: var(--accent-green); }
+  .price-change.down { color: var(--accent-red); }
+  .price-change.flat { color: var(--text-muted); }
+
+  /* CENTER */
+  .center-panel { background: var(--bg-primary); display: flex; flex-direction: column; overflow: hidden; }
+  .chart-header { padding: 14px 20px; border-bottom: 1px solid var(--border-default);
+    display: flex; align-items: center; justify-content: space-between; }
+  .selected-country { display: flex; align-items: center; gap: 14px; }
+  .sc-flag { font-size: 30px; }
+  .sc-info h2 { font-family: var(--font-display); font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+  .sc-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); display: flex; gap: 10px; flex-wrap: wrap; }
+  .price-display { text-align: right; }
+  .pd-price { font-family: var(--font-mono); font-size: 26px; font-weight: 700; }
+  .pd-change { font-family: var(--font-mono); font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .flash-up { animation: flash-green 0.6s; }
+  .flash-down { animation: flash-red 0.6s; }
+  @keyframes flash-green { 0% { background: rgba(16,185,129,0.3); } 100% { background: transparent; } }
+  @keyframes flash-red { 0% { background: rgba(239,68,68,0.3); } 100% { background: transparent; } }
+
+  .chart-tools { padding: 8px 20px; border-bottom: 1px solid var(--border-default);
+    display: flex; align-items: center; gap: 14px; }
+  .timeframe-group { display: flex; gap: 2px; background: var(--bg-tertiary); padding: 2px; border-radius: 5px; }
+  .tf-btn { background: transparent; border: none; color: var(--text-secondary); padding: 4px 10px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 500; cursor: pointer; border-radius: 3px; }
+  .tf-btn.active { background: var(--bg-elevated); color: var(--text-primary); }
+  .chart-note { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+  .chart-container { flex: 1; padding: 16px; position: relative; min-height: 0; }
+  #priceChart { width: 100%; height: 100%; display: block; }
+
+  .chart-stats { padding: 10px 20px; border-top: 1px solid var(--border-default);
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  .stat-item .stat-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;
+    cursor: help; border-bottom: 1px dashed var(--text-muted); display: inline-block; }
+  .stat-item .stat-value { font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+
+  /* RIGHT */
+  .right-panel { background: var(--bg-secondary); border-left: 1px solid var(--border-default);
+    display: flex; flex-direction: column; overflow: hidden; }
+  .trade-panel { border-bottom: 1px solid var(--border-default); padding: 14px; }
+  .trade-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .trade-tab { flex: 1; padding: 10px; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    color: var(--text-secondary); font-family: var(--font-display); font-size: 12px; font-weight: 600;
+    cursor: pointer; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .trade-tab.buy.active { background: var(--accent-green); color: #0a0e1a; border-color: var(--accent-green); }
+  .trade-tab.sell.active { background: var(--accent-red); color: white; border-color: var(--accent-red); }
+  .form-group { margin-bottom: 10px; }
+  .form-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+  .form-input { width: 100%; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    color: var(--text-primary); padding: 9px 12px; border-radius: 6px; font-family: var(--font-mono);
+    font-size: 13px; outline: none; }
+  .form-input:focus { border-color: var(--accent-blue); }
+  .quick-amounts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 6px; }
+  .qa-btn { padding: 5px; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    color: var(--text-secondary); font-family: var(--font-mono); font-size: 10px; cursor: pointer; border-radius: 4px; }
+  .trade-summary { background: var(--bg-tertiary); padding: 10px; border-radius: 6px; margin-bottom: 10px;
+    border: 1px solid var(--border-default); }
+  .summary-row { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; margin: 3px 0; }
+  .summary-row .label { color: var(--text-secondary); }
+  .summary-row .value { font-weight: 600; }
+  .trade-button { width: 100%; padding: 12px; border: none; font-family: var(--font-display);
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    cursor: pointer; border-radius: 6px; }
+  .trade-button.buy { background: var(--accent-green); color: #0a0e1a; }
+  .trade-button.sell { background: var(--accent-red); color: white; }
+  .trade-button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .news-section { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+  .news-list { flex: 1; overflow-y: auto; padding: 8px; scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent; }
+  .news-list::-webkit-scrollbar { width: 6px; }
+  .news-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+  .news-item { padding: 10px 12px; margin-bottom: 6px; background: var(--bg-tertiary);
+    border-radius: 6px; border-left: 3px solid var(--border-default); cursor: pointer; }
+  .news-item.positive { border-left-color: var(--accent-green); }
+  .news-item.negative { border-left-color: var(--accent-red); }
+  .news-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px;
+    font-family: var(--font-mono); font-size: 10px; }
+  .news-flag { font-size: 12px; }
+  .news-country-code { font-weight: 700; }
+  .news-impact { margin-left: auto; padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+  .news-impact.positive { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+  .news-impact.negative { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+  .news-impact.neutral { background: rgba(156,163,175,0.15); color: var(--text-secondary); }
+  .news-title { font-size: 12px; line-height: 1.4; margin-bottom: 3px; }
+  .news-time { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); }
+
+  /* BOTTOM BAR */
+  .bottom-bar { position: fixed; bottom: 16px; right: 356px; background: var(--bg-secondary);
+    border: 1px solid var(--border-default); border-radius: 8px; padding: 10px 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 20px; z-index: 100; }
+  .stat-block { text-align: center; }
+  .sb-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px; }
+  .sb-value { font-family: var(--font-mono); font-size: 14px; font-weight: 700; }
+  .portfolio-btn { background: var(--accent-blue); border: none; color: white; padding: 8px 14px;
+    font-family: var(--font-display); font-size: 11px; font-weight: 600; cursor: pointer;
+    border-radius: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* MODAL */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none;
+    align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); padding: 20px; }
+  .modal-backdrop.active { display: flex; }
+  .modal { background: var(--bg-secondary); border: 1px solid var(--border-default);
+    border-radius: 10px; width: 640px; max-width: 100%; max-height: 85vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
+  .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border-default);
+    display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg-secondary); }
+  .modal-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
+  .modal-close { background: transparent; border: none; color: var(--text-secondary);
+    font-size: 22px; cursor: pointer; width: 28px; height: 28px; border-radius: 4px; }
+  .modal-close:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+  .modal-body { padding: 20px; }
+  .holdings-table { width: 100%; border-collapse: collapse; }
+  .holdings-table th { text-align: left; padding: 8px; font-family: var(--font-mono); font-size: 10px;
+    color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--border-default); }
+  .holdings-table th.right { text-align: right; }
+  .holdings-table td { padding: 9px 8px; font-family: var(--font-mono); font-size: 12px;
+    border-bottom: 1px solid rgba(42,52,65,0.4); }
+  .holdings-table td.right { text-align: right; }
+
+  /* TOAST */
+  .toast-container { position: fixed; top: 70px; right: 16px; z-index: 2000;
+    display: flex; flex-direction: column; gap: 8px; }
+  .toast { background: var(--bg-elevated); border: 1px solid var(--border-default);
+    border-left: 4px solid var(--accent-blue); padding: 10px 14px; border-radius: 6px;
+    min-width: 260px; max-width: 90vw; box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    animation: toast-in 0.3s ease-out; }
+  .toast.success { border-left-color: var(--accent-green); }
+  .toast.error { border-left-color: var(--accent-red); }
+  .toast.warning { border-left-color: var(--accent-amber); }
+  @keyframes toast-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .toast-title { font-weight: 600; margin-bottom: 2px; font-family: var(--font-display); font-size: 12px; }
+  .toast-msg { color: var(--text-secondary); font-size: 11px; }
+
+  /* TOOLTIP */
+  [data-tip] { position: relative; }
+  [data-tip]:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 5px);
+    left: 50%; transform: translateX(-50%); background: var(--bg-elevated); color: var(--text-primary);
+    padding: 6px 10px; border-radius: 4px; font-size: 11px; font-family: var(--font-kr);
+    white-space: nowrap; z-index: 1000; border: 1px solid var(--border-strong); pointer-events: none; }
+
+  /* LOGIN OVERLAY */
+  .login-overlay { position: fixed; inset: 0; background: linear-gradient(135deg, #0a0e1a 0%, #1a2332 100%);
+    display: flex; align-items: center; justify-content: center; z-index: 5000; flex-direction: column; padding: 24px; }
+  .login-overlay.hidden { display: none; }
+  .login-content { max-width: 460px; text-align: center; width: 100%; }
+  .login-logo { font-family: var(--font-display); font-size: 44px; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+  .login-tagline { font-size: 15px; color: var(--text-secondary); margin-bottom: 28px; font-family: var(--font-display); }
+  .login-features { text-align: left; background: var(--bg-secondary); border: 1px solid var(--border-default);
+    padding: 20px; border-radius: 10px; margin-bottom: 24px; }
+  .login-features h3 { font-family: var(--font-display); font-size: 12px; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .login-features ul { list-style: none; }
+  .login-features li { padding: 5px 0; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+  .login-features li::before { content: "▸"; color: var(--accent-green); font-weight: 700; }
+  .google-btn { display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: #fff; color: #1f1f1f; border: none; padding: 13px 24px; font-family: var(--font-kr);
+    font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 10px; }
+  .google-btn:hover { background: #f5f5f5; }
+  .guest-btn { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-default);
+    padding: 11px 24px; font-family: var(--font-kr); font-size: 13px; border-radius: 8px; cursor: pointer; width: 100%; }
+  .guest-btn:hover { border-color: var(--border-strong); color: var(--text-primary); }
+  .login-note { font-size: 11px; color: var(--text-muted); margin-top: 16px; line-height: 1.5; }
+
+  /* MOBILE NAV */
+  .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+    background: var(--bg-secondary); border-top: 1px solid var(--border-default); z-index: 200; }
+  .mobile-nav button { flex: 1; background: transparent; border: none; color: var(--text-secondary);
+    font-family: var(--font-kr); font-size: 11px; cursor: pointer; display: flex;
+    flex-direction: column; align-items: center; gap: 3px; padding: 8px 0; }
+  .mobile-nav button.active { color: var(--accent-blue); }
+  .mobile-nav button .nav-icon { font-size: 18px; }
+
+  .sync-indicator { position: fixed; bottom: 16px; left: 16px; font-family: var(--font-mono);
+    font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; z-index: 100; }
+  .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); }
+  .sync-dot.syncing { background: var(--accent-amber); animation: pulse 1s infinite; }
+  .sync-dot.offline { background: var(--text-muted); }
+
+  /* === RESPONSIVE: TABLET === */
+  @media (max-width: 1100px) {
+    .main-container { grid-template-columns: 260px 1fr 300px; }
+    .bottom-bar { right: 316px; gap: 14px; padding: 8px 14px; }
+    .chart-stats { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  }
+
+  /* === RESPONSIVE: MOBILE === */
+  @media (max-width: 768px) {
+    .topbar { padding: 0 12px; gap: 10px; }
+    .market-status { display: none; }
+    .top-clock { display: none; }
+    .balance-label { display: none; }
+    .balance-display { padding: 4px 8px; }
+    .ticker-tape { height: 30px; }
+    .main-container { display: block; height: calc(100vh - 86px); height: calc(100dvh - 86px); position: relative; }
+    .left-panel, .center-panel, .right-panel {
+      position: absolute; inset: 0; border: none;
+      display: none; padding-bottom: 56px; }
+    .left-panel.mobile-active, .center-panel.mobile-active, .right-panel.mobile-active { display: flex; }
+    .mobile-nav { display: flex; }
+    .bottom-bar { display: none; }
+    .sync-indicator { bottom: 64px; }
+    .chart-header { flex-wrap: wrap; gap: 10px; }
+    .pd-price { font-size: 22px; }
+    .chart-stats { grid-template-columns: repeat(3, 1fr); }
+    .toast-container { top: auto; bottom: 70px; left: 16px; right: 16px; }
+    .toast { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login Overlay -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-content">
+    <div class="login-logo">NationVault</div>
+    <div class="login-tagline">국가를 거래하라. 세계를 이해하라.</div>
+    <div class="login-features">
+      <h3>📋 게임 소개</h3>
+      <ul>
+        <li>전 세계 194개국이 GDP 기반으로 상장</li>
+        <li>가상자금 $1,000,000으로 투자 시작</li>
+        <li>실제 시각과 동기화된 시세 — 매시간 뉴스 평가 반영</li>
+        <li>구글 로그인 시 모든 기기에서 거래내역 동기화</li>
+      </ul>
+    </div>
+    <button class="google-btn" id="googleLoginBtn" onclick="signInWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Google로 로그인
+    </button>
+    <button class="guest-btn" onclick="playAsGuest()">게스트로 플레이 (이 기기에만 저장)</button>
+    <div class="login-note" id="loginNote">
+      ※ Firebase 설정 전에는 게스트 모드로만 플레이됩니다.<br>
+      설정 방법은 함께 제공된 README를 참고하세요.
+    </div>
+  </div>
+</div>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">N</div>
+    <div class="logo-text">Nation<span>Vault</span></div>
+  </div>
+  <div class="market-status"><div class="pulse-dot"></div><span>LIVE MARKET</span></div>
+  <div class="top-right">
+    <div class="top-clock" id="realClock">--:--:--</div>
+    <div class="balance-display">
+      <div class="balance-label">CASH</div>
+      <div class="balance-value" id="cashBalance">$1,000,000</div>
+    </div>
+    <button class="user-btn" id="userBtn" onclick="openPortfolio()">
+      <div class="user-avatar" id="userAvatar"></div>
+      <span id="userName">게스트</span>
+    </button>
+  </div>
+</div>
+
+<!-- Ticker -->
+<div class="ticker-tape"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<!-- Main -->
+<div class="main-container">
+  <!-- LEFT -->
+  <div class="left-panel mobile-active" id="leftPanel">
+    <div class="panel-header">
+      <div class="panel-title">📊 Markets</div>
+      <div class="panel-title" style="color: var(--text-muted);" id="countryCount">194</div>
+    </div>
+    <div class="search-box">
+      <input type="text" class="search-input" placeholder="국가 검색 (한글/코드)..." id="searchInput" oninput="filterCountries()">
+    </div>
+    <div class="tier-filter">
+      <button class="tier-btn active" data-tier="ALL" onclick="filterByTier('ALL')">전체</button>
+      <button class="tier-btn" data-tier="S" onclick="filterByTier('S')">S</button>
+      <button class="tier-btn" data-tier="A" onclick="filterByTier('A')">A</button>
+      <button class="tier-btn" data-tier="B" onclick="filterByTier('B')">B</button>
+      <button class="tier-btn" data-tier="C" onclick="filterByTier('C')">C</button>
+      <button class="tier-btn" data-tier="D" onclick="filterByTier('D')">D</button>
+    </div>
+    <div class="country-list" id="countryList"></div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center-panel" id="centerPanel">
+    <div class="chart-header">
+      <div class="selected-country">
+        <div class="sc-flag" id="scFlag">🇺🇸</div>
+        <div class="sc-info">
+          <h2 id="scName">미국</h2>
+          <div class="sc-meta">
+            <span id="scCode">USA</span><span>·</span>
+            <span id="scTier">Tier S</span><span>·</span>
+            <span data-tip="국가의 연간 총생산. 시가총액의 기준">GDP: <span id="scGDP">$27.4T</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="price-display">
+        <div class="pd-price" id="pdPrice">$0.00</div>
+        <div class="pd-change" id="pdChange">+$0.00 (0.00%)</div>
+      </div>
+    </div>
+    <div class="chart-tools">
+      <div class="timeframe-group">
+        <button class="tf-btn" data-tf="60">1시간</button>
+        <button class="tf-btn active" data-tf="360">6시간</button>
+        <button class="tf-btn" data-tf="1440">24시간</button>
+        <button class="tf-btn" data-tf="all">전체</button>
+      </div>
+      <div class="chart-note">📊 실시간 동기화 · 매시간 AI 평가</div>
+    </div>
+    <div class="chart-container"><canvas id="priceChart"></canvas></div>
+    <div class="chart-stats">
+      <div class="stat-item"><div class="stat-label" data-tip="장중 최고가">HIGH</div><div class="stat-value" id="statHigh">$0</div></div>
+      <div class="stat-item"><div class="stat-label" data-tip="장중 최저가">LOW</div><div class="stat-value" id="statLow">$0</div></div>
+      <div class="stat-item"><div class="stat-label" data-tip="국가 총 시장가치">MKT CAP</div><div class="stat-value" id="statMcap">$0</div></div>
+      <div class="stat-item"><div class="stat-label" data-tip="가격 변동성">VOLATILITY</div><div class="stat-value" id="statVol2">0%</div></div>
+      <div class="stat-item"><div class="stat-label" data-tip="AI 뉴스 종합 점수 (-100~+100)">AI 점수</div><div class="stat-value" id="statSentiment">0</div></div>
+      <div class="stat-item"><div class="stat-label" data-tip="내 보유 수량">보유</div><div class="stat-value" id="statHolding">0</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-panel" id="rightPanel">
+    <div class="trade-panel">
+      <div class="trade-tabs">
+        <button class="trade-tab buy active" id="tabBuy" onclick="switchTradeTab('BUY')">매수</button>
+        <button class="trade-tab sell" id="tabSell" onclick="switchTradeTab('SELL')">매도</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">현재가</label>
+        <input type="text" class="form-input" id="tradePrice" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">수량 (주)</label>
+        <input type="number" class="form-input" id="tradeQty" min="1" value="10" oninput="updateTradeSummary()">
+        <div class="quick-amounts">
+          <button class="qa-btn" onclick="setQty(10)">10</button>
+          <button class="qa-btn" onclick="setQty(50)">50</button>
+          <button class="qa-btn" onclick="setQty(100)">100</button>
+          <button class="qa-btn" onclick="setMaxQty()">MAX</button>
+        </div>
+      </div>
+      <div class="trade-summary">
+        <div class="summary-row"><span class="label">예상 체결가</span><span class="value" id="estPrice">$0.00</span></div>
+        <div class="summary-row"><span class="label">총 거래액</span><span class="value" id="estTotal">$0.00</span></div>
+        <div class="summary-row"><span class="label" data-tip="수수료 0.1%">수수료</span><span class="value" id="estFee">$0.00</span></div>
+      </div>
+      <button class="trade-button buy" id="tradeBtn" onclick="executeTrade()">매수 주문</button>
+    </div>
+    <div class="news-section">
+      <div class="panel-header">
+        <div class="panel-title">📰 글로벌 뉴스</div>
+        <div class="panel-title" style="color: var(--accent-green);" id="newsCount">0</div>
+      </div>
+      <div class="news-list" id="newsList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Portfolio Bar (desktop) -->
+<div class="bottom-bar">
+  <div class="stat-block"><div class="sb-label">총 자산</div><div class="sb-value" id="portfolioValue" style="color: var(--accent-green);">$1,000,000</div></div>
+  <div class="stat-block"><div class="sb-label" data-tip="실현+미실현 손익">손익</div><div class="sb-value" id="totalPL">$0.00</div></div>
+  <div class="stat-block"><div class="sb-label">수익률</div><div class="sb-value" id="returnPct">+0.00%</div></div>
+  <button class="portfolio-btn" onclick="openPortfolio()">📊 포트폴리오</button>
+</div>
+
+<!-- Sync indicator -->
+<div class="sync-indicator">
+  <div class="sync-dot" id="syncDot"></div>
+  <span id="syncText">로컬 저장</span>
+</div>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav">
+  <button class="active" data-panel="left" onclick="switchMobilePanel('left')"><span class="nav-icon">📊</span>마켓</button>
+  <button data-panel="center" onclick="switchMobilePanel('center')"><span class="nav-icon">📈</span>차트</button>
+  <button data-panel="right" onclick="switchMobilePanel('right')"><span class="nav-icon">💱</span>거래</button>
+  <button onclick="openPortfolio()"><span class="nav-icon">💼</span>자산</button>
+</div>
+
+<!-- Portfolio Modal -->
+<div class="modal-backdrop" id="portfolioModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">💼 내 포트폴리오</div>
+      <button class="modal-close" onclick="closePortfolio()">×</button>
+    </div>
+    <div class="modal-body" id="portfolioBody"></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ============ FIREBASE CONFIG ============ -->
+<script type="module">
+  // ⚠️ 아래 firebaseConfig를 본인의 Firebase 프로젝트 설정으로 교체하세요.
+  // 설정 방법은 README_SETUP.md 참고. 비워두면 자동으로 게스트(로컬) 모드로 작동합니다.
+  const firebaseConfig = {
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
+  };
+
+  window.FIREBASE_ENABLED = !!firebaseConfig.apiKey;
+
+  if (window.FIREBASE_ENABLED) {
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } =
+      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    const { getFirestore, doc, getDoc, setDoc } =
+      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    window.fb = { auth, db, provider, signInWithPopup, signOut, onAuthStateChanged, doc, getDoc, setDoc };
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) window.onUserLogin(user);
+    });
+  }
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<!-- ============ GAME LOGIC ============ -->
+<script>
+// ============================================================
+// === GLOBALS ===
+// ============================================================
+let COUNTRIES = [];
+let COUNTRY_MAP = {};
+let SEED_DATA = null; // prices.json content
+
+let state = {
+  cash: 1000000,
+  initialCash: 1000000,
+  holdings: {},
+  trades: [],
+  selectedCountry: 'USA',
+  tradeMode: 'BUY',
+  chartTimeframe: 360,
+  tierFilter: 'ALL',
+  searchQuery: '',
+};
+
+let runtimePrices = {}; // 현재 시각 기준 계산된 가격
+let currentUser = null;
+let saveTimeout = null;
+
+// ============================================================
+// === DETERMINISTIC PRICE ENGINE (현실시간 동기화) ===
+// ============================================================
+// 핵심: 모든 사용자가 동일 시각에 동일 가격을 보도록,
+// seed 가격 + (현재 분 단위) 기반 결정론적 의사난수로 마이크로 변동 생성.
+function hashStr(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0) / 4294967296; // 0~1
+}
+
+function computeLivePrice(code) {
+  const c = COUNTRY_MAP[code];
+  if (!c) return 0;
+
+  // seed: prices.json에서 온 시간별 기준가 (없으면 basePrice)
+  let seed = c.basePrice;
+  let vol = c.volatility;
+  let sentiment = 0;
+  if (SEED_DATA && SEED_DATA.countries[code]) {
+    seed = SEED_DATA.countries[code].seed_price;
+    sentiment = SEED_DATA.countries[code].sentiment || 0;
+  }
+
+  // 현재 시각 기준 마이크로틱: 분 단위로 변동 (현실시간)
+  const now = new Date();
+  const minuteOfHour = now.getUTCMinutes();
+  const second = now.getUTCSeconds();
+  // 매 분마다 결정론적 변동 누적
+  let price = seed;
+  const hourKey = now.getUTCFullYear() + '' + (now.getUTCMonth()+1) + '' + now.getUTCDate() + '' + now.getUTCHours();
+  for (let m = 0; m <= minuteOfHour; m++) {
+    const r = hashStr(code + hourKey + '_m' + m);
+    const drift = sentiment * 0.00006;
+    const noise = (r - 0.5) * vol * 0.0022;
+    price = price * (1 + drift + noise);
+  }
+  // 초 단위 미세 보간 (부드러운 움직임)
+  const rSec = hashStr(code + hourKey + '_m' + minuteOfHour + '_s' + Math.floor(second/5));
+  price = price * (1 + (rSec - 0.5) * vol * 0.0006);
+
+  return Math.max(0.5, price);
+}
+
+function refreshRuntimePrices() {
+  COUNTRIES.forEach(c => {
+    const newPrice = computeLivePrice(c.code);
+    const prev = runtimePrices[c.code] ? runtimePrices[c.code].current : newPrice;
+    if (!runtimePrices[c.code]) {
+      runtimePrices[c.code] = {
+        current: newPrice, prev: newPrice,
+        open: newPrice, high: newPrice, low: newPrice,
+        changePct: 0, history: [],
+      };
+    }
+    const rp = runtimePrices[c.code];
+    rp.prev = prev;
+    rp.current = newPrice;
+    rp.changePct = prev ? ((newPrice - prev) / prev) * 100 : 0;
+    rp.high = Math.max(rp.high, newPrice);
+    rp.low = Math.min(rp.low, newPrice);
+    // history (최근 1440분 = 24시간)
+    rp.history.push(newPrice);
+    if (rp.history.length > 1500) rp.history.shift();
+  });
+}
+
+// ============================================================
+// === SEED HISTORY (차트 초기 데이터 채우기) ===
+// ============================================================
+function buildInitialHistory(code) {
+  // 과거 60분치를 결정론적으로 재구성해 차트가 비어보이지 않게
+  const c = COUNTRY_MAP[code];
+  if (!c) return [];
+  let seed = c.basePrice, sentiment = 0;
+  if (SEED_DATA && SEED_DATA.countries[code]) {
+    seed = SEED_DATA.countries[code].seed_price;
+    sentiment = SEED_DATA.countries[code].sentiment || 0;
+  }
+  const now = new Date();
+  const hourKey = now.getUTCFullYear() + '' + (now.getUTCMonth()+1) + '' + now.getUTCDate() + '' + now.getUTCHours();
+  const minuteOfHour = now.getUTCMinutes();
+  const hist = [];
+  let price = seed;
+  for (let m = 0; m <= minuteOfHour; m++) {
+    const r = hashStr(code + hourKey + '_m' + m);
+    const drift = sentiment * 0.00006;
+    const noise = (r - 0.5) * c.volatility * 0.0022;
+    price = price * (1 + drift + noise);
+    hist.push(price);
+  }
+  return hist;
+}
+
+// ============================================================
+// === DATA LOADING ===
+// ============================================================
+async function loadGameData() {
+  // 인라인 데이터 사용 (standalone 버전)
+  COUNTRIES = INLINE_COUNTRIES;
+  COUNTRIES.forEach(c => COUNTRY_MAP[c.code] = c);
+  SEED_DATA = INLINE_PRICES;
+
+  // 초기 히스토리 구성
+  COUNTRIES.forEach(c => {
+    const hist = buildInitialHistory(c.code);
+    runtimePrices[c.code] = {
+      current: hist[hist.length-1] || c.basePrice,
+      prev: hist[hist.length-2] || c.basePrice,
+      open: hist[0] || c.basePrice,
+      high: Math.max(...hist, c.basePrice),
+      low: Math.min(...hist, c.basePrice),
+      changePct: 0,
+      history: hist,
+    };
+  });
+}
+
+// ============================================================
+// === RENDERING ===
+// ============================================================
+function renderCountryList() {
+  const list = document.getElementById('countryList');
+  let filtered = COUNTRIES.filter(c => {
+    if (state.tierFilter !== 'ALL' && c.tier !== state.tierFilter) return false;
+    if (state.searchQuery) {
+      const q = state.searchQuery.toLowerCase();
+      return c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q);
+    }
+    return true;
+  });
+  document.getElementById('countryCount').textContent = filtered.length;
+
+  list.innerHTML = filtered.map(c => {
+    const p = runtimePrices[c.code];
+    const dayChange = p.open ? ((p.current - p.open) / p.open) * 100 : 0;
+    const cls = dayChange > 0.01 ? 'up' : dayChange < -0.01 ? 'down' : 'flat';
+    const arrow = dayChange > 0.01 ? '▲' : dayChange < -0.01 ? '▼' : '─';
+    return `<div class="country-row ${state.selectedCountry === c.code ? 'selected' : ''}" onclick="selectCountry('${c.code}')">
+      <div class="country-flag">${c.flag}</div>
+      <div class="country-info">
+        <div class="country-code">${c.code} <span class="tier-badge tier-${c.tier}">${c.tier}</span></div>
+        <div class="country-name">${c.name}</div>
+      </div>
+      <div class="country-price">
+        <div class="price-value">$${p.current.toFixed(2)}</div>
+        <div class="price-change ${cls}">${arrow} ${Math.abs(dayChange).toFixed(2)}%</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTickerTape() {
+  const track = document.getElementById('tickerTrack');
+  // 상위 40개국만 티커에 (성능)
+  const top = COUNTRIES.slice(0, 40);
+  const makeItems = () => top.map(c => {
+    const p = runtimePrices[c.code];
+    const dayChange = p.open ? ((p.current - p.open) / p.open) * 100 : 0;
+    const cls = dayChange > 0 ? 'up' : dayChange < 0 ? 'down' : 'flat';
+    const arrow = dayChange > 0 ? '▲' : dayChange < 0 ? '▼' : '';
+    return `<div class="ticker-item"><span class="ticker-flag">${c.flag}</span><span class="ticker-code">${c.code}</span><span class="ticker-price">$${p.current.toFixed(2)}</span><span class="ticker-change ${cls}">${arrow}${Math.abs(dayChange).toFixed(2)}%</span></div>`;
+  }).join('');
+  track.innerHTML = makeItems() + makeItems(); // 2x for seamless loop
+}
+
+function selectCountry(code) {
+  state.selectedCountry = code;
+  renderCountryList();
+  updateCenterPanel();
+  updateTradeSummary();
+  scheduleSave();
+  // 모바일: 차트로 전환
+  if (window.innerWidth <= 768) switchMobilePanel('center');
+}
+
+function updateCenterPanel() {
+  const c = COUNTRY_MAP[state.selectedCountry];
+  if (!c) return;
+  const p = runtimePrices[c.code];
+
+  document.getElementById('scFlag').textContent = c.flag;
+  document.getElementById('scName').textContent = c.name;
+  document.getElementById('scCode').textContent = c.code;
+  document.getElementById('scTier').textContent = `Tier ${c.tier}`;
+  document.getElementById('scGDP').textContent = formatGDP(c.gdp);
+
+  const prevDisplayed = parseFloat((document.getElementById('pdPrice').textContent || '0').replace(/[$,]/g, '')) || p.current;
+  document.getElementById('pdPrice').textContent = `$${p.current.toFixed(2)}`;
+
+  const dayChange = p.current - p.open;
+  const dayPct = p.open ? (dayChange / p.open) * 100 : 0;
+  const changeEl = document.getElementById('pdChange');
+  changeEl.textContent = `${dayChange >= 0 ? '+' : ''}$${dayChange.toFixed(2)} (${dayChange >= 0 ? '+' : ''}${dayPct.toFixed(2)}%)`;
+  changeEl.style.color = dayChange >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+
+  if (p.current > prevDisplayed) { changeEl.classList.remove('flash-down'); changeEl.classList.add('flash-up'); setTimeout(()=>changeEl.classList.remove('flash-up'),600); }
+  else if (p.current < prevDisplayed) { changeEl.classList.remove('flash-up'); changeEl.classList.add('flash-down'); setTimeout(()=>changeEl.classList.remove('flash-down'),600); }
+
+  document.getElementById('statHigh').textContent = `$${p.high.toFixed(2)}`;
+  document.getElementById('statLow').textContent = `$${p.low.toFixed(2)}`;
+  document.getElementById('statMcap').textContent = formatGDP(c.gdp);
+  document.getElementById('statVol2').textContent = `${c.volatility.toFixed(1)}%`;
+
+  const sent = SEED_DATA && SEED_DATA.countries[c.code] ? Math.round(SEED_DATA.countries[c.code].sentiment) : 0;
+  const sentEl = document.getElementById('statSentiment');
+  sentEl.textContent = (sent >= 0 ? '+' : '') + sent;
+  sentEl.style.color = sent > 5 ? 'var(--accent-green)' : sent < -5 ? 'var(--accent-red)' : 'var(--text-secondary)';
+
+  const holding = state.holdings[c.code];
+  document.getElementById('statHolding').textContent = holding ? holding.qty : 0;
+
+  document.getElementById('tradePrice').value = `$${p.current.toFixed(2)}`;
+  drawChart();
+}
+
+// ============================================================
+// === CHART ===
+// ============================================================
+function drawChart() {
+  const canvas = document.getElementById('priceChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const w = rect.width, h = rect.height;
+  ctx.clearRect(0, 0, w, h);
+
+  const p = runtimePrices[state.selectedCountry];
+  if (!p || p.history.length < 2) return;
+  let data = p.history;
+  if (state.chartTimeframe !== 'all') data = data.slice(-state.chartTimeframe);
+  if (data.length < 2) data = p.history;
+
+  const minP = Math.min(...data), maxP = Math.max(...data);
+  const range = (maxP - minP) || 1, pad = range * 0.1;
+  const yMin = minP - pad, yMax = maxP + pad;
+  const padL = 58, padR = 16, padT = 16, padB = 26;
+  const cw = w - padL - padR, ch = h - padT - padB;
+
+  ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 1;
+  ctx.font = '10px JetBrains Mono'; ctx.fillStyle = '#6b7280';
+  for (let i = 0; i <= 5; i++) {
+    const y = padT + (ch/5)*i;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(w-padR, y); ctx.stroke();
+    const price = yMax - ((yMax-yMin)/5)*i;
+    ctx.textAlign = 'right'; ctx.fillText(`$${price.toFixed(2)}`, padL-6, y+3);
+  }
+
+  const isUp = data[data.length-1] >= data[0];
+  const line = isUp ? '#10b981' : '#ef4444';
+  const fill = isUp ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)';
+
+  ctx.beginPath();
+  data.forEach((v,i) => {
+    const x = padL + (cw/(data.length-1))*i;
+    const y = padT + ch - ((v-yMin)/(yMax-yMin))*ch;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.lineTo(padL+cw, padT+ch); ctx.lineTo(padL, padT+ch); ctx.closePath();
+  ctx.fillStyle = fill; ctx.fill();
+
+  ctx.beginPath();
+  data.forEach((v,i) => {
+    const x = padL + (cw/(data.length-1))*i;
+    const y = padT + ch - ((v-yMin)/(yMax-yMin))*ch;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle = line; ctx.lineWidth = 2; ctx.stroke();
+
+  const lx = padL+cw, ly = padT+ch-((data[data.length-1]-yMin)/(yMax-yMin))*ch;
+  ctx.beginPath(); ctx.arc(lx,ly,4,0,Math.PI*2); ctx.fillStyle = line; ctx.fill();
+  ctx.strokeStyle = '#0a0e1a'; ctx.lineWidth = 2; ctx.stroke();
+}
+
+document.querySelectorAll('.tf-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tf = btn.dataset.tf;
+    state.chartTimeframe = tf === 'all' ? 'all' : parseInt(tf);
+    drawChart();
+  });
+});
+window.addEventListener('resize', () => { drawChart(); });
+
+// ============================================================
+// === NEWS ===
+// ============================================================
+function renderNews() {
+  const list = document.getElementById('newsList');
+  const news = (SEED_DATA && SEED_DATA.news) ? SEED_DATA.news : [];
+  document.getElementById('newsCount').textContent = news.length;
+  if (news.length === 0) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:12px;">아직 뉴스가 없습니다.<br>매시간 AI 평가가 반영됩니다.</div>';
+    return;
+  }
+  list.innerHTML = news.map(n => {
+    const t = new Date(n.time);
+    const timeStr = t.toLocaleString('ko-KR', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    return `<div class="news-item ${n.category}" onclick="selectCountry('${n.code}')">
+      <div class="news-header">
+        <span class="news-flag">${n.flag}</span>
+        <span class="news-country-code">${n.code}</span>
+        <span class="news-impact ${n.category}">${n.category==='positive'?'+ 호재':n.category==='negative'?'− 악재':'중립'}</span>
+      </div>
+      <div class="news-title">${n.title}</div>
+      <div class="news-time">${timeStr}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// === TRADING ===
+// ============================================================
+function switchTradeTab(mode) {
+  state.tradeMode = mode;
+  document.getElementById('tabBuy').classList.toggle('active', mode==='BUY');
+  document.getElementById('tabSell').classList.toggle('active', mode==='SELL');
+  const btn = document.getElementById('tradeBtn');
+  btn.className = `trade-button ${mode.toLowerCase()}`;
+  btn.textContent = mode==='BUY' ? '매수 주문' : '매도 주문';
+  updateTradeSummary();
+}
+function setQty(n){ document.getElementById('tradeQty').value=n; updateTradeSummary(); }
+function setMaxQty(){
+  const p = runtimePrices[state.selectedCountry];
+  if (state.tradeMode==='BUY') document.getElementById('tradeQty').value = Math.floor(state.cash/(p.current*1.001));
+  else { const h=state.holdings[state.selectedCountry]; document.getElementById('tradeQty').value = h?h.qty:0; }
+  updateTradeSummary();
+}
+function updateTradeSummary() {
+  const p = runtimePrices[state.selectedCountry];
+  if (!p) return;
+  const qty = parseInt(document.getElementById('tradeQty').value)||0;
+  const total = qty*p.current, fee = total*0.001;
+  document.getElementById('estPrice').textContent = `$${p.current.toFixed(2)}`;
+  document.getElementById('estTotal').textContent = `$${total.toFixed(2)}`;
+  document.getElementById('estFee').textContent = `$${fee.toFixed(2)}`;
+  const btn = document.getElementById('tradeBtn');
+  let ok = qty>0;
+  if (state.tradeMode==='BUY' && (total+fee)>state.cash) ok=false;
+  if (state.tradeMode==='SELL'){ const h=state.holdings[state.selectedCountry]; if(!h||h.qty<qty) ok=false; }
+  btn.disabled = !ok;
+}
+function executeTrade() {
+  const qty = parseInt(document.getElementById('tradeQty').value);
+  if (!qty||qty<=0){ showToast('error','잘못된 수량','수량을 확인하세요.'); return; }
+  const code = state.selectedCountry, c = COUNTRY_MAP[code];
+  const price = runtimePrices[code].current;
+  const total = qty*price, fee = total*0.001;
+  if (state.tradeMode==='BUY') {
+    if (total+fee>state.cash){ showToast('error','잔액 부족','보유 현금이 부족합니다.'); return; }
+    state.cash -= (total+fee);
+    if(!state.holdings[code]) state.holdings[code]={qty:0,avgPrice:0};
+    const h=state.holdings[code];
+    h.avgPrice = (h.avgPrice*h.qty + price*qty)/(h.qty+qty); h.qty += qty;
+    state.trades.push({type:'BUY',code,qty,price,total,fee,time:Date.now()});
+    showToast('success','매수 체결',`${c.flag} ${c.name} ${qty}주 매수 완료`);
+  } else {
+    const h=state.holdings[code];
+    if(!h||h.qty<qty){ showToast('error','보유량 부족','보유 수량이 부족합니다.'); return; }
+    state.cash += (total-fee);
+    const profit=(price-h.avgPrice)*qty-fee;
+    h.qty-=qty; if(h.qty===0) delete state.holdings[code];
+    state.trades.push({type:'SELL',code,qty,price,total,fee,profit,time:Date.now()});
+    showToast(profit>=0?'success':'warning','매도 체결',`${c.flag} ${c.name} ${qty}주 / 손익 ${profit>=0?'+':''}$${profit.toFixed(2)}`);
+  }
+  updatePortfolioStats(); updateTradeSummary(); updateCenterPanel(); scheduleSave();
+}
+
+// ============================================================
+// === PORTFOLIO ===
+// ============================================================
+function updatePortfolioStats() {
+  let hv = 0;
+  Object.entries(state.holdings).forEach(([code,h]) => { hv += h.qty*runtimePrices[code].current; });
+  const total = state.cash+hv, pl = total-state.initialCash, ret = pl/state.initialCash*100;
+  document.getElementById('cashBalance').textContent = `$${Math.round(state.cash).toLocaleString()}`;
+  document.getElementById('portfolioValue').textContent = `$${Math.round(total).toLocaleString()}`;
+  const plEl=document.getElementById('totalPL'); plEl.textContent=`${pl>=0?'+':''}$${Math.round(pl).toLocaleString()}`;
+  plEl.style.color = pl>=0?'var(--accent-green)':'var(--accent-red)';
+  const rEl=document.getElementById('returnPct'); rEl.textContent=`${ret>=0?'+':''}${ret.toFixed(2)}%`;
+  rEl.style.color = ret>=0?'var(--accent-green)':'var(--accent-red)';
+}
+
+function openPortfolio() {
+  const body = document.getElementById('portfolioBody');
+  const holdings = Object.entries(state.holdings);
+  let hv=0, html='';
+  if (holdings.length===0) {
+    html = '<div style="padding:40px;text-align:center;color:var(--text-muted);">아직 보유한 국가가 없습니다.<br>국가를 매수해보세요!</div>';
+  } else {
+    html = `<h3 style="font-family:var(--font-display);font-size:13px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">보유 종목</h3>
+    <table class="holdings-table"><thead><tr><th>국가</th><th class="right">수량</th><th class="right">평단</th><th class="right">현재가</th><th class="right">평가액</th><th class="right">손익</th></tr></thead><tbody>`;
+    holdings.forEach(([code,h]) => {
+      const c=COUNTRY_MAP[code], cur=runtimePrices[code].current;
+      const val=h.qty*cur, profit=(cur-h.avgPrice)*h.qty, pct=(cur-h.avgPrice)/h.avgPrice*100;
+      hv+=val;
+      const col=profit>=0?'var(--accent-green)':'var(--accent-red)';
+      html+=`<tr><td>${c.flag} ${c.name}</td><td class="right">${h.qty}</td><td class="right">$${h.avgPrice.toFixed(2)}</td><td class="right">$${cur.toFixed(2)}</td><td class="right">$${val.toFixed(2)}</td><td class="right" style="color:${col};">${profit>=0?'+':''}$${profit.toFixed(2)}<br><span style="font-size:10px;">(${pct>=0?'+':''}${pct.toFixed(2)}%)</span></td></tr>`;
+    });
+    html+='</tbody></table>';
+  }
+  let tradesHtml='';
+  if (state.trades.length>0) {
+    tradesHtml = `<h3 style="font-family:var(--font-display);font-size:13px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px;">최근 거래 (${state.trades.length})</h3>
+    <table class="holdings-table"><thead><tr><th>구분</th><th>국가</th><th class="right">수량</th><th class="right">가격</th><th class="right">손익</th></tr></thead><tbody>`;
+    state.trades.slice(-15).reverse().forEach(t => {
+      const c=COUNTRY_MAP[t.code];
+      const ps = (t.type==='SELL'&&t.profit!==undefined)?`<span style="color:${t.profit>=0?'var(--accent-green)':'var(--accent-red)'};">${t.profit>=0?'+':''}$${t.profit.toFixed(2)}</span>`:'<span style="color:var(--text-muted);">—</span>';
+      tradesHtml+=`<tr><td><span style="color:${t.type==='BUY'?'var(--accent-green)':'var(--accent-red)'};font-weight:600;">${t.type==='BUY'?'매수':'매도'}</span></td><td>${c.flag} ${t.code}</td><td class="right">${t.qty}</td><td class="right">$${t.price.toFixed(2)}</td><td class="right">${ps}</td></tr>`;
+    });
+    tradesHtml+='</tbody></table>';
+  }
+  const total=state.cash+hv, ret=(total-state.initialCash)/state.initialCash*100;
+  body.innerHTML = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
+    <div style="background:var(--bg-tertiary);padding:12px;border-radius:8px;border:1px solid var(--border-default);"><div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:4px;">현금</div><div style="font-family:var(--font-mono);font-size:15px;font-weight:700;">$${Math.round(state.cash).toLocaleString()}</div></div>
+    <div style="background:var(--bg-tertiary);padding:12px;border-radius:8px;border:1px solid var(--border-default);"><div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:4px;">평가액</div><div style="font-family:var(--font-mono);font-size:15px;font-weight:700;">$${Math.round(hv).toLocaleString()}</div></div>
+    <div style="background:var(--bg-tertiary);padding:12px;border-radius:8px;border:1px solid var(--border-default);"><div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:4px;">총 자산</div><div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--accent-blue);">$${Math.round(total).toLocaleString()}</div></div>
+    <div style="background:var(--bg-tertiary);padding:12px;border-radius:8px;border:1px solid var(--border-default);"><div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:4px;">수익률</div><div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:${ret>=0?'var(--accent-green)':'var(--accent-red)'};">${ret>=0?'+':''}${ret.toFixed(2)}%</div></div>
+  </div>${html}${tradesHtml}
+  <div style="margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    ${currentUser ? `<button onclick="signOutUser()" style="background:transparent;border:1px solid var(--border-strong);color:var(--text-secondary);padding:8px 16px;border-radius:6px;cursor:pointer;font-family:var(--font-kr);font-size:11px;">로그아웃</button>`:''}
+    <button onclick="resetGame()" style="background:transparent;border:1px solid var(--accent-red);color:var(--accent-red);padding:8px 16px;border-radius:6px;cursor:pointer;font-family:var(--font-kr);font-size:11px;font-weight:600;">⚠️ 게임 리셋</button>
+  </div>`;
+  document.getElementById('portfolioModal').classList.add('active');
+}
+function closePortfolio(){ document.getElementById('portfolioModal').classList.remove('active'); }
+
+async function resetGame() {
+  if(!confirm('정말 리셋하시겠습니까? 모든 거래 내역과 잔액이 초기화됩니다.')) return;
+  state.cash=1000000; state.holdings={}; state.trades=[];
+  await saveState();
+  location.reload();
+}
+
+// ============================================================
+// === FILTERS ===
+// ============================================================
+function filterCountries(){ state.searchQuery=document.getElementById('searchInput').value; renderCountryList(); }
+function filterByTier(t){ state.tierFilter=t; document.querySelectorAll('.tier-btn').forEach(b=>b.classList.toggle('active',b.dataset.tier===t)); renderCountryList(); }
+
+// ============================================================
+// === MOBILE NAV ===
+// ============================================================
+function switchMobilePanel(panel) {
+  ['left','center','right'].forEach(p => {
+    document.getElementById(p+'Panel').classList.toggle('mobile-active', p===panel);
+  });
+  document.querySelectorAll('.mobile-nav button[data-panel]').forEach(b => {
+    b.classList.toggle('active', b.dataset.panel===panel);
+  });
+  if (panel==='center') setTimeout(drawChart, 50);
+}
+
+// ============================================================
+// === CLOCK & LIVE LOOP ===
+// ============================================================
+function updateClock() {
+  const now = new Date();
+  document.getElementById('realClock').textContent = now.toLocaleTimeString('ko-KR');
+}
+
+function liveLoop() {
+  refreshRuntimePrices();
+  renderCountryList();
+  renderTickerTape();
+  updateCenterPanel();
+  updatePortfolioStats();
+  updateTradeSummary();
+}
+
+// ============================================================
+// === UTILITIES ===
+// ============================================================
+function formatGDP(b){ if(b>=1000) return `$${(b/1000).toFixed(1)}T`; if(b>=1) return `$${b.toFixed(0)}B`; return `$${(b*1000).toFixed(0)}M`; }
+function showToast(type,title,msg){
+  const c=document.getElementById('toastContainer'); const t=document.createElement('div');
+  t.className=`toast ${type}`; t.innerHTML=`<div class="toast-title">${title}</div><div class="toast-msg">${msg}</div>`;
+  c.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(100%)'; t.style.transition='all 0.3s'; setTimeout(()=>t.remove(),300); },3500);
+}
+
+// ============================================================
+// === PERSISTENCE (Firebase + localStorage) ===
+// ============================================================
+function getSaveData() {
+  return { cash:state.cash, holdings:state.holdings, trades:state.trades.slice(-50),
+           selectedCountry:state.selectedCountry, updatedAt:Date.now() };
+}
+function scheduleSave() {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(saveState, 1500);
+}
+async function saveState() {
+  const data = getSaveData();
+  // 로컬은 항상 저장
+  try { localStorage.setItem('nationvault_save', JSON.stringify(data)); } catch(e){}
+  // 로그인 상태면 Firestore에도
+  if (currentUser && window.fb) {
+    setSyncStatus('syncing');
+    try {
+      await window.fb.setDoc(window.fb.doc(window.fb.db,'users',currentUser.uid), data);
+      setSyncStatus('synced');
+    } catch(e){ console.error('Firestore 저장 실패',e); setSyncStatus('offline'); }
+  }
+}
+async function loadState() {
+  let data = null;
+  // 로그인 상태면 Firestore 우선
+  if (currentUser && window.fb) {
+    try {
+      const snap = await window.fb.getDoc(window.fb.doc(window.fb.db,'users',currentUser.uid));
+      if (snap.exists()) data = snap.data();
+    } catch(e){ console.error('Firestore 로드 실패',e); }
+  }
+  // 로컬 폴백
+  if (!data) {
+    try { const s=localStorage.getItem('nationvault_save'); if(s) data=JSON.parse(s); } catch(e){}
+  }
+  if (data) {
+    state.cash = data.cash ?? 1000000;
+    state.holdings = data.holdings || {};
+    state.trades = data.trades || [];
+    state.selectedCountry = data.selectedCountry || 'USA';
+  }
+}
+function setSyncStatus(status) {
+  const dot=document.getElementById('syncDot'), txt=document.getElementById('syncText');
+  dot.className='sync-dot';
+  if(status==='syncing'){ dot.classList.add('syncing'); txt.textContent='동기화 중...'; }
+  else if(status==='synced'){ txt.textContent='클라우드 동기화됨'; }
+  else if(status==='offline'){ dot.classList.add('offline'); txt.textContent='오프라인'; }
+  else { txt.textContent = currentUser?'클라우드 동기화됨':'로컬 저장'; }
+}
+
+// ============================================================
+// === AUTH ===
+// ============================================================
+async function signInWithGoogle() {
+  if (!window.FIREBASE_ENABLED || !window.fb) {
+    showToast('warning','Firebase 미설정','게스트 모드로 진행합니다. README 참고.');
+    playAsGuest();
+    return;
+  }
+  try {
+    await window.fb.signInWithPopup(window.fb.auth, window.fb.provider);
+  } catch(e){ console.error(e); showToast('error','로그인 실패',e.message); }
+}
+window.onUserLogin = async function(user) {
+  currentUser = user;
+  document.getElementById('userName').textContent = user.displayName || '사용자';
+  if (user.photoURL) document.getElementById('userAvatar').innerHTML = `<img src="${user.photoURL}" alt="">`;
+  setSyncStatus('synced');
+  await loadState();
+  startGame();
+};
+async function signOutUser() {
+  if (window.fb) await window.fb.signOut(window.fb.auth);
+  location.reload();
+}
+function playAsGuest() {
+  currentUser = null;
+  document.getElementById('userName').textContent = '게스트';
+  loadState().then(startGame);
+}
+
+// ============================================================
+// === START ===
+// ============================================================
+let gameStarted = false;
+function startGame() {
+  if (gameStarted) return;
+  gameStarted = true;
+  document.getElementById('loginOverlay').classList.add('hidden');
+  setSyncStatus();
+  renderCountryList();
+  renderTickerTape();
+  renderNews();
+  selectCountry(state.selectedCountry);
+  updatePortfolioStats();
+  switchTradeTab('BUY');
+
+  updateClock();
+  setInterval(updateClock, 1000);
+  setInterval(liveLoop, 1000);  // 1초마다 갱신 (현실시간, 가속 없음)
+}
+
+// 초기 로드
+async function bootstrap() {
+  await loadGameData();
+  if (window.FIREBASE_ENABLED) {
+    document.getElementById('loginNote').textContent = '구글 로그인 시 모든 기기에서 거래내역이 동기화됩니다.';
+    // onAuthStateChanged가 로그인 상태면 자동 호출됨. 비로그인 시 로그인 화면 유지.
+  } else {
+    // Firebase 미설정 → 로컬 자동 시작 옵션 안내만 (로그인 화면 유지, 게스트 버튼 사용)
+  }
+}
+
+window.addEventListener('firebase-ready', bootstrap);
+// firebase-ready 이벤트가 안 올 경우(스크립트 차단) 대비
+setTimeout(() => { if (COUNTRIES.length === 0) bootstrap(); }, 2000);
+
+const INLINE_COUNTRIES = [{"code": "USA", "name": "미국", "flag": "🇺🇸", "tier": "S", "gdp": 27360.7, "basePrice": 798.69, "volatility": 0.6}, {"code": "CHN", "name": "중국", "flag": "🇨🇳", "tier": "S", "gdp": 17794.8, "basePrice": 765.06, "volatility": 0.6}, {"code": "DEU", "name": "독일", "flag": "🇩🇪", "tier": "A", "gdp": 4456.1, "basePrice": 656.83, "volatility": 0.8}, {"code": "JPN", "name": "일본", "flag": "🇯🇵", "tier": "A", "gdp": 4212.9, "basePrice": 652.44, "volatility": 0.8}, {"code": "IND", "name": "인도", "flag": "🇮🇳", "tier": "A", "gdp": 3549.9, "basePrice": 639.06, "volatility": 0.8}, {"code": "GBR", "name": "영국", "flag": "🇬🇧", "tier": "A", "gdp": 3340.0, "basePrice": 634.3, "volatility": 0.8}, {"code": "FRA", "name": "프랑스", "flag": "🇫🇷", "tier": "A", "gdp": 3030.9, "basePrice": 626.71, "volatility": 0.8}, {"code": "ITA", "name": "이탈리아", "flag": "🇮🇹", "tier": "A", "gdp": 2254.8, "basePrice": 603.6, "volatility": 0.8}, {"code": "BRA", "name": "브라질", "flag": "🇧🇷", "tier": "A", "gdp": 2173.7, "basePrice": 600.73, "volatility": 0.8}, {"code": "CAN", "name": "캐나다", "flag": "🇨🇦", "tier": "A", "gdp": 2139.8, "basePrice": 599.51, "volatility": 0.8}, {"code": "RUS", "name": "러시아", "flag": "🇷🇺", "tier": "A", "gdp": 2021.4, "basePrice": 595.06, "volatility": 0.8}, {"code": "MEX", "name": "멕시코", "flag": "🇲🇽", "tier": "A", "gdp": 1788.9, "basePrice": 585.51, "volatility": 0.8}, {"code": "AUS", "name": "호주", "flag": "🇦🇺", "tier": "A", "gdp": 1723.8, "basePrice": 582.61, "volatility": 0.8}, {"code": "KOR", "name": "대한민국", "flag": "🇰🇷", "tier": "A", "gdp": 1712.8, "basePrice": 582.11, "volatility": 0.8}, {"code": "ESP", "name": "스페인", "flag": "🇪🇸", "tier": "A", "gdp": 1620.1, "basePrice": 577.77, "volatility": 0.8}, {"code": "IDN", "name": "인도네시아", "flag": "🇮🇩", "tier": "A", "gdp": 1371.2, "basePrice": 564.73, "volatility": 0.8}, {"code": "NLD", "name": "네덜란드", "flag": "🇳🇱", "tier": "A", "gdp": 1118.5, "basePrice": 548.82, "volatility": 0.8}, {"code": "TUR", "name": "튀르키예", "flag": "🇹🇷", "tier": "A", "gdp": 1108.0, "basePrice": 548.09, "volatility": 0.8}, {"code": "SAU", "name": "사우디아라비아", "flag": "🇸🇦", "tier": "A", "gdp": 1067.6, "basePrice": 545.19, "volatility": 0.8}, {"code": "CHE", "name": "스위스", "flag": "🇨🇭", "tier": "B", "gdp": 884.9, "basePrice": 530.53, "volatility": 1.1}, {"code": "POL", "name": "폴란드", "flag": "🇵🇱", "tier": "B", "gdp": 811.2, "basePrice": 523.74, "volatility": 1.1}, {"code": "ARG", "name": "아르헨티나", "flag": "🇦🇷", "tier": "B", "gdp": 640.6, "basePrice": 505.31, "volatility": 1.1}, {"code": "BEL", "name": "벨기에", "flag": "🇧🇪", "tier": "B", "gdp": 627.5, "basePrice": 503.7, "volatility": 1.1}, {"code": "SWE", "name": "스웨덴", "flag": "🇸🇪", "tier": "B", "gdp": 593.3, "basePrice": 499.32, "volatility": 1.1}, {"code": "IRL", "name": "아일랜드", "flag": "🇮🇪", "tier": "B", "gdp": 545.5, "basePrice": 492.77, "volatility": 1.1}, {"code": "ISR", "name": "이스라엘", "flag": "🇮🇱", "tier": "B", "gdp": 521.7, "basePrice": 489.28, "volatility": 1.1}, {"code": "AUT", "name": "오스트리아", "flag": "🇦🇹", "tier": "B", "gdp": 516.4, "basePrice": 488.48, "volatility": 1.1}, {"code": "THA", "name": "태국", "flag": "🇹🇭", "tier": "B", "gdp": 515.0, "basePrice": 488.27, "volatility": 1.1}, {"code": "NGA", "name": "나이지리아", "flag": "🇳🇬", "tier": "B", "gdp": 506.6, "basePrice": 486.99, "volatility": 1.1}, {"code": "ARE", "name": "아랍에미리트", "flag": "🇦🇪", "tier": "B", "gdp": 504.2, "basePrice": 486.62, "volatility": 1.1}, {"code": "SGP", "name": "싱가포르", "flag": "🇸🇬", "tier": "B", "gdp": 501.4, "basePrice": 486.19, "volatility": 1.1}, {"code": "NOR", "name": "노르웨이", "flag": "🇳🇴", "tier": "B", "gdp": 485.5, "basePrice": 483.68, "volatility": 1.1}, {"code": "BGD", "name": "방글라데시", "flag": "🇧🇩", "tier": "B", "gdp": 446.4, "basePrice": 477.12, "volatility": 1.1}, {"code": "PHL", "name": "필리핀", "flag": "🇵🇭", "tier": "B", "gdp": 437.1, "basePrice": 475.49, "volatility": 1.1}, {"code": "VNM", "name": "베트남", "flag": "🇻🇳", "tier": "B", "gdp": 429.7, "basePrice": 474.16, "volatility": 1.1}, {"code": "MYS", "name": "말레이시아", "flag": "🇲🇾", "tier": "B", "gdp": 415.7, "basePrice": 471.56, "volatility": 1.1}, {"code": "DNK", "name": "덴마크", "flag": "🇩🇰", "tier": "B", "gdp": 404.2, "basePrice": 469.38, "volatility": 1.1}, {"code": "EGY", "name": "이집트", "flag": "🇪🇬", "tier": "B", "gdp": 395.9, "basePrice": 467.77, "volatility": 1.1}, {"code": "IRN", "name": "이란", "flag": "🇮🇷", "tier": "B", "gdp": 388.5, "basePrice": 466.3, "volatility": 1.1}, {"code": "HKG", "name": "홍콩", "flag": "🇭🇰", "tier": "B", "gdp": 382.1, "basePrice": 464.99, "volatility": 1.1}, {"code": "ZAF", "name": "남아프리카공화국", "flag": "🇿🇦", "tier": "B", "gdp": 380.9, "basePrice": 464.75, "volatility": 1.1}, {"code": "COL", "name": "콜롬비아", "flag": "🇨🇴", "tier": "B", "gdp": 363.5, "basePrice": 461.11, "volatility": 1.1}, {"code": "ROU", "name": "루마니아", "flag": "🇷🇴", "tier": "B", "gdp": 350.4, "basePrice": 458.25, "volatility": 1.1}, {"code": "PAK", "name": "파키스탄", "flag": "🇵🇰", "tier": "B", "gdp": 338.2, "basePrice": 455.49, "volatility": 1.1}, {"code": "CHL", "name": "칠레", "flag": "🇨🇱", "tier": "B", "gdp": 335.5, "basePrice": 454.86, "volatility": 1.1}, {"code": "CZE", "name": "체코", "flag": "🇨🇿", "tier": "B", "gdp": 330.9, "basePrice": 453.77, "volatility": 1.1}, {"code": "FIN", "name": "핀란드", "flag": "🇫🇮", "tier": "C", "gdp": 295.5, "basePrice": 444.97, "volatility": 1.5}, {"code": "PRT", "name": "포르투갈", "flag": "🇵🇹", "tier": "C", "gdp": 287.1, "basePrice": 442.71, "volatility": 1.5}, {"code": "PER", "name": "페루", "flag": "🇵🇪", "tier": "C", "gdp": 264.6, "basePrice": 436.37, "volatility": 1.5}, {"code": "KAZ", "name": "카자흐스탄", "flag": "🇰🇿", "tier": "C", "gdp": 259.3, "basePrice": 434.78, "volatility": 1.5}, {"code": "IRQ", "name": "이라크", "flag": "🇮🇶", "tier": "C", "gdp": 250.8, "basePrice": 432.19, "volatility": 1.5}, {"code": "DZA", "name": "알제리", "flag": "🇩🇿", "tier": "C", "gdp": 247.6, "basePrice": 431.2, "volatility": 1.5}, {"code": "GRC", "name": "그리스", "flag": "🇬🇷", "tier": "C", "gdp": 238.2, "basePrice": 428.18, "volatility": 1.5}, {"code": "QAT", "name": "카타르", "flag": "🇶🇦", "tier": "C", "gdp": 235.5, "basePrice": 427.29, "volatility": 1.5}, {"code": "HUN", "name": "헝가리", "flag": "🇭🇺", "tier": "C", "gdp": 212.4, "basePrice": 419.25, "volatility": 1.5}, {"code": "UKR", "name": "우크라이나", "flag": "🇺🇦", "tier": "C", "gdp": 178.8, "basePrice": 405.84, "volatility": 1.5}, {"code": "KWT", "name": "쿠웨이트", "flag": "🇰🇼", "tier": "C", "gdp": 161.8, "basePrice": 398.08, "volatility": 1.5}, {"code": "ETH", "name": "에티오피아", "flag": "🇪🇹", "tier": "C", "gdp": 159.7, "basePrice": 397.1, "volatility": 1.5}, {"code": "MAR", "name": "모로코", "flag": "🇲🇦", "tier": "C", "gdp": 144.4, "basePrice": 389.27, "volatility": 1.5}, {"code": "SVK", "name": "슬로바키아", "flag": "🇸🇰", "tier": "C", "gdp": 132.3, "basePrice": 382.47, "volatility": 1.5}, {"code": "DOM", "name": "도미니카공화국", "flag": "🇩🇴", "tier": "C", "gdp": 121.4, "basePrice": 375.83, "volatility": 1.5}, {"code": "ECU", "name": "에콰도르", "flag": "🇪🇨", "tier": "C", "gdp": 121.3, "basePrice": 375.73, "volatility": 1.5}, {"code": "KEN", "name": "케냐", "flag": "🇰🇪", "tier": "C", "gdp": 113.4, "basePrice": 370.53, "volatility": 1.5}, {"code": "OMN", "name": "오만", "flag": "🇴🇲", "tier": "C", "gdp": 108.2, "basePrice": 366.87, "volatility": 1.5}, {"code": "CUB", "name": "쿠바", "flag": "🇨🇺", "tier": "C", "gdp": 107.3, "basePrice": 366.27, "volatility": 1.5}, {"code": "BGR", "name": "불가리아", "flag": "🇧🇬", "tier": "C", "gdp": 102.4, "basePrice": 362.62, "volatility": 1.5}, {"code": "GTM", "name": "과테말라", "flag": "🇬🇹", "tier": "C", "gdp": 102.3, "basePrice": 362.55, "volatility": 1.5}, {"code": "AGO", "name": "앙골라", "flag": "🇦🇴", "tier": "C", "gdp": 92.4, "basePrice": 354.65, "volatility": 1.5}, {"code": "VEN", "name": "베네수엘라", "flag": "🇻🇪", "tier": "C", "gdp": 92.2, "basePrice": 354.5, "volatility": 1.5}, {"code": "UZB", "name": "우즈베키스탄", "flag": "🇺🇿", "tier": "C", "gdp": 90.9, "basePrice": 353.39, "volatility": 1.5}, {"code": "LUX", "name": "룩셈부르크", "flag": "🇱🇺", "tier": "C", "gdp": 89.1, "basePrice": 351.84, "volatility": 1.5}, {"code": "CRI", "name": "코스타리카", "flag": "🇨🇷", "tier": "C", "gdp": 86.5, "basePrice": 349.53, "volatility": 1.5}, {"code": "LKA", "name": "스리랑카", "flag": "🇱🇰", "tier": "C", "gdp": 84.4, "basePrice": 347.63, "volatility": 1.5}, {"code": "PAN", "name": "파나마", "flag": "🇵🇦", "tier": "C", "gdp": 82.3, "basePrice": 345.76, "volatility": 1.5}, {"code": "TKM", "name": "투르크메니스탄", "flag": "🇹🇲", "tier": "C", "gdp": 81.8, "basePrice": 345.26, "volatility": 1.5}, {"code": "HRV", "name": "크로아티아", "flag": "🇭🇷", "tier": "C", "gdp": 80.2, "basePrice": 343.71, "volatility": 1.5}, {"code": "LTU", "name": "리투아니아", "flag": "🇱🇹", "tier": "C", "gdp": 79.8, "basePrice": 343.32, "volatility": 1.5}, {"code": "CIV", "name": "코트디부아르", "flag": "🇨🇮", "tier": "C", "gdp": 79.4, "basePrice": 342.98, "volatility": 1.5}, {"code": "TZA", "name": "탄자니아", "flag": "🇹🇿", "tier": "C", "gdp": 79.2, "basePrice": 342.71, "volatility": 1.5}, {"code": "AZE", "name": "아제르바이잔", "flag": "🇦🇿", "tier": "C", "gdp": 78.7, "basePrice": 342.28, "volatility": 1.5}, {"code": "URY", "name": "우루과이", "flag": "🇺🇾", "tier": "C", "gdp": 77.2, "basePrice": 340.82, "volatility": 1.5}, {"code": "GHA", "name": "가나", "flag": "🇬🇭", "tier": "C", "gdp": 76.6, "basePrice": 340.21, "volatility": 1.5}, {"code": "SRB", "name": "세르비아", "flag": "🇷🇸", "tier": "C", "gdp": 75.2, "basePrice": 338.74, "volatility": 1.5}, {"code": "BLR", "name": "벨라루스", "flag": "🇧🇾", "tier": "C", "gdp": 73.1, "basePrice": 336.6, "volatility": 1.5}, {"code": "SVN", "name": "슬로베니아", "flag": "🇸🇮", "tier": "C", "gdp": 68.4, "basePrice": 331.43, "volatility": 1.5}, {"code": "COD", "name": "콩고민주공화국", "flag": "🇨🇩", "tier": "C", "gdp": 66.4, "basePrice": 329.14, "volatility": 1.5}, {"code": "ZAR", "name": "ZAR", "flag": "🏳️", "tier": "C", "gdp": 66.4, "basePrice": 329.14, "volatility": 1.5}, {"code": "MMR", "name": "미얀마", "flag": "🇲🇲", "tier": "C", "gdp": 64.3, "basePrice": 326.66, "volatility": 1.5}, {"code": "JOR", "name": "요르단", "flag": "🇯🇴", "tier": "C", "gdp": 50.8, "basePrice": 308.59, "volatility": 1.5}, {"code": "CMR", "name": "카메룬", "flag": "🇨🇲", "tier": "D", "gdp": 49.3, "basePrice": 306.22, "volatility": 2.0}, {"code": "UGA", "name": "우간다", "flag": "🇺🇬", "tier": "D", "gdp": 49.3, "basePrice": 306.24, "volatility": 2.0}, {"code": "TUN", "name": "튀니지", "flag": "🇹🇳", "tier": "D", "gdp": 48.5, "basePrice": 305.08, "volatility": 2.0}, {"code": "MAC", "name": "마카오", "flag": "🇲🇴", "tier": "D", "gdp": 47.1, "basePrice": 302.87, "volatility": 2.0}, {"code": "LVA", "name": "라트비아", "flag": "🇱🇻", "tier": "D", "gdp": 46.7, "basePrice": 302.08, "volatility": 2.0}, {"code": "BOL", "name": "볼리비아", "flag": "🇧🇴", "tier": "D", "gdp": 45.9, "basePrice": 300.73, "volatility": 2.0}, {"code": "LBY", "name": "리비아", "flag": "🇱🇾", "tier": "D", "gdp": 45.8, "basePrice": 300.56, "volatility": 2.0}, {"code": "BHR", "name": "바레인", "flag": "🇧🇭", "tier": "D", "gdp": 44.4, "basePrice": 298.24, "volatility": 2.0}, {"code": "PRY", "name": "파라과이", "flag": "🇵🇾", "tier": "D", "gdp": 42.9, "basePrice": 295.7, "volatility": 2.0}, {"code": "EST", "name": "에스토니아", "flag": "🇪🇪", "tier": "D", "gdp": 41.3, "basePrice": 292.8, "volatility": 2.0}, {"code": "NPL", "name": "네팔", "flag": "🇳🇵", "tier": "D", "gdp": 40.9, "basePrice": 292.02, "volatility": 2.0}, {"code": "SLV", "name": "엘살바도르", "flag": "🇸🇻", "tier": "D", "gdp": 34.5, "basePrice": 279.11, "volatility": 2.0}, {"code": "HND", "name": "온두라스", "flag": "🇭🇳", "tier": "D", "gdp": 34.4, "basePrice": 278.73, "volatility": 2.0}, {"code": "CYP", "name": "키프로스", "flag": "🇨🇾", "tier": "D", "gdp": 32.0, "basePrice": 273.4, "volatility": 2.0}, {"code": "SEN", "name": "세네갈", "flag": "🇸🇳", "tier": "D", "gdp": 31.9, "basePrice": 273.14, "volatility": 2.0}, {"code": "KHM", "name": "캄보디아", "flag": "🇰🇭", "tier": "D", "gdp": 31.8, "basePrice": 272.79, "volatility": 2.0}, {"code": "PNG", "name": "파푸아뉴기니", "flag": "🇵🇬", "tier": "D", "gdp": 31.4, "basePrice": 271.8, "volatility": 2.0}, {"code": "ISL", "name": "아이슬란드", "flag": "🇮🇸", "tier": "D", "gdp": 31.0, "basePrice": 270.98, "volatility": 2.0}, {"code": "GEO", "name": "조지아", "flag": "🇬🇪", "tier": "D", "gdp": 30.5, "basePrice": 269.8, "volatility": 2.0}, {"code": "ZMB", "name": "잠비아", "flag": "🇿🇲", "tier": "D", "gdp": 28.2, "basePrice": 263.66, "volatility": 2.0}, {"code": "TTO", "name": "트리니다드토바고", "flag": "🇹🇹", "tier": "D", "gdp": 28.2, "basePrice": 263.8, "volatility": 2.0}, {"code": "BIH", "name": "보스니아헤르체고비나", "flag": "🇧🇦", "tier": "D", "gdp": 27.2, "basePrice": 261.16, "volatility": 2.0}, {"code": "ZWE", "name": "짐바브웨", "flag": "🇿🇼", "tier": "D", "gdp": 26.3, "basePrice": 258.54, "volatility": 2.0}, {"code": "ARM", "name": "아르메니아", "flag": "🇦🇲", "tier": "D", "gdp": 24.1, "basePrice": 251.91, "volatility": 2.0}, {"code": "GIN", "name": "기니", "flag": "🇬🇳", "tier": "D", "gdp": 23.3, "basePrice": 249.47, "volatility": 2.0}, {"code": "LBN", "name": "레바논", "flag": "🇱🇧", "tier": "D", "gdp": 23.1, "basePrice": 248.86, "volatility": 2.0}, {"code": "ALB", "name": "알바니아", "flag": "🇦🇱", "tier": "D", "gdp": 23.0, "basePrice": 248.54, "volatility": 2.0}, {"code": "MOZ", "name": "모잠비크", "flag": "🇲🇿", "tier": "D", "gdp": 21.9, "basePrice": 244.91, "volatility": 2.0}, {"code": "MLI", "name": "말리", "flag": "🇲🇱", "tier": "D", "gdp": 21.3, "basePrice": 242.73, "volatility": 2.0}, {"code": "GAB", "name": "가봉", "flag": "🇬🇦", "tier": "D", "gdp": 21.1, "basePrice": 241.88, "volatility": 2.0}, {"code": "YEM", "name": "예멘", "flag": "🇾🇪", "tier": "D", "gdp": 21.1, "basePrice": 241.81, "volatility": 2.0}, {"code": "MLT", "name": "몰타", "flag": "🇲🇹", "tier": "D", "gdp": 21.0, "basePrice": 241.49, "volatility": 2.0}, {"code": "BFA", "name": "부르키나파소", "flag": "🇧🇫", "tier": "D", "gdp": 20.8, "basePrice": 240.85, "volatility": 2.0}, {"code": "BWA", "name": "보츠와나", "flag": "🇧🇼", "tier": "D", "gdp": 20.4, "basePrice": 239.29, "volatility": 2.0}, {"code": "BEN", "name": "베냉", "flag": "🇧🇯", "tier": "D", "gdp": 19.9, "basePrice": 237.78, "volatility": 2.0}, {"code": "HTI", "name": "아이티", "flag": "🇭🇹", "tier": "D", "gdp": 19.9, "basePrice": 237.44, "volatility": 2.0}, {"code": "JAM", "name": "자메이카", "flag": "🇯🇲", "tier": "D", "gdp": 19.4, "basePrice": 235.81, "volatility": 2.0}, {"code": "MNG", "name": "몽골", "flag": "🇲🇳", "tier": "D", "gdp": 18.8, "basePrice": 233.32, "volatility": 2.0}, {"code": "PRK", "name": "북한", "flag": "🇰🇵", "tier": "D", "gdp": 17.4, "basePrice": 227.67, "volatility": 2.0}, {"code": "NIC", "name": "니카라과", "flag": "🇳🇮", "tier": "D", "gdp": 17.3, "basePrice": 227.28, "volatility": 2.0}, {"code": "NER", "name": "니제르", "flag": "🇳🇪", "tier": "D", "gdp": 16.8, "basePrice": 225.16, "volatility": 2.0}, {"code": "GUY", "name": "가이아나", "flag": "🇬🇾", "tier": "D", "gdp": 16.3, "basePrice": 222.98, "volatility": 2.0}, {"code": "MDG", "name": "마다가스카르", "flag": "🇲🇬", "tier": "D", "gdp": 16.0, "basePrice": 221.66, "volatility": 2.0}, {"code": "MDA", "name": "몰도바", "flag": "🇲🇩", "tier": "D", "gdp": 16.0, "basePrice": 221.48, "volatility": 2.0}, {"code": "BRN", "name": "브루나이", "flag": "🇧🇳", "tier": "D", "gdp": 15.1, "basePrice": 217.37, "volatility": 2.0}, {"code": "MKD", "name": "북마케도니아", "flag": "🇲🇰", "tier": "D", "gdp": 14.8, "basePrice": 215.56, "volatility": 2.0}, {"code": "AFG", "name": "아프가니스탄", "flag": "🇦🇫", "tier": "D", "gdp": 14.6, "basePrice": 214.66, "volatility": 2.0}, {"code": "MUS", "name": "모리셔스", "flag": "🇲🇺", "tier": "D", "gdp": 14.4, "basePrice": 213.75, "volatility": 2.0}, {"code": "BHS", "name": "바하마", "flag": "🇧🇸", "tier": "D", "gdp": 14.4, "basePrice": 213.55, "volatility": 2.0}, {"code": "COG", "name": "콩고공화국", "flag": "🇨🇬", "tier": "D", "gdp": 14.4, "basePrice": 213.8, "volatility": 2.0}, {"code": "RWA", "name": "르완다", "flag": "🇷🇼", "tier": "D", "gdp": 13.3, "basePrice": 208.02, "volatility": 2.0}, {"code": "TCD", "name": "차드", "flag": "🇹🇩", "tier": "D", "gdp": 13.2, "basePrice": 207.14, "volatility": 2.0}, {"code": "MWI", "name": "말라위", "flag": "🇲🇼", "tier": "D", "gdp": 13.2, "basePrice": 207.3, "volatility": 2.0}, {"code": "KGZ", "name": "키르기스스탄", "flag": "🇰🇬", "tier": "D", "gdp": 12.7, "basePrice": 204.55, "volatility": 2.0}, {"code": "NAM", "name": "나미비아", "flag": "🇳🇦", "tier": "D", "gdp": 12.4, "basePrice": 202.76, "volatility": 2.0}, {"code": "GNQ", "name": "적도기니", "flag": "🇬🇶", "tier": "D", "gdp": 12.3, "basePrice": 202.23, "volatility": 2.0}, {"code": "TJK", "name": "타지키스탄", "flag": "🇹🇯", "tier": "D", "gdp": 12.1, "basePrice": 200.87, "volatility": 2.0}, {"code": "SOM", "name": "소말리아", "flag": "🇸🇴", "tier": "D", "gdp": 11.0, "basePrice": 194.45, "volatility": 2.0}, {"code": "XKX", "name": "코소보", "flag": "🇽🇰", "tier": "D", "gdp": 10.5, "basePrice": 190.65, "volatility": 2.0}, {"code": "MRT", "name": "모리타니", "flag": "🇲🇷", "tier": "D", "gdp": 10.4, "basePrice": 189.97, "volatility": 2.0}, {"code": "TGO", "name": "토고", "flag": "🇹🇬", "tier": "D", "gdp": 9.1, "basePrice": 180.86, "volatility": 2.0}, {"code": "SYR", "name": "시리아", "flag": "🇸🇾", "tier": "D", "gdp": 9.0, "basePrice": 180.0, "volatility": 2.0}, {"code": "MCO", "name": "모나코", "flag": "🇲🇨", "tier": "D", "gdp": 8.6, "basePrice": 176.81, "volatility": 2.0}, {"code": "MNE", "name": "몬테네그로", "flag": "🇲🇪", "tier": "D", "gdp": 7.4, "basePrice": 166.37, "volatility": 2.0}, {"code": "MDV", "name": "몰디브", "flag": "🇲🇻", "tier": "D", "gdp": 7.0, "basePrice": 162.26, "volatility": 2.0}, {"code": "LIE", "name": "리히텐슈타인", "flag": "🇱🇮", "tier": "D", "gdp": 6.8, "basePrice": 160.98, "volatility": 2.0}, {"code": "BRB", "name": "바베이도스", "flag": "🇧🇧", "tier": "D", "gdp": 6.5, "basePrice": 157.3, "volatility": 2.0}, {"code": "SSD", "name": "남수단", "flag": "🇸🇸", "tier": "D", "gdp": 6.0, "basePrice": 152.23, "volatility": 2.0}, {"code": "FJI", "name": "피지", "flag": "🇫🇯", "tier": "D", "gdp": 5.5, "basePrice": 146.68, "volatility": 2.0}, {"code": "SWZ", "name": "에스와티니", "flag": "🇸🇿", "tier": "D", "gdp": 4.8, "basePrice": 137.28, "volatility": 2.0}, {"code": "LBR", "name": "라이베리아", "flag": "🇱🇷", "tier": "D", "gdp": 4.3, "basePrice": 130.22, "volatility": 2.0}, {"code": "SLE", "name": "시에라리온", "flag": "🇸🇱", "tier": "D", "gdp": 3.9, "basePrice": 123.43, "volatility": 2.0}, {"code": "DJI", "name": "지부티", "flag": "🇩🇯", "tier": "D", "gdp": 3.9, "basePrice": 123.76, "volatility": 2.0}, {"code": "AND", "name": "안도라", "flag": "🇦🇩", "tier": "D", "gdp": 3.7, "basePrice": 120.98, "volatility": 2.0}, {"code": "SUR", "name": "수리남", "flag": "🇸🇷", "tier": "D", "gdp": 3.5, "basePrice": 118.27, "volatility": 2.0}, {"code": "BLZ", "name": "벨리즈", "flag": "🇧🇿", "tier": "D", "gdp": 3.2, "basePrice": 111.44, "volatility": 2.0}, {"code": "BDI", "name": "부룬디", "flag": "🇧🇮", "tier": "D", "gdp": 3.1, "basePrice": 109.53, "volatility": 2.0}, {"code": "ANT", "name": "ANT", "flag": "🏳️", "tier": "D", "gdp": 3.1, "basePrice": 110.3, "volatility": 2.0}, {"code": "BTN", "name": "부탄", "flag": "🇧🇹", "tier": "D", "gdp": 2.9, "basePrice": 106.79, "volatility": 2.0}, {"code": "CPV", "name": "카보베르데", "flag": "🇨🇻", "tier": "D", "gdp": 2.6, "basePrice": 99.92, "volatility": 2.0}, {"code": "CAF", "name": "중앙아프리카공화국", "flag": "🇨🇫", "tier": "D", "gdp": 2.6, "basePrice": 101.0, "volatility": 2.0}, {"code": "ERI", "name": "에리트레아", "flag": "🇪🇷", "tier": "D", "gdp": 2.5, "basePrice": 98.16, "volatility": 2.0}, {"code": "LCA", "name": "세인트루시아", "flag": "🇱🇨", "tier": "D", "gdp": 2.5, "basePrice": 97.48, "volatility": 2.0}, {"code": "LSO", "name": "레소토", "flag": "🇱🇸", "tier": "D", "gdp": 2.4, "basePrice": 94.97, "volatility": 2.0}, {"code": "GMB", "name": "감비아", "flag": "🇬🇲", "tier": "D", "gdp": 2.3, "basePrice": 92.86, "volatility": 2.0}, {"code": "SYC", "name": "세이셸", "flag": "🇸🇨", "tier": "D", "gdp": 2.1, "basePrice": 89.7, "volatility": 2.0}, {"code": "GNB", "name": "기니비사우", "flag": "🇬🇼", "tier": "D", "gdp": 2.0, "basePrice": 85.1, "volatility": 2.0}, {"code": "TLS", "name": "동티모르", "flag": "🇹🇱", "tier": "D", "gdp": 2.0, "basePrice": 86.14, "volatility": 2.0}, {"code": "ATG", "name": "앤티가바부다", "flag": "🇦🇬", "tier": "D", "gdp": 2.0, "basePrice": 86.66, "volatility": 2.0}, {"code": "SMR", "name": "산마리노", "flag": "🇸🇲", "tier": "D", "gdp": 1.9, "basePrice": 82.15, "volatility": 2.0}, {"code": "SLB", "name": "솔로몬제도", "flag": "🇸🇧", "tier": "D", "gdp": 1.7, "basePrice": 76.77, "volatility": 2.0}, {"code": "GRD", "name": "그레나다", "flag": "🇬🇩", "tier": "D", "gdp": 1.3, "basePrice": 65.45, "volatility": 2.0}, {"code": "COM", "name": "코모로", "flag": "🇰🇲", "tier": "D", "gdp": 1.3, "basePrice": 65.11, "volatility": 2.0}, {"code": "VUT", "name": "바누아투", "flag": "🇻🇺", "tier": "D", "gdp": 1.1, "basePrice": 59.11, "volatility": 2.0}, {"code": "WSM", "name": "사모아", "flag": "🇼🇸", "tier": "D", "gdp": 0.9, "basePrice": 51.8, "volatility": 2.0}, {"code": "STP", "name": "상투메프린시페", "flag": "🇸🇹", "tier": "D", "gdp": 0.7, "basePrice": 41.48, "volatility": 2.0}, {"code": "DMA", "name": "도미니카연방", "flag": "🇩🇲", "tier": "D", "gdp": 0.7, "basePrice": 41.02, "volatility": 2.0}, {"code": "TON", "name": "통가", "flag": "🇹🇴", "tier": "D", "gdp": 0.5, "basePrice": 33.24, "volatility": 2.0}, {"code": "FSM", "name": "미크로네시아", "flag": "🇫🇲", "tier": "D", "gdp": 0.5, "basePrice": 29.58, "volatility": 2.0}, {"code": "PLW", "name": "팔라우", "flag": "🇵🇼", "tier": "D", "gdp": 0.3, "basePrice": 21.7, "volatility": 2.0}, {"code": "MHL", "name": "마셜제도", "flag": "🇲🇭", "tier": "D", "gdp": 0.3, "basePrice": 19.91, "volatility": 2.0}, {"code": "KIR", "name": "키리바시", "flag": "🇰🇮", "tier": "D", "gdp": 0.2, "basePrice": 17.44, "volatility": 2.0}, {"code": "NRU", "name": "나우루", "flag": "🇳🇷", "tier": "D", "gdp": 0.2, "basePrice": 11.6, "volatility": 2.0}, {"code": "TUV", "name": "투발루", "flag": "🇹🇻", "tier": "D", "gdp": 0.1, "basePrice": 5, "volatility": 2.0}, {"code": "VAT", "name": "바티칸", "flag": "🇻🇦", "tier": "D", "gdp": 0.0, "basePrice": 5, "volatility": 2.0}];
+const INLINE_PRICES = {"generated_at": "2026-05-20T22:43:32.054642+00:00", "hour_seed": "2026052022", "countries": {"USA": {"price": 798.69, "seed_price": 798.69, "prev_price": 798.69, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.6}, "CHN": {"price": 765.06, "seed_price": 765.06, "prev_price": 765.06, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.6}, "DEU": {"price": 599.35, "seed_price": 599.35, "prev_price": 634.17, "change_pct": -5.49, "sentiment": -55.5, "volatility": 0.8}, "JPN": {"price": 652.44, "seed_price": 652.44, "prev_price": 652.44, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.8}, "IND": {"price": 639.06, "seed_price": 639.06, "prev_price": 639.06, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.8}, "GBR": {"price": 634.3, "seed_price": 634.3, "prev_price": 634.3, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.8}, "FRA": {"price": 626.71, "seed_price": 626.71, "prev_price": 626.71, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.8}, "ITA": {"price": 603.6, "seed_price": 603.6, "prev_price": 603.6, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.8}, "BRA": {"price": 638.88, "seed_price": 638.88, "prev_price": 615.24, "change_pct": 3.84, "sentiment": 38.8, "volatility": 0.8}, "CAN": {"price": 659.84, "seed_price": 659.84, "prev_price": 622.26, "change_pct": 6.04, "sentiment": 61.0, "volatility": 0.8}, "RUS": {"price": 532.84, "seed_price": 532.84, "prev_price": 570.42, "change_pct": -6.59, "sentiment": -66.6, "volatility": 0.8}, "MEX": {"price": 585.51, "seed_price": 585.51, "prev_price": 585.51, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.8}, "AUS": {"price": 582.61, "seed_price": 582.61, "prev_price": 582.61, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.8}, "KOR": {"price": 582.11, "seed_price": 582.11, "prev_price": 582.11, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.8}, "ESP": {"price": 527.21, "seed_price": 527.21, "prev_price": 557.84, "change_pct": -5.49, "sentiment": -55.5, "volatility": 0.8}, "IDN": {"price": 567.76, "seed_price": 567.76, "prev_price": 565.9, "change_pct": 0.33, "sentiment": 3.3, "volatility": 0.8}, "NLD": {"price": 548.82, "seed_price": 548.82, "prev_price": 548.82, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.8}, "TUR": {"price": 548.09, "seed_price": 548.09, "prev_price": 548.09, "change_pct": 0.0, "sentiment": 0.0, "volatility": 0.8}, "SAU": {"price": 548.12, "seed_price": 548.12, "prev_price": 546.32, "change_pct": 0.33, "sentiment": 3.3, "volatility": 0.8}, "CHE": {"price": 561.32, "seed_price": 561.32, "prev_price": 542.47, "change_pct": 3.47, "sentiment": 33.3, "volatility": 1.1}, "POL": {"price": 523.74, "seed_price": 523.74, "prev_price": 523.74, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "ARG": {"price": 476.78, "seed_price": 476.78, "prev_price": 493.94, "change_pct": -3.47, "sentiment": -33.3, "volatility": 1.1}, "BEL": {"price": 503.7, "seed_price": 503.7, "prev_price": 503.7, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "SWE": {"price": 452.77, "seed_price": 452.77, "prev_price": 480.6, "change_pct": -5.79, "sentiment": -55.5, "volatility": 1.1}, "IRL": {"price": 451.33, "seed_price": 451.33, "prev_price": 476.14, "change_pct": -5.21, "sentiment": -50.0, "volatility": 1.1}, "ISR": {"price": 489.28, "seed_price": 489.28, "prev_price": 489.28, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "AUT": {"price": 488.48, "seed_price": 488.48, "prev_price": 488.48, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "THA": {"price": 516.6, "seed_price": 516.6, "prev_price": 499.26, "change_pct": 3.47, "sentiment": 33.3, "volatility": 1.1}, "NGA": {"price": 486.99, "seed_price": 486.99, "prev_price": 486.99, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "ARE": {"price": 489.4, "seed_price": 489.4, "prev_price": 487.71, "change_pct": 0.35, "sentiment": 3.3, "volatility": 1.1}, "SGP": {"price": 486.19, "seed_price": 486.19, "prev_price": 486.19, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "NOR": {"price": 483.68, "seed_price": 483.68, "prev_price": 483.68, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "BGD": {"price": 432.64, "seed_price": 432.64, "prev_price": 459.23, "change_pct": -5.79, "sentiment": -55.5, "volatility": 1.1}, "PHL": {"price": 475.49, "seed_price": 475.49, "prev_price": 475.49, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "VNM": {"price": 447.39, "seed_price": 447.39, "prev_price": 463.49, "change_pct": -3.47, "sentiment": -33.3, "volatility": 1.1}, "MYS": {"price": 498.92, "seed_price": 498.92, "prev_price": 482.17, "change_pct": 3.47, "sentiment": 33.3, "volatility": 1.1}, "DNK": {"price": 469.38, "seed_price": 469.38, "prev_price": 469.38, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "EGY": {"price": 419.91, "seed_price": 419.91, "prev_price": 448.47, "change_pct": -6.37, "sentiment": -61.0, "volatility": 1.1}, "IRN": {"price": 466.3, "seed_price": 466.3, "prev_price": 466.3, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "HKG": {"price": 496.54, "seed_price": 496.54, "prev_price": 477.2, "change_pct": 4.05, "sentiment": 38.8, "volatility": 1.1}, "ZAF": {"price": 464.75, "seed_price": 464.75, "prev_price": 464.75, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "COL": {"price": 506.1, "seed_price": 506.1, "prev_price": 478.4, "change_pct": 5.79, "sentiment": 55.5, "volatility": 1.1}, "ROU": {"price": 415.53, "seed_price": 415.53, "prev_price": 441.07, "change_pct": -5.79, "sentiment": -55.5, "volatility": 1.1}, "PAK": {"price": 455.49, "seed_price": 455.49, "prev_price": 455.49, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.1}, "CHL": {"price": 456.6, "seed_price": 456.6, "prev_price": 455.54, "change_pct": 0.23, "sentiment": 2.2, "volatility": 1.1}, "CZE": {"price": 475.66, "seed_price": 475.66, "prev_price": 462.28, "change_pct": 2.89, "sentiment": 27.8, "volatility": 1.1}, "FIN": {"price": 444.97, "seed_price": 444.97, "prev_price": 444.97, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "PRT": {"price": 445.33, "seed_price": 445.33, "prev_price": 443.75, "change_pct": 0.36, "sentiment": 3.3, "volatility": 1.5}, "PER": {"price": 436.37, "seed_price": 436.37, "prev_price": 436.37, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "KAZ": {"price": 434.78, "seed_price": 434.78, "prev_price": 434.78, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "IRQ": {"price": 432.19, "seed_price": 432.19, "prev_price": 432.19, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "DZA": {"price": 432.9, "seed_price": 432.9, "prev_price": 431.87, "change_pct": 0.24, "sentiment": 2.2, "volatility": 1.5}, "GRC": {"price": 462.52, "seed_price": 462.52, "prev_price": 441.54, "change_pct": 4.75, "sentiment": 44.4, "volatility": 1.5}, "QAT": {"price": 427.29, "seed_price": 427.29, "prev_price": 427.29, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "HUN": {"price": 419.25, "seed_price": 419.25, "prev_price": 419.25, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "UKR": {"price": 374.5, "seed_price": 374.5, "prev_price": 393.18, "change_pct": -4.75, "sentiment": -44.4, "volatility": 1.5}, "KWT": {"price": 417.89, "seed_price": 417.89, "prev_price": 405.84, "change_pct": 2.97, "sentiment": 27.8, "volatility": 1.5}, "ETH": {"price": 397.1, "seed_price": 397.1, "prev_price": 397.1, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "MAR": {"price": 366.61, "seed_price": 366.61, "prev_price": 380.16, "change_pct": -3.56, "sentiment": -33.3, "volatility": 1.5}, "SVK": {"price": 383.98, "seed_price": 383.98, "prev_price": 383.07, "change_pct": 0.24, "sentiment": 2.2, "volatility": 1.5}, "DOM": {"price": 332.7, "seed_price": 332.7, "prev_price": 358.24, "change_pct": -7.13, "sentiment": -66.6, "volatility": 1.5}, "ECU": {"price": 343.16, "seed_price": 343.16, "prev_price": 362.54, "change_pct": -5.35, "sentiment": -50.0, "volatility": 1.5}, "KEN": {"price": 370.53, "seed_price": 370.53, "prev_price": 370.53, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "OMN": {"price": 368.31, "seed_price": 368.31, "prev_price": 367.44, "change_pct": 0.24, "sentiment": 2.2, "volatility": 1.5}, "CUB": {"price": 366.27, "seed_price": 366.27, "prev_price": 366.27, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "BGR": {"price": 362.62, "seed_price": 362.62, "prev_price": 362.62, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "GTM": {"price": 334.55, "seed_price": 334.55, "prev_price": 351.24, "change_pct": -4.75, "sentiment": -44.4, "volatility": 1.5}, "AGO": {"price": 354.65, "seed_price": 354.65, "prev_price": 354.65, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "VEN": {"price": 354.5, "seed_price": 354.5, "prev_price": 354.5, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "UZB": {"price": 374.55, "seed_price": 374.55, "prev_price": 361.66, "change_pct": 3.56, "sentiment": 33.3, "volatility": 1.5}, "LUX": {"price": 351.84, "seed_price": 351.84, "prev_price": 351.84, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "CRI": {"price": 319.23, "seed_price": 319.23, "prev_price": 337.26, "change_pct": -5.35, "sentiment": -50.0, "volatility": 1.5}, "LKA": {"price": 349.68, "seed_price": 349.68, "prev_price": 348.44, "change_pct": 0.36, "sentiment": 3.3, "volatility": 1.5}, "PAN": {"price": 377.03, "seed_price": 377.03, "prev_price": 357.9, "change_pct": 5.35, "sentiment": 50.0, "volatility": 1.5}, "TKM": {"price": 325.16, "seed_price": 325.16, "prev_price": 337.18, "change_pct": -3.56, "sentiment": -33.3, "volatility": 1.5}, "HRV": {"price": 343.71, "seed_price": 343.71, "prev_price": 343.71, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "LTU": {"price": 343.32, "seed_price": 343.32, "prev_price": 343.32, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "CIV": {"price": 342.98, "seed_price": 342.98, "prev_price": 342.98, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "TZA": {"price": 342.71, "seed_price": 342.71, "prev_price": 342.71, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "AZE": {"price": 343.62, "seed_price": 343.62, "prev_price": 342.81, "change_pct": 0.24, "sentiment": 2.2, "volatility": 1.5}, "URY": {"price": 340.82, "seed_price": 340.82, "prev_price": 340.82, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "GHA": {"price": 298.02, "seed_price": 298.02, "prev_price": 322.96, "change_pct": -7.72, "sentiment": -72.2, "volatility": 1.5}, "SRB": {"price": 338.74, "seed_price": 338.74, "prev_price": 338.74, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "BLR": {"price": 336.6, "seed_price": 336.6, "prev_price": 336.6, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "SVN": {"price": 333.39, "seed_price": 333.39, "prev_price": 332.21, "change_pct": 0.36, "sentiment": 3.3, "volatility": 1.5}, "COD": {"price": 329.14, "seed_price": 329.14, "prev_price": 329.14, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "ZAR": {"price": 329.14, "seed_price": 329.14, "prev_price": 329.14, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "MMR": {"price": 295.27, "seed_price": 295.27, "prev_price": 313.92, "change_pct": -5.94, "sentiment": -55.5, "volatility": 1.5}, "JOR": {"price": 308.59, "seed_price": 308.59, "prev_price": 308.59, "change_pct": 0.0, "sentiment": 0.0, "volatility": 1.5}, "CMR": {"price": 306.22, "seed_price": 306.22, "prev_price": 306.22, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "UGA": {"price": 281.88, "seed_price": 281.88, "prev_price": 296.32, "change_pct": -4.87, "sentiment": -44.4, "volatility": 2.0}, "TUN": {"price": 323.91, "seed_price": 323.91, "prev_price": 312.49, "change_pct": 3.65, "sentiment": 33.3, "volatility": 2.0}, "MAC": {"price": 302.87, "seed_price": 302.87, "prev_price": 302.87, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "LVA": {"price": 302.08, "seed_price": 302.08, "prev_price": 302.08, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "BOL": {"price": 262.34, "seed_price": 262.34, "prev_price": 284.9, "change_pct": -7.92, "sentiment": -72.2, "volatility": 2.0}, "LBY": {"price": 322.26, "seed_price": 322.26, "prev_price": 309.08, "change_pct": 4.26, "sentiment": 38.8, "volatility": 2.0}, "BHR": {"price": 299.45, "seed_price": 299.45, "prev_price": 298.72, "change_pct": 0.24, "sentiment": 2.2, "volatility": 2.0}, "PRY": {"price": 295.7, "seed_price": 295.7, "prev_price": 295.7, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "EST": {"price": 294.58, "seed_price": 294.58, "prev_price": 293.51, "change_pct": 0.36, "sentiment": 3.3, "volatility": 2.0}, "NPL": {"price": 292.02, "seed_price": 292.02, "prev_price": 292.02, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "SLV": {"price": 279.11, "seed_price": 279.11, "prev_price": 279.11, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "HND": {"price": 278.73, "seed_price": 278.73, "prev_price": 278.73, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "CYP": {"price": 273.4, "seed_price": 273.4, "prev_price": 273.4, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "SEN": {"price": 292.85, "seed_price": 292.85, "prev_price": 280.88, "change_pct": 4.26, "sentiment": 38.8, "volatility": 2.0}, "KHM": {"price": 272.79, "seed_price": 272.79, "prev_price": 272.79, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "PNG": {"price": 271.8, "seed_price": 271.8, "prev_price": 271.8, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "ISL": {"price": 249.43, "seed_price": 249.43, "prev_price": 262.2, "change_pct": -4.87, "sentiment": -44.4, "volatility": 2.0}, "GEO": {"price": 269.8, "seed_price": 269.8, "prev_price": 269.8, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "ZMB": {"price": 263.66, "seed_price": 263.66, "prev_price": 263.66, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "TTO": {"price": 263.8, "seed_price": 263.8, "prev_price": 263.8, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "BIH": {"price": 240.39, "seed_price": 240.39, "prev_price": 252.7, "change_pct": -4.87, "sentiment": -44.4, "volatility": 2.0}, "ZWE": {"price": 258.54, "seed_price": 258.54, "prev_price": 258.54, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "ARM": {"price": 251.91, "seed_price": 251.91, "prev_price": 251.91, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "GIN": {"price": 275.38, "seed_price": 275.38, "prev_price": 259.57, "change_pct": 6.09, "sentiment": 55.5, "volatility": 2.0}, "LBN": {"price": 248.86, "seed_price": 248.86, "prev_price": 248.86, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "ALB": {"price": 248.54, "seed_price": 248.54, "prev_price": 248.54, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "MOZ": {"price": 246.41, "seed_price": 246.41, "prev_price": 245.51, "change_pct": 0.37, "sentiment": 3.3, "volatility": 2.0}, "MLI": {"price": 223.43, "seed_price": 223.43, "prev_price": 234.87, "change_pct": -4.87, "sentiment": -44.4, "volatility": 2.0}, "GAB": {"price": 241.88, "seed_price": 241.88, "prev_price": 241.88, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "YEM": {"price": 220.23, "seed_price": 220.23, "prev_price": 233.0, "change_pct": -5.48, "sentiment": -50.0, "volatility": 2.0}, "MLT": {"price": 256.4, "seed_price": 256.4, "prev_price": 247.36, "change_pct": 3.65, "sentiment": 33.3, "volatility": 2.0}, "BFA": {"price": 240.85, "seed_price": 240.85, "prev_price": 240.85, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "BWA": {"price": 224.95, "seed_price": 224.95, "prev_price": 233.48, "change_pct": -3.65, "sentiment": -33.3, "volatility": 2.0}, "BEN": {"price": 237.78, "seed_price": 237.78, "prev_price": 237.78, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "HTI": {"price": 238.89, "seed_price": 238.89, "prev_price": 238.02, "change_pct": 0.37, "sentiment": 3.3, "volatility": 2.0}, "JAM": {"price": 235.81, "seed_price": 235.81, "prev_price": 235.81, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "MNG": {"price": 219.33, "seed_price": 219.33, "prev_price": 227.65, "change_pct": -3.65, "sentiment": -33.3, "volatility": 2.0}, "PRK": {"price": 227.67, "seed_price": 227.67, "prev_price": 227.67, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "NIC": {"price": 227.28, "seed_price": 227.28, "prev_price": 227.28, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "NER": {"price": 226.53, "seed_price": 226.53, "prev_price": 225.71, "change_pct": 0.36, "sentiment": 3.3, "volatility": 2.0}, "GUY": {"price": 222.98, "seed_price": 222.98, "prev_price": 222.98, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "MDG": {"price": 195.48, "seed_price": 195.48, "prev_price": 210.89, "change_pct": -7.31, "sentiment": -66.6, "volatility": 2.0}, "MDA": {"price": 244.48, "seed_price": 244.48, "prev_price": 230.45, "change_pct": 6.09, "sentiment": 55.5, "volatility": 2.0}, "BRN": {"price": 217.37, "seed_price": 217.37, "prev_price": 217.37, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "MKD": {"price": 215.56, "seed_price": 215.56, "prev_price": 215.56, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "AFG": {"price": 214.66, "seed_price": 214.66, "prev_price": 214.66, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "MUS": {"price": 213.75, "seed_price": 213.75, "prev_price": 213.75, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "BHS": {"price": 214.42, "seed_price": 214.42, "prev_price": 213.9, "change_pct": 0.24, "sentiment": 2.2, "volatility": 2.0}, "COG": {"price": 213.8, "seed_price": 213.8, "prev_price": 213.8, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "RWA": {"price": 208.02, "seed_price": 208.02, "prev_price": 208.02, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "TCD": {"price": 208.4, "seed_price": 208.4, "prev_price": 207.64, "change_pct": 0.37, "sentiment": 3.3, "volatility": 2.0}, "MWI": {"price": 207.3, "seed_price": 207.3, "prev_price": 207.3, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "KGZ": {"price": 204.55, "seed_price": 204.55, "prev_price": 204.55, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "NAM": {"price": 215.28, "seed_price": 215.28, "prev_price": 207.69, "change_pct": 3.65, "sentiment": 33.3, "volatility": 2.0}, "GNQ": {"price": 202.23, "seed_price": 202.23, "prev_price": 202.23, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "TJK": {"price": 182.94, "seed_price": 182.94, "prev_price": 193.55, "change_pct": -5.48, "sentiment": -50.0, "volatility": 2.0}, "SOM": {"price": 194.45, "seed_price": 194.45, "prev_price": 194.45, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "XKX": {"price": 190.65, "seed_price": 190.65, "prev_price": 190.65, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "MRT": {"price": 189.97, "seed_price": 189.97, "prev_price": 189.97, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "TGO": {"price": 180.86, "seed_price": 180.86, "prev_price": 180.86, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "SYR": {"price": 180.0, "seed_price": 180.0, "prev_price": 180.0, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "MCO": {"price": 176.81, "seed_price": 176.81, "prev_price": 176.81, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "MNE": {"price": 166.37, "seed_price": 166.37, "prev_price": 166.37, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "MDV": {"price": 162.26, "seed_price": 162.26, "prev_price": 162.26, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "LIE": {"price": 174.3, "seed_price": 174.3, "prev_price": 166.2, "change_pct": 4.87, "sentiment": 44.4, "volatility": 2.0}, "BRB": {"price": 157.3, "seed_price": 157.3, "prev_price": 157.3, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "SSD": {"price": 152.23, "seed_price": 152.23, "prev_price": 152.23, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "FJI": {"price": 146.68, "seed_price": 146.68, "prev_price": 146.68, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "SWZ": {"price": 137.28, "seed_price": 137.28, "prev_price": 137.28, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "LBR": {"price": 139.62, "seed_price": 139.62, "prev_price": 133.91, "change_pct": 4.26, "sentiment": 38.8, "volatility": 2.0}, "SLE": {"price": 123.43, "seed_price": 123.43, "prev_price": 123.43, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "DJI": {"price": 123.76, "seed_price": 123.76, "prev_price": 123.76, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "AND": {"price": 120.98, "seed_price": 120.98, "prev_price": 120.98, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "SUR": {"price": 107.71, "seed_price": 107.71, "prev_price": 113.96, "change_pct": -5.48, "sentiment": -50.0, "volatility": 2.0}, "BLZ": {"price": 118.32, "seed_price": 118.32, "prev_price": 114.15, "change_pct": 3.65, "sentiment": 33.3, "volatility": 2.0}, "BDI": {"price": 101.88, "seed_price": 101.88, "prev_price": 106.42, "change_pct": -4.27, "sentiment": -38.8, "volatility": 2.0}, "ANT": {"price": 110.3, "seed_price": 110.3, "prev_price": 110.3, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "BTN": {"price": 106.79, "seed_price": 106.79, "prev_price": 106.79, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "CPV": {"price": 100.53, "seed_price": 100.53, "prev_price": 100.16, "change_pct": 0.37, "sentiment": 3.3, "volatility": 2.0}, "CAF": {"price": 101.0, "seed_price": 101.0, "prev_price": 101.0, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "ERI": {"price": 91.31, "seed_price": 91.31, "prev_price": 95.38, "change_pct": -4.27, "sentiment": -38.8, "volatility": 2.0}, "LCA": {"price": 97.48, "seed_price": 97.48, "prev_price": 97.48, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "LSO": {"price": 95.55, "seed_price": 95.55, "prev_price": 95.2, "change_pct": 0.37, "sentiment": 3.3, "volatility": 2.0}, "GMB": {"price": 92.86, "seed_price": 92.86, "prev_price": 92.86, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "SYC": {"price": 94.31, "seed_price": 94.31, "prev_price": 91.52, "change_pct": 3.05, "sentiment": 27.8, "volatility": 2.0}, "GNB": {"price": 85.1, "seed_price": 85.1, "prev_price": 85.1, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "TLS": {"price": 91.45, "seed_price": 91.45, "prev_price": 88.23, "change_pct": 3.65, "sentiment": 33.3, "volatility": 2.0}, "ATG": {"price": 86.66, "seed_price": 86.66, "prev_price": 86.66, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "SMR": {"price": 74.02, "seed_price": 74.02, "prev_price": 78.82, "change_pct": -6.09, "sentiment": -55.5, "volatility": 2.0}, "SLB": {"price": 76.77, "seed_price": 76.77, "prev_price": 76.77, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "GRD": {"price": 65.45, "seed_price": 65.45, "prev_price": 65.45, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "COM": {"price": 58.67, "seed_price": 58.67, "prev_price": 62.47, "change_pct": -6.08, "sentiment": -55.5, "volatility": 2.0}, "VUT": {"price": 59.11, "seed_price": 59.11, "prev_price": 59.11, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "WSM": {"price": 52.12, "seed_price": 52.12, "prev_price": 51.93, "change_pct": 0.37, "sentiment": 3.3, "volatility": 2.0}, "STP": {"price": 41.48, "seed_price": 41.48, "prev_price": 41.48, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "DMA": {"price": 41.02, "seed_price": 41.02, "prev_price": 41.02, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "TON": {"price": 33.24, "seed_price": 33.24, "prev_price": 33.24, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "FSM": {"price": 32.34, "seed_price": 32.34, "prev_price": 30.66, "change_pct": 5.48, "sentiment": 50.0, "volatility": 2.0}, "PLW": {"price": 22.81, "seed_price": 22.81, "prev_price": 22.14, "change_pct": 3.03, "sentiment": 27.8, "volatility": 2.0}, "MHL": {"price": 19.91, "seed_price": 19.91, "prev_price": 19.91, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "KIR": {"price": 17.54, "seed_price": 17.54, "prev_price": 17.48, "change_pct": 0.34, "sentiment": 3.3, "volatility": 2.0}, "NRU": {"price": 11.6, "seed_price": 11.6, "prev_price": 11.6, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "TUV": {"price": 5.0, "seed_price": 5.0, "prev_price": 5.0, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}, "VAT": {"price": 5.0, "seed_price": 5.0, "prev_price": 5.0, "change_pct": 0.0, "sentiment": 0.0, "volatility": 2.0}}, "news": [{"code": "DEU", "name": "독일", "flag": "🇩🇪", "title": "독일 정치 불안 심화, 의회 충돌", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "BRA", "name": "브라질", "flag": "🇧🇷", "title": "브라질 중앙은행 금리 인하, 시장 환영", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "CAN", "name": "캐나다", "flag": "🇨🇦", "title": "캐나다 신용등급 상향 조정", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "RUS", "name": "러시아", "flag": "🇷🇺", "title": "러시아 자연재해 발생, 경제 피해 확대", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "ESP", "name": "스페인", "flag": "🇪🇸", "title": "스페인 정부 부채 한계, 국채 발행 난항", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "IDN", "name": "인도네시아", "flag": "🇮🇩", "title": "인도네시아 중앙은행 회의 결과 예상치 부합", "category": "neutral", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "SAU", "name": "사우디아라비아", "flag": "🇸🇦", "title": "사우디아라비아 중앙은행 회의 결과 예상치 부합", "category": "neutral", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "CHE", "name": "스위스", "flag": "🇨🇭", "title": "스위스 대규모 인프라 투자 계획 발표", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "ARG", "name": "아르헨티나", "flag": "🇦🇷", "title": "아르헨티나 주요 수출 품목 단가 하락", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "SWE", "name": "스웨덴", "flag": "🇸🇪", "title": "스웨덴 정부 부채 한계, 국채 발행 난항", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "IRL", "name": "아일랜드", "flag": "🇮🇪", "title": "아일랜드 통화 약세, 자본 유출 심화", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "THA", "name": "태국", "flag": "🇹🇭", "title": "태국 관광 산업 회복, 외화 유입 증가", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "ARE", "name": "아랍에미리트", "flag": "🇦🇪", "title": "아랍에미리트 정부 신규 정책 발표, 영향 분석 중", "category": "neutral", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "BGD", "name": "방글라데시", "flag": "🇧🇩", "title": "방글라데시 정부 부채 한계, 국채 발행 난항", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "VNM", "name": "베트남", "flag": "🇻🇳", "title": "베트남 주요 수출 품목 단가 하락", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "MYS", "name": "말레이시아", "flag": "🇲🇾", "title": "말레이시아 관광 산업 회복, 외화 유입 증가", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "EGY", "name": "이집트", "flag": "🇪🇬", "title": "이집트 신용등급 강등 위기", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "HKG", "name": "홍콩", "flag": "🇭🇰", "title": "홍콩 중앙은행 금리 인하, 시장 환영", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "COL", "name": "콜롬비아", "flag": "🇨🇴", "title": "콜롬비아 신기술 분야 선도, 외국인 투자 급증", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "ROU", "name": "루마니아", "flag": "🇷🇴", "title": "루마니아 정부 부채 한계, 국채 발행 난항", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "CHL", "name": "칠레", "flag": "🇨🇱", "title": "칠레 분기 경제지표 발표 예정", "category": "neutral", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "CZE", "name": "체코", "flag": "🇨🇿", "title": "체코 글로벌 정상회의 개최, 외교 입지 강화", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "PRT", "name": "포르투갈", "flag": "🇵🇹", "title": "포르투갈 정부 신규 정책 발표, 영향 분석 중", "category": "neutral", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "DZA", "name": "알제리", "flag": "🇩🇿", "title": "알제리 분기 경제지표 발표 예정", "category": "neutral", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "GRC", "name": "그리스", "flag": "🇬🇷", "title": "그리스 GDP 예상치 상회, 경제 호조세", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "UKR", "name": "우크라이나", "flag": "🇺🇦", "title": "우크라이나 인플레이션 우려 확대, 물가 급등", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "KWT", "name": "쿠웨이트", "flag": "🇰🇼", "title": "쿠웨이트 글로벌 정상회의 개최, 외교 입지 강화", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "MAR", "name": "모로코", "flag": "🇲🇦", "title": "모로코 주요 수출 품목 단가 하락", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "SVK", "name": "슬로바키아", "flag": "🇸🇰", "title": "슬로바키아 분기 경제지표 발표 예정", "category": "neutral", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "DOM", "name": "도미니카공화국", "flag": "🇩🇴", "title": "도미니카공화국 자연재해 발생, 경제 피해 확대", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "ECU", "name": "에콰도르", "flag": "🇪🇨", "title": "에콰도르 통화 약세, 자본 유출 심화", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "OMN", "name": "오만", "flag": "🇴🇲", "title": "오만 분기 경제지표 발표 예정", "category": "neutral", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "GTM", "name": "과테말라", "flag": "🇬🇹", "title": "과테말라 인플레이션 우려 확대, 물가 급등", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "UZB", "name": "우즈베키스탄", "flag": "🇺🇿", "title": "우즈베키스탄 친환경 에너지 전환 가속", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "CRI", "name": "코스타리카", "flag": "🇨🇷", "title": "코스타리카 무역 분쟁 격화, 관세 우려", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "LKA", "name": "스리랑카", "flag": "🇱🇰", "title": "스리랑카 정부 신규 정책 발표, 영향 분석 중", "category": "neutral", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "PAN", "name": "파나마", "flag": "🇵🇦", "title": "파나마 수출 사상 최대, 무역수지 개선", "category": "positive", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "TKM", "name": "투르크메니스탄", "flag": "🇹🇲", "title": "투르크메니스탄 주요 수출 품목 단가 하락", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "AZE", "name": "아제르바이잔", "flag": "🇦🇿", "title": "아제르바이잔 분기 경제지표 발표 예정", "category": "neutral", "time": "2026-05-20T22:43:32.054642+00:00"}, {"code": "GHA", "name": "가나", "flag": "🇬🇭", "title": "가나 대형 은행 부실 우려, 금융 충격", "category": "negative", "time": "2026-05-20T22:43:32.054642+00:00"}]};
+
+// ============================================================
+// === FALLBACK DATA (countries.json 로드 실패 시) ===
+// ============================================================
+const FALLBACK_COUNTRIES = [
+  {code:'USA',name:'미국',flag:'🇺🇸',tier:'S',gdp:27361,basePrice:798.69,volatility:0.6},
+  {code:'CHN',name:'중국',flag:'🇨🇳',tier:'S',gdp:17795,basePrice:765.06,volatility:0.6},
+  {code:'KOR',name:'대한민국',flag:'🇰🇷',tier:'A',gdp:1713,basePrice:580,volatility:0.8},
+];
+</script>
+</body>
+</html>

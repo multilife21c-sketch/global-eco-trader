@@ -1,0 +1,1748 @@
+[
+  {
+    "code": "USA",
+    "name": "미국",
+    "flag": "🇺🇸",
+    "tier": "S",
+    "gdp": 27360.7,
+    "basePrice": 798.69,
+    "volatility": 0.6
+  },
+  {
+    "code": "CHN",
+    "name": "중국",
+    "flag": "🇨🇳",
+    "tier": "S",
+    "gdp": 17794.8,
+    "basePrice": 765.06,
+    "volatility": 0.6
+  },
+  {
+    "code": "DEU",
+    "name": "독일",
+    "flag": "🇩🇪",
+    "tier": "A",
+    "gdp": 4456.1,
+    "basePrice": 656.83,
+    "volatility": 0.8
+  },
+  {
+    "code": "JPN",
+    "name": "일본",
+    "flag": "🇯🇵",
+    "tier": "A",
+    "gdp": 4212.9,
+    "basePrice": 652.44,
+    "volatility": 0.8
+  },
+  {
+    "code": "IND",
+    "name": "인도",
+    "flag": "🇮🇳",
+    "tier": "A",
+    "gdp": 3549.9,
+    "basePrice": 639.06,
+    "volatility": 0.8
+  },
+  {
+    "code": "GBR",
+    "name": "영국",
+    "flag": "🇬🇧",
+    "tier": "A",
+    "gdp": 3340.0,
+    "basePrice": 634.3,
+    "volatility": 0.8
+  },
+  {
+    "code": "FRA",
+    "name": "프랑스",
+    "flag": "🇫🇷",
+    "tier": "A",
+    "gdp": 3030.9,
+    "basePrice": 626.71,
+    "volatility": 0.8
+  },
+  {
+    "code": "ITA",
+    "name": "이탈리아",
+    "flag": "🇮🇹",
+    "tier": "A",
+    "gdp": 2254.8,
+    "basePrice": 603.6,
+    "volatility": 0.8
+  },
+  {
+    "code": "BRA",
+    "name": "브라질",
+    "flag": "🇧🇷",
+    "tier": "A",
+    "gdp": 2173.7,
+    "basePrice": 600.73,
+    "volatility": 0.8
+  },
+  {
+    "code": "CAN",
+    "name": "캐나다",
+    "flag": "🇨🇦",
+    "tier": "A",
+    "gdp": 2139.8,
+    "basePrice": 599.51,
+    "volatility": 0.8
+  },
+  {
+    "code": "RUS",
+    "name": "러시아",
+    "flag": "🇷🇺",
+    "tier": "A",
+    "gdp": 2021.4,
+    "basePrice": 595.06,
+    "volatility": 0.8
+  },
+  {
+    "code": "MEX",
+    "name": "멕시코",
+    "flag": "🇲🇽",
+    "tier": "A",
+    "gdp": 1788.9,
+    "basePrice": 585.51,
+    "volatility": 0.8
+  },
+  {
+    "code": "AUS",
+    "name": "호주",
+    "flag": "🇦🇺",
+    "tier": "A",
+    "gdp": 1723.8,
+    "basePrice": 582.61,
+    "volatility": 0.8
+  },
+  {
+    "code": "KOR",
+    "name": "대한민국",
+    "flag": "🇰🇷",
+    "tier": "A",
+    "gdp": 1712.8,
+    "basePrice": 582.11,
+    "volatility": 0.8
+  },
+  {
+    "code": "ESP",
+    "name": "스페인",
+    "flag": "🇪🇸",
+    "tier": "A",
+    "gdp": 1620.1,
+    "basePrice": 577.77,
+    "volatility": 0.8
+  },
+  {
+    "code": "IDN",
+    "name": "인도네시아",
+    "flag": "🇮🇩",
+    "tier": "A",
+    "gdp": 1371.2,
+    "basePrice": 564.73,
+    "volatility": 0.8
+  },
+  {
+    "code": "NLD",
+    "name": "네덜란드",
+    "flag": "🇳🇱",
+    "tier": "A",
+    "gdp": 1118.5,
+    "basePrice": 548.82,
+    "volatility": 0.8
+  },
+  {
+    "code": "TUR",
+    "name": "튀르키예",
+    "flag": "🇹🇷",
+    "tier": "A",
+    "gdp": 1108.0,
+    "basePrice": 548.09,
+    "volatility": 0.8
+  },
+  {
+    "code": "SAU",
+    "name": "사우디아라비아",
+    "flag": "🇸🇦",
+    "tier": "A",
+    "gdp": 1067.6,
+    "basePrice": 545.19,
+    "volatility": 0.8
+  },
+  {
+    "code": "CHE",
+    "name": "스위스",
+    "flag": "🇨🇭",
+    "tier": "B",
+    "gdp": 884.9,
+    "basePrice": 530.53,
+    "volatility": 1.1
+  },
+  {
+    "code": "POL",
+    "name": "폴란드",
+    "flag": "🇵🇱",
+    "tier": "B",
+    "gdp": 811.2,
+    "basePrice": 523.74,
+    "volatility": 1.1
+  },
+  {
+    "code": "ARG",
+    "name": "아르헨티나",
+    "flag": "🇦🇷",
+    "tier": "B",
+    "gdp": 640.6,
+    "basePrice": 505.31,
+    "volatility": 1.1
+  },
+  {
+    "code": "BEL",
+    "name": "벨기에",
+    "flag": "🇧🇪",
+    "tier": "B",
+    "gdp": 627.5,
+    "basePrice": 503.7,
+    "volatility": 1.1
+  },
+  {
+    "code": "SWE",
+    "name": "스웨덴",
+    "flag": "🇸🇪",
+    "tier": "B",
+    "gdp": 593.3,
+    "basePrice": 499.32,
+    "volatility": 1.1
+  },
+  {
+    "code": "IRL",
+    "name": "아일랜드",
+    "flag": "🇮🇪",
+    "tier": "B",
+    "gdp": 545.5,
+    "basePrice": 492.77,
+    "volatility": 1.1
+  },
+  {
+    "code": "ISR",
+    "name": "이스라엘",
+    "flag": "🇮🇱",
+    "tier": "B",
+    "gdp": 521.7,
+    "basePrice": 489.28,
+    "volatility": 1.1
+  },
+  {
+    "code": "AUT",
+    "name": "오스트리아",
+    "flag": "🇦🇹",
+    "tier": "B",
+    "gdp": 516.4,
+    "basePrice": 488.48,
+    "volatility": 1.1
+  },
+  {
+    "code": "THA",
+    "name": "태국",
+    "flag": "🇹🇭",
+    "tier": "B",
+    "gdp": 515.0,
+    "basePrice": 488.27,
+    "volatility": 1.1
+  },
+  {
+    "code": "NGA",
+    "name": "나이지리아",
+    "flag": "🇳🇬",
+    "tier": "B",
+    "gdp": 506.6,
+    "basePrice": 486.99,
+    "volatility": 1.1
+  },
+  {
+    "code": "ARE",
+    "name": "아랍에미리트",
+    "flag": "🇦🇪",
+    "tier": "B",
+    "gdp": 504.2,
+    "basePrice": 486.62,
+    "volatility": 1.1
+  },
+  {
+    "code": "SGP",
+    "name": "싱가포르",
+    "flag": "🇸🇬",
+    "tier": "B",
+    "gdp": 501.4,
+    "basePrice": 486.19,
+    "volatility": 1.1
+  },
+  {
+    "code": "NOR",
+    "name": "노르웨이",
+    "flag": "🇳🇴",
+    "tier": "B",
+    "gdp": 485.5,
+    "basePrice": 483.68,
+    "volatility": 1.1
+  },
+  {
+    "code": "BGD",
+    "name": "방글라데시",
+    "flag": "🇧🇩",
+    "tier": "B",
+    "gdp": 446.4,
+    "basePrice": 477.12,
+    "volatility": 1.1
+  },
+  {
+    "code": "PHL",
+    "name": "필리핀",
+    "flag": "🇵🇭",
+    "tier": "B",
+    "gdp": 437.1,
+    "basePrice": 475.49,
+    "volatility": 1.1
+  },
+  {
+    "code": "VNM",
+    "name": "베트남",
+    "flag": "🇻🇳",
+    "tier": "B",
+    "gdp": 429.7,
+    "basePrice": 474.16,
+    "volatility": 1.1
+  },
+  {
+    "code": "MYS",
+    "name": "말레이시아",
+    "flag": "🇲🇾",
+    "tier": "B",
+    "gdp": 415.7,
+    "basePrice": 471.56,
+    "volatility": 1.1
+  },
+  {
+    "code": "DNK",
+    "name": "덴마크",
+    "flag": "🇩🇰",
+    "tier": "B",
+    "gdp": 404.2,
+    "basePrice": 469.38,
+    "volatility": 1.1
+  },
+  {
+    "code": "EGY",
+    "name": "이집트",
+    "flag": "🇪🇬",
+    "tier": "B",
+    "gdp": 395.9,
+    "basePrice": 467.77,
+    "volatility": 1.1
+  },
+  {
+    "code": "IRN",
+    "name": "이란",
+    "flag": "🇮🇷",
+    "tier": "B",
+    "gdp": 388.5,
+    "basePrice": 466.3,
+    "volatility": 1.1
+  },
+  {
+    "code": "HKG",
+    "name": "홍콩",
+    "flag": "🇭🇰",
+    "tier": "B",
+    "gdp": 382.1,
+    "basePrice": 464.99,
+    "volatility": 1.1
+  },
+  {
+    "code": "ZAF",
+    "name": "남아프리카공화국",
+    "flag": "🇿🇦",
+    "tier": "B",
+    "gdp": 380.9,
+    "basePrice": 464.75,
+    "volatility": 1.1
+  },
+  {
+    "code": "COL",
+    "name": "콜롬비아",
+    "flag": "🇨🇴",
+    "tier": "B",
+    "gdp": 363.5,
+    "basePrice": 461.11,
+    "volatility": 1.1
+  },
+  {
+    "code": "ROU",
+    "name": "루마니아",
+    "flag": "🇷🇴",
+    "tier": "B",
+    "gdp": 350.4,
+    "basePrice": 458.25,
+    "volatility": 1.1
+  },
+  {
+    "code": "PAK",
+    "name": "파키스탄",
+    "flag": "🇵🇰",
+    "tier": "B",
+    "gdp": 338.2,
+    "basePrice": 455.49,
+    "volatility": 1.1
+  },
+  {
+    "code": "CHL",
+    "name": "칠레",
+    "flag": "🇨🇱",
+    "tier": "B",
+    "gdp": 335.5,
+    "basePrice": 454.86,
+    "volatility": 1.1
+  },
+  {
+    "code": "CZE",
+    "name": "체코",
+    "flag": "🇨🇿",
+    "tier": "B",
+    "gdp": 330.9,
+    "basePrice": 453.77,
+    "volatility": 1.1
+  },
+  {
+    "code": "FIN",
+    "name": "핀란드",
+    "flag": "🇫🇮",
+    "tier": "C",
+    "gdp": 295.5,
+    "basePrice": 444.97,
+    "volatility": 1.5
+  },
+  {
+    "code": "PRT",
+    "name": "포르투갈",
+    "flag": "🇵🇹",
+    "tier": "C",
+    "gdp": 287.1,
+    "basePrice": 442.71,
+    "volatility": 1.5
+  },
+  {
+    "code": "PER",
+    "name": "페루",
+    "flag": "🇵🇪",
+    "tier": "C",
+    "gdp": 264.6,
+    "basePrice": 436.37,
+    "volatility": 1.5
+  },
+  {
+    "code": "KAZ",
+    "name": "카자흐스탄",
+    "flag": "🇰🇿",
+    "tier": "C",
+    "gdp": 259.3,
+    "basePrice": 434.78,
+    "volatility": 1.5
+  },
+  {
+    "code": "IRQ",
+    "name": "이라크",
+    "flag": "🇮🇶",
+    "tier": "C",
+    "gdp": 250.8,
+    "basePrice": 432.19,
+    "volatility": 1.5
+  },
+  {
+    "code": "DZA",
+    "name": "알제리",
+    "flag": "🇩🇿",
+    "tier": "C",
+    "gdp": 247.6,
+    "basePrice": 431.2,
+    "volatility": 1.5
+  },
+  {
+    "code": "GRC",
+    "name": "그리스",
+    "flag": "🇬🇷",
+    "tier": "C",
+    "gdp": 238.2,
+    "basePrice": 428.18,
+    "volatility": 1.5
+  },
+  {
+    "code": "QAT",
+    "name": "카타르",
+    "flag": "🇶🇦",
+    "tier": "C",
+    "gdp": 235.5,
+    "basePrice": 427.29,
+    "volatility": 1.5
+  },
+  {
+    "code": "HUN",
+    "name": "헝가리",
+    "flag": "🇭🇺",
+    "tier": "C",
+    "gdp": 212.4,
+    "basePrice": 419.25,
+    "volatility": 1.5
+  },
+  {
+    "code": "UKR",
+    "name": "우크라이나",
+    "flag": "🇺🇦",
+    "tier": "C",
+    "gdp": 178.8,
+    "basePrice": 405.84,
+    "volatility": 1.5
+  },
+  {
+    "code": "KWT",
+    "name": "쿠웨이트",
+    "flag": "🇰🇼",
+    "tier": "C",
+    "gdp": 161.8,
+    "basePrice": 398.08,
+    "volatility": 1.5
+  },
+  {
+    "code": "ETH",
+    "name": "에티오피아",
+    "flag": "🇪🇹",
+    "tier": "C",
+    "gdp": 159.7,
+    "basePrice": 397.1,
+    "volatility": 1.5
+  },
+  {
+    "code": "MAR",
+    "name": "모로코",
+    "flag": "🇲🇦",
+    "tier": "C",
+    "gdp": 144.4,
+    "basePrice": 389.27,
+    "volatility": 1.5
+  },
+  {
+    "code": "SVK",
+    "name": "슬로바키아",
+    "flag": "🇸🇰",
+    "tier": "C",
+    "gdp": 132.3,
+    "basePrice": 382.47,
+    "volatility": 1.5
+  },
+  {
+    "code": "DOM",
+    "name": "도미니카공화국",
+    "flag": "🇩🇴",
+    "tier": "C",
+    "gdp": 121.4,
+    "basePrice": 375.83,
+    "volatility": 1.5
+  },
+  {
+    "code": "ECU",
+    "name": "에콰도르",
+    "flag": "🇪🇨",
+    "tier": "C",
+    "gdp": 121.3,
+    "basePrice": 375.73,
+    "volatility": 1.5
+  },
+  {
+    "code": "KEN",
+    "name": "케냐",
+    "flag": "🇰🇪",
+    "tier": "C",
+    "gdp": 113.4,
+    "basePrice": 370.53,
+    "volatility": 1.5
+  },
+  {
+    "code": "OMN",
+    "name": "오만",
+    "flag": "🇴🇲",
+    "tier": "C",
+    "gdp": 108.2,
+    "basePrice": 366.87,
+    "volatility": 1.5
+  },
+  {
+    "code": "CUB",
+    "name": "쿠바",
+    "flag": "🇨🇺",
+    "tier": "C",
+    "gdp": 107.3,
+    "basePrice": 366.27,
+    "volatility": 1.5
+  },
+  {
+    "code": "BGR",
+    "name": "불가리아",
+    "flag": "🇧🇬",
+    "tier": "C",
+    "gdp": 102.4,
+    "basePrice": 362.62,
+    "volatility": 1.5
+  },
+  {
+    "code": "GTM",
+    "name": "과테말라",
+    "flag": "🇬🇹",
+    "tier": "C",
+    "gdp": 102.3,
+    "basePrice": 362.55,
+    "volatility": 1.5
+  },
+  {
+    "code": "AGO",
+    "name": "앙골라",
+    "flag": "🇦🇴",
+    "tier": "C",
+    "gdp": 92.4,
+    "basePrice": 354.65,
+    "volatility": 1.5
+  },
+  {
+    "code": "VEN",
+    "name": "베네수엘라",
+    "flag": "🇻🇪",
+    "tier": "C",
+    "gdp": 92.2,
+    "basePrice": 354.5,
+    "volatility": 1.5
+  },
+  {
+    "code": "UZB",
+    "name": "우즈베키스탄",
+    "flag": "🇺🇿",
+    "tier": "C",
+    "gdp": 90.9,
+    "basePrice": 353.39,
+    "volatility": 1.5
+  },
+  {
+    "code": "LUX",
+    "name": "룩셈부르크",
+    "flag": "🇱🇺",
+    "tier": "C",
+    "gdp": 89.1,
+    "basePrice": 351.84,
+    "volatility": 1.5
+  },
+  {
+    "code": "CRI",
+    "name": "코스타리카",
+    "flag": "🇨🇷",
+    "tier": "C",
+    "gdp": 86.5,
+    "basePrice": 349.53,
+    "volatility": 1.5
+  },
+  {
+    "code": "LKA",
+    "name": "스리랑카",
+    "flag": "🇱🇰",
+    "tier": "C",
+    "gdp": 84.4,
+    "basePrice": 347.63,
+    "volatility": 1.5
+  },
+  {
+    "code": "PAN",
+    "name": "파나마",
+    "flag": "🇵🇦",
+    "tier": "C",
+    "gdp": 82.3,
+    "basePrice": 345.76,
+    "volatility": 1.5
+  },
+  {
+    "code": "TKM",
+    "name": "투르크메니스탄",
+    "flag": "🇹🇲",
+    "tier": "C",
+    "gdp": 81.8,
+    "basePrice": 345.26,
+    "volatility": 1.5
+  },
+  {
+    "code": "HRV",
+    "name": "크로아티아",
+    "flag": "🇭🇷",
+    "tier": "C",
+    "gdp": 80.2,
+    "basePrice": 343.71,
+    "volatility": 1.5
+  },
+  {
+    "code": "LTU",
+    "name": "리투아니아",
+    "flag": "🇱🇹",
+    "tier": "C",
+    "gdp": 79.8,
+    "basePrice": 343.32,
+    "volatility": 1.5
+  },
+  {
+    "code": "CIV",
+    "name": "코트디부아르",
+    "flag": "🇨🇮",
+    "tier": "C",
+    "gdp": 79.4,
+    "basePrice": 342.98,
+    "volatility": 1.5
+  },
+  {
+    "code": "TZA",
+    "name": "탄자니아",
+    "flag": "🇹🇿",
+    "tier": "C",
+    "gdp": 79.2,
+    "basePrice": 342.71,
+    "volatility": 1.5
+  },
+  {
+    "code": "AZE",
+    "name": "아제르바이잔",
+    "flag": "🇦🇿",
+    "tier": "C",
+    "gdp": 78.7,
+    "basePrice": 342.28,
+    "volatility": 1.5
+  },
+  {
+    "code": "URY",
+    "name": "우루과이",
+    "flag": "🇺🇾",
+    "tier": "C",
+    "gdp": 77.2,
+    "basePrice": 340.82,
+    "volatility": 1.5
+  },
+  {
+    "code": "GHA",
+    "name": "가나",
+    "flag": "🇬🇭",
+    "tier": "C",
+    "gdp": 76.6,
+    "basePrice": 340.21,
+    "volatility": 1.5
+  },
+  {
+    "code": "SRB",
+    "name": "세르비아",
+    "flag": "🇷🇸",
+    "tier": "C",
+    "gdp": 75.2,
+    "basePrice": 338.74,
+    "volatility": 1.5
+  },
+  {
+    "code": "BLR",
+    "name": "벨라루스",
+    "flag": "🇧🇾",
+    "tier": "C",
+    "gdp": 73.1,
+    "basePrice": 336.6,
+    "volatility": 1.5
+  },
+  {
+    "code": "SVN",
+    "name": "슬로베니아",
+    "flag": "🇸🇮",
+    "tier": "C",
+    "gdp": 68.4,
+    "basePrice": 331.43,
+    "volatility": 1.5
+  },
+  {
+    "code": "COD",
+    "name": "콩고민주공화국",
+    "flag": "🇨🇩",
+    "tier": "C",
+    "gdp": 66.4,
+    "basePrice": 329.14,
+    "volatility": 1.5
+  },
+  {
+    "code": "ZAR",
+    "name": "ZAR",
+    "flag": "🏳️",
+    "tier": "C",
+    "gdp": 66.4,
+    "basePrice": 329.14,
+    "volatility": 1.5
+  },
+  {
+    "code": "MMR",
+    "name": "미얀마",
+    "flag": "🇲🇲",
+    "tier": "C",
+    "gdp": 64.3,
+    "basePrice": 326.66,
+    "volatility": 1.5
+  },
+  {
+    "code": "JOR",
+    "name": "요르단",
+    "flag": "🇯🇴",
+    "tier": "C",
+    "gdp": 50.8,
+    "basePrice": 308.59,
+    "volatility": 1.5
+  },
+  {
+    "code": "CMR",
+    "name": "카메룬",
+    "flag": "🇨🇲",
+    "tier": "D",
+    "gdp": 49.3,
+    "basePrice": 306.22,
+    "volatility": 2.0
+  },
+  {
+    "code": "UGA",
+    "name": "우간다",
+    "flag": "🇺🇬",
+    "tier": "D",
+    "gdp": 49.3,
+    "basePrice": 306.24,
+    "volatility": 2.0
+  },
+  {
+    "code": "TUN",
+    "name": "튀니지",
+    "flag": "🇹🇳",
+    "tier": "D",
+    "gdp": 48.5,
+    "basePrice": 305.08,
+    "volatility": 2.0
+  },
+  {
+    "code": "MAC",
+    "name": "마카오",
+    "flag": "🇲🇴",
+    "tier": "D",
+    "gdp": 47.1,
+    "basePrice": 302.87,
+    "volatility": 2.0
+  },
+  {
+    "code": "LVA",
+    "name": "라트비아",
+    "flag": "🇱🇻",
+    "tier": "D",
+    "gdp": 46.7,
+    "basePrice": 302.08,
+    "volatility": 2.0
+  },
+  {
+    "code": "BOL",
+    "name": "볼리비아",
+    "flag": "🇧🇴",
+    "tier": "D",
+    "gdp": 45.9,
+    "basePrice": 300.73,
+    "volatility": 2.0
+  },
+  {
+    "code": "LBY",
+    "name": "리비아",
+    "flag": "🇱🇾",
+    "tier": "D",
+    "gdp": 45.8,
+    "basePrice": 300.56,
+    "volatility": 2.0
+  },
+  {
+    "code": "BHR",
+    "name": "바레인",
+    "flag": "🇧🇭",
+    "tier": "D",
+    "gdp": 44.4,
+    "basePrice": 298.24,
+    "volatility": 2.0
+  },
+  {
+    "code": "PRY",
+    "name": "파라과이",
+    "flag": "🇵🇾",
+    "tier": "D",
+    "gdp": 42.9,
+    "basePrice": 295.7,
+    "volatility": 2.0
+  },
+  {
+    "code": "EST",
+    "name": "에스토니아",
+    "flag": "🇪🇪",
+    "tier": "D",
+    "gdp": 41.3,
+    "basePrice": 292.8,
+    "volatility": 2.0
+  },
+  {
+    "code": "NPL",
+    "name": "네팔",
+    "flag": "🇳🇵",
+    "tier": "D",
+    "gdp": 40.9,
+    "basePrice": 292.02,
+    "volatility": 2.0
+  },
+  {
+    "code": "SLV",
+    "name": "엘살바도르",
+    "flag": "🇸🇻",
+    "tier": "D",
+    "gdp": 34.5,
+    "basePrice": 279.11,
+    "volatility": 2.0
+  },
+  {
+    "code": "HND",
+    "name": "온두라스",
+    "flag": "🇭🇳",
+    "tier": "D",
+    "gdp": 34.4,
+    "basePrice": 278.73,
+    "volatility": 2.0
+  },
+  {
+    "code": "CYP",
+    "name": "키프로스",
+    "flag": "🇨🇾",
+    "tier": "D",
+    "gdp": 32.0,
+    "basePrice": 273.4,
+    "volatility": 2.0
+  },
+  {
+    "code": "SEN",
+    "name": "세네갈",
+    "flag": "🇸🇳",
+    "tier": "D",
+    "gdp": 31.9,
+    "basePrice": 273.14,
+    "volatility": 2.0
+  },
+  {
+    "code": "KHM",
+    "name": "캄보디아",
+    "flag": "🇰🇭",
+    "tier": "D",
+    "gdp": 31.8,
+    "basePrice": 272.79,
+    "volatility": 2.0
+  },
+  {
+    "code": "PNG",
+    "name": "파푸아뉴기니",
+    "flag": "🇵🇬",
+    "tier": "D",
+    "gdp": 31.4,
+    "basePrice": 271.8,
+    "volatility": 2.0
+  },
+  {
+    "code": "ISL",
+    "name": "아이슬란드",
+    "flag": "🇮🇸",
+    "tier": "D",
+    "gdp": 31.0,
+    "basePrice": 270.98,
+    "volatility": 2.0
+  },
+  {
+    "code": "GEO",
+    "name": "조지아",
+    "flag": "🇬🇪",
+    "tier": "D",
+    "gdp": 30.5,
+    "basePrice": 269.8,
+    "volatility": 2.0
+  },
+  {
+    "code": "ZMB",
+    "name": "잠비아",
+    "flag": "🇿🇲",
+    "tier": "D",
+    "gdp": 28.2,
+    "basePrice": 263.66,
+    "volatility": 2.0
+  },
+  {
+    "code": "TTO",
+    "name": "트리니다드토바고",
+    "flag": "🇹🇹",
+    "tier": "D",
+    "gdp": 28.2,
+    "basePrice": 263.8,
+    "volatility": 2.0
+  },
+  {
+    "code": "BIH",
+    "name": "보스니아헤르체고비나",
+    "flag": "🇧🇦",
+    "tier": "D",
+    "gdp": 27.2,
+    "basePrice": 261.16,
+    "volatility": 2.0
+  },
+  {
+    "code": "ZWE",
+    "name": "짐바브웨",
+    "flag": "🇿🇼",
+    "tier": "D",
+    "gdp": 26.3,
+    "basePrice": 258.54,
+    "volatility": 2.0
+  },
+  {
+    "code": "ARM",
+    "name": "아르메니아",
+    "flag": "🇦🇲",
+    "tier": "D",
+    "gdp": 24.1,
+    "basePrice": 251.91,
+    "volatility": 2.0
+  },
+  {
+    "code": "GIN",
+    "name": "기니",
+    "flag": "🇬🇳",
+    "tier": "D",
+    "gdp": 23.3,
+    "basePrice": 249.47,
+    "volatility": 2.0
+  },
+  {
+    "code": "LBN",
+    "name": "레바논",
+    "flag": "🇱🇧",
+    "tier": "D",
+    "gdp": 23.1,
+    "basePrice": 248.86,
+    "volatility": 2.0
+  },
+  {
+    "code": "ALB",
+    "name": "알바니아",
+    "flag": "🇦🇱",
+    "tier": "D",
+    "gdp": 23.0,
+    "basePrice": 248.54,
+    "volatility": 2.0
+  },
+  {
+    "code": "MOZ",
+    "name": "모잠비크",
+    "flag": "🇲🇿",
+    "tier": "D",
+    "gdp": 21.9,
+    "basePrice": 244.91,
+    "volatility": 2.0
+  },
+  {
+    "code": "MLI",
+    "name": "말리",
+    "flag": "🇲🇱",
+    "tier": "D",
+    "gdp": 21.3,
+    "basePrice": 242.73,
+    "volatility": 2.0
+  },
+  {
+    "code": "GAB",
+    "name": "가봉",
+    "flag": "🇬🇦",
+    "tier": "D",
+    "gdp": 21.1,
+    "basePrice": 241.88,
+    "volatility": 2.0
+  },
+  {
+    "code": "YEM",
+    "name": "예멘",
+    "flag": "🇾🇪",
+    "tier": "D",
+    "gdp": 21.1,
+    "basePrice": 241.81,
+    "volatility": 2.0
+  },
+  {
+    "code": "MLT",
+    "name": "몰타",
+    "flag": "🇲🇹",
+    "tier": "D",
+    "gdp": 21.0,
+    "basePrice": 241.49,
+    "volatility": 2.0
+  },
+  {
+    "code": "BFA",
+    "name": "부르키나파소",
+    "flag": "🇧🇫",
+    "tier": "D",
+    "gdp": 20.8,
+    "basePrice": 240.85,
+    "volatility": 2.0
+  },
+  {
+    "code": "BWA",
+    "name": "보츠와나",
+    "flag": "🇧🇼",
+    "tier": "D",
+    "gdp": 20.4,
+    "basePrice": 239.29,
+    "volatility": 2.0
+  },
+  {
+    "code": "BEN",
+    "name": "베냉",
+    "flag": "🇧🇯",
+    "tier": "D",
+    "gdp": 19.9,
+    "basePrice": 237.78,
+    "volatility": 2.0
+  },
+  {
+    "code": "HTI",
+    "name": "아이티",
+    "flag": "🇭🇹",
+    "tier": "D",
+    "gdp": 19.9,
+    "basePrice": 237.44,
+    "volatility": 2.0
+  },
+  {
+    "code": "JAM",
+    "name": "자메이카",
+    "flag": "🇯🇲",
+    "tier": "D",
+    "gdp": 19.4,
+    "basePrice": 235.81,
+    "volatility": 2.0
+  },
+  {
+    "code": "MNG",
+    "name": "몽골",
+    "flag": "🇲🇳",
+    "tier": "D",
+    "gdp": 18.8,
+    "basePrice": 233.32,
+    "volatility": 2.0
+  },
+  {
+    "code": "PRK",
+    "name": "북한",
+    "flag": "🇰🇵",
+    "tier": "D",
+    "gdp": 17.4,
+    "basePrice": 227.67,
+    "volatility": 2.0
+  },
+  {
+    "code": "NIC",
+    "name": "니카라과",
+    "flag": "🇳🇮",
+    "tier": "D",
+    "gdp": 17.3,
+    "basePrice": 227.28,
+    "volatility": 2.0
+  },
+  {
+    "code": "NER",
+    "name": "니제르",
+    "flag": "🇳🇪",
+    "tier": "D",
+    "gdp": 16.8,
+    "basePrice": 225.16,
+    "volatility": 2.0
+  },
+  {
+    "code": "GUY",
+    "name": "가이아나",
+    "flag": "🇬🇾",
+    "tier": "D",
+    "gdp": 16.3,
+    "basePrice": 222.98,
+    "volatility": 2.0
+  },
+  {
+    "code": "MDG",
+    "name": "마다가스카르",
+    "flag": "🇲🇬",
+    "tier": "D",
+    "gdp": 16.0,
+    "basePrice": 221.66,
+    "volatility": 2.0
+  },
+  {
+    "code": "MDA",
+    "name": "몰도바",
+    "flag": "🇲🇩",
+    "tier": "D",
+    "gdp": 16.0,
+    "basePrice": 221.48,
+    "volatility": 2.0
+  },
+  {
+    "code": "BRN",
+    "name": "브루나이",
+    "flag": "🇧🇳",
+    "tier": "D",
+    "gdp": 15.1,
+    "basePrice": 217.37,
+    "volatility": 2.0
+  },
+  {
+    "code": "MKD",
+    "name": "북마케도니아",
+    "flag": "🇲🇰",
+    "tier": "D",
+    "gdp": 14.8,
+    "basePrice": 215.56,
+    "volatility": 2.0
+  },
+  {
+    "code": "AFG",
+    "name": "아프가니스탄",
+    "flag": "🇦🇫",
+    "tier": "D",
+    "gdp": 14.6,
+    "basePrice": 214.66,
+    "volatility": 2.0
+  },
+  {
+    "code": "MUS",
+    "name": "모리셔스",
+    "flag": "🇲🇺",
+    "tier": "D",
+    "gdp": 14.4,
+    "basePrice": 213.75,
+    "volatility": 2.0
+  },
+  {
+    "code": "BHS",
+    "name": "바하마",
+    "flag": "🇧🇸",
+    "tier": "D",
+    "gdp": 14.4,
+    "basePrice": 213.55,
+    "volatility": 2.0
+  },
+  {
+    "code": "COG",
+    "name": "콩고공화국",
+    "flag": "🇨🇬",
+    "tier": "D",
+    "gdp": 14.4,
+    "basePrice": 213.8,
+    "volatility": 2.0
+  },
+  {
+    "code": "RWA",
+    "name": "르완다",
+    "flag": "🇷🇼",
+    "tier": "D",
+    "gdp": 13.3,
+    "basePrice": 208.02,
+    "volatility": 2.0
+  },
+  {
+    "code": "TCD",
+    "name": "차드",
+    "flag": "🇹🇩",
+    "tier": "D",
+    "gdp": 13.2,
+    "basePrice": 207.14,
+    "volatility": 2.0
+  },
+  {
+    "code": "MWI",
+    "name": "말라위",
+    "flag": "🇲🇼",
+    "tier": "D",
+    "gdp": 13.2,
+    "basePrice": 207.3,
+    "volatility": 2.0
+  },
+  {
+    "code": "KGZ",
+    "name": "키르기스스탄",
+    "flag": "🇰🇬",
+    "tier": "D",
+    "gdp": 12.7,
+    "basePrice": 204.55,
+    "volatility": 2.0
+  },
+  {
+    "code": "NAM",
+    "name": "나미비아",
+    "flag": "🇳🇦",
+    "tier": "D",
+    "gdp": 12.4,
+    "basePrice": 202.76,
+    "volatility": 2.0
+  },
+  {
+    "code": "GNQ",
+    "name": "적도기니",
+    "flag": "🇬🇶",
+    "tier": "D",
+    "gdp": 12.3,
+    "basePrice": 202.23,
+    "volatility": 2.0
+  },
+  {
+    "code": "TJK",
+    "name": "타지키스탄",
+    "flag": "🇹🇯",
+    "tier": "D",
+    "gdp": 12.1,
+    "basePrice": 200.87,
+    "volatility": 2.0
+  },
+  {
+    "code": "SOM",
+    "name": "소말리아",
+    "flag": "🇸🇴",
+    "tier": "D",
+    "gdp": 11.0,
+    "basePrice": 194.45,
+    "volatility": 2.0
+  },
+  {
+    "code": "XKX",
+    "name": "코소보",
+    "flag": "🇽🇰",
+    "tier": "D",
+    "gdp": 10.5,
+    "basePrice": 190.65,
+    "volatility": 2.0
+  },
+  {
+    "code": "MRT",
+    "name": "모리타니",
+    "flag": "🇲🇷",
+    "tier": "D",
+    "gdp": 10.4,
+    "basePrice": 189.97,
+    "volatility": 2.0
+  },
+  {
+    "code": "TGO",
+    "name": "토고",
+    "flag": "🇹🇬",
+    "tier": "D",
+    "gdp": 9.1,
+    "basePrice": 180.86,
+    "volatility": 2.0
+  },
+  {
+    "code": "SYR",
+    "name": "시리아",
+    "flag": "🇸🇾",
+    "tier": "D",
+    "gdp": 9.0,
+    "basePrice": 180.0,
+    "volatility": 2.0
+  },
+  {
+    "code": "MCO",
+    "name": "모나코",
+    "flag": "🇲🇨",
+    "tier": "D",
+    "gdp": 8.6,
+    "basePrice": 176.81,
+    "volatility": 2.0
+  },
+  {
+    "code": "MNE",
+    "name": "몬테네그로",
+    "flag": "🇲🇪",
+    "tier": "D",
+    "gdp": 7.4,
+    "basePrice": 166.37,
+    "volatility": 2.0
+  },
+  {
+    "code": "MDV",
+    "name": "몰디브",
+    "flag": "🇲🇻",
+    "tier": "D",
+    "gdp": 7.0,
+    "basePrice": 162.26,
+    "volatility": 2.0
+  },
+  {
+    "code": "LIE",
+    "name": "리히텐슈타인",
+    "flag": "🇱🇮",
+    "tier": "D",
+    "gdp": 6.8,
+    "basePrice": 160.98,
+    "volatility": 2.0
+  },
+  {
+    "code": "BRB",
+    "name": "바베이도스",
+    "flag": "🇧🇧",
+    "tier": "D",
+    "gdp": 6.5,
+    "basePrice": 157.3,
+    "volatility": 2.0
+  },
+  {
+    "code": "SSD",
+    "name": "남수단",
+    "flag": "🇸🇸",
+    "tier": "D",
+    "gdp": 6.0,
+    "basePrice": 152.23,
+    "volatility": 2.0
+  },
+  {
+    "code": "FJI",
+    "name": "피지",
+    "flag": "🇫🇯",
+    "tier": "D",
+    "gdp": 5.5,
+    "basePrice": 146.68,
+    "volatility": 2.0
+  },
+  {
+    "code": "SWZ",
+    "name": "에스와티니",
+    "flag": "🇸🇿",
+    "tier": "D",
+    "gdp": 4.8,
+    "basePrice": 137.28,
+    "volatility": 2.0
+  },
+  {
+    "code": "LBR",
+    "name": "라이베리아",
+    "flag": "🇱🇷",
+    "tier": "D",
+    "gdp": 4.3,
+    "basePrice": 130.22,
+    "volatility": 2.0
+  },
+  {
+    "code": "SLE",
+    "name": "시에라리온",
+    "flag": "🇸🇱",
+    "tier": "D",
+    "gdp": 3.9,
+    "basePrice": 123.43,
+    "volatility": 2.0
+  },
+  {
+    "code": "DJI",
+    "name": "지부티",
+    "flag": "🇩🇯",
+    "tier": "D",
+    "gdp": 3.9,
+    "basePrice": 123.76,
+    "volatility": 2.0
+  },
+  {
+    "code": "AND",
+    "name": "안도라",
+    "flag": "🇦🇩",
+    "tier": "D",
+    "gdp": 3.7,
+    "basePrice": 120.98,
+    "volatility": 2.0
+  },
+  {
+    "code": "SUR",
+    "name": "수리남",
+    "flag": "🇸🇷",
+    "tier": "D",
+    "gdp": 3.5,
+    "basePrice": 118.27,
+    "volatility": 2.0
+  },
+  {
+    "code": "BLZ",
+    "name": "벨리즈",
+    "flag": "🇧🇿",
+    "tier": "D",
+    "gdp": 3.2,
+    "basePrice": 111.44,
+    "volatility": 2.0
+  },
+  {
+    "code": "BDI",
+    "name": "부룬디",
+    "flag": "🇧🇮",
+    "tier": "D",
+    "gdp": 3.1,
+    "basePrice": 109.53,
+    "volatility": 2.0
+  },
+  {
+    "code": "ANT",
+    "name": "ANT",
+    "flag": "🏳️",
+    "tier": "D",
+    "gdp": 3.1,
+    "basePrice": 110.3,
+    "volatility": 2.0
+  },
+  {
+    "code": "BTN",
+    "name": "부탄",
+    "flag": "🇧🇹",
+    "tier": "D",
+    "gdp": 2.9,
+    "basePrice": 106.79,
+    "volatility": 2.0
+  },
+  {
+    "code": "CPV",
+    "name": "카보베르데",
+    "flag": "🇨🇻",
+    "tier": "D",
+    "gdp": 2.6,
+    "basePrice": 99.92,
+    "volatility": 2.0
+  },
+  {
+    "code": "CAF",
+    "name": "중앙아프리카공화국",
+    "flag": "🇨🇫",
+    "tier": "D",
+    "gdp": 2.6,
+    "basePrice": 101.0,
+    "volatility": 2.0
+  },
+  {
+    "code": "ERI",
+    "name": "에리트레아",
+    "flag": "🇪🇷",
+    "tier": "D",
+    "gdp": 2.5,
+    "basePrice": 98.16,
+    "volatility": 2.0
+  },
+  {
+    "code": "LCA",
+    "name": "세인트루시아",
+    "flag": "🇱🇨",
+    "tier": "D",
+    "gdp": 2.5,
+    "basePrice": 97.48,
+    "volatility": 2.0
+  },
+  {
+    "code": "LSO",
+    "name": "레소토",
+    "flag": "🇱🇸",
+    "tier": "D",
+    "gdp": 2.4,
+    "basePrice": 94.97,
+    "volatility": 2.0
+  },
+  {
+    "code": "GMB",
+    "name": "감비아",
+    "flag": "🇬🇲",
+    "tier": "D",
+    "gdp": 2.3,
+    "basePrice": 92.86,
+    "volatility": 2.0
+  },
+  {
+    "code": "SYC",
+    "name": "세이셸",
+    "flag": "🇸🇨",
+    "tier": "D",
+    "gdp": 2.1,
+    "basePrice": 89.7,
+    "volatility": 2.0
+  },
+  {
+    "code": "GNB",
+    "name": "기니비사우",
+    "flag": "🇬🇼",
+    "tier": "D",
+    "gdp": 2.0,
+    "basePrice": 85.1,
+    "volatility": 2.0
+  },
+  {
+    "code": "TLS",
+    "name": "동티모르",
+    "flag": "🇹🇱",
+    "tier": "D",
+    "gdp": 2.0,
+    "basePrice": 86.14,
+    "volatility": 2.0
+  },
+  {
+    "code": "ATG",
+    "name": "앤티가바부다",
+    "flag": "🇦🇬",
+    "tier": "D",
+    "gdp": 2.0,
+    "basePrice": 86.66,
+    "volatility": 2.0
+  },
+  {
+    "code": "SMR",
+    "name": "산마리노",
+    "flag": "🇸🇲",
+    "tier": "D",
+    "gdp": 1.9,
+    "basePrice": 82.15,
+    "volatility": 2.0
+  },
+  {
+    "code": "SLB",
+    "name": "솔로몬제도",
+    "flag": "🇸🇧",
+    "tier": "D",
+    "gdp": 1.7,
+    "basePrice": 76.77,
+    "volatility": 2.0
+  },
+  {
+    "code": "GRD",
+    "name": "그레나다",
+    "flag": "🇬🇩",
+    "tier": "D",
+    "gdp": 1.3,
+    "basePrice": 65.45,
+    "volatility": 2.0
+  },
+  {
+    "code": "COM",
+    "name": "코모로",
+    "flag": "🇰🇲",
+    "tier": "D",
+    "gdp": 1.3,
+    "basePrice": 65.11,
+    "volatility": 2.0
+  },
+  {
+    "code": "VUT",
+    "name": "바누아투",
+    "flag": "🇻🇺",
+    "tier": "D",
+    "gdp": 1.1,
+    "basePrice": 59.11,
+    "volatility": 2.0
+  },
+  {
+    "code": "WSM",
+    "name": "사모아",
+    "flag": "🇼🇸",
+    "tier": "D",
+    "gdp": 0.9,
+    "basePrice": 51.8,
+    "volatility": 2.0
+  },
+  {
+    "code": "STP",
+    "name": "상투메프린시페",
+    "flag": "🇸🇹",
+    "tier": "D",
+    "gdp": 0.7,
+    "basePrice": 41.48,
+    "volatility": 2.0
+  },
+  {
+    "code": "DMA",
+    "name": "도미니카연방",
+    "flag": "🇩🇲",
+    "tier": "D",
+    "gdp": 0.7,
+    "basePrice": 41.02,
+    "volatility": 2.0
+  },
+  {
+    "code": "TON",
+    "name": "통가",
+    "flag": "🇹🇴",
+    "tier": "D",
+    "gdp": 0.5,
+    "basePrice": 33.24,
+    "volatility": 2.0
+  },
+  {
+    "code": "FSM",
+    "name": "미크로네시아",
+    "flag": "🇫🇲",
+    "tier": "D",
+    "gdp": 0.5,
+    "basePrice": 29.58,
+    "volatility": 2.0
+  },
+  {
+    "code": "PLW",
+    "name": "팔라우",
+    "flag": "🇵🇼",
+    "tier": "D",
+    "gdp": 0.3,
+    "basePrice": 21.7,
+    "volatility": 2.0
+  },
+  {
+    "code": "MHL",
+    "name": "마셜제도",
+    "flag": "🇲🇭",
+    "tier": "D",
+    "gdp": 0.3,
+    "basePrice": 19.91,
+    "volatility": 2.0
+  },
+  {
+    "code": "KIR",
+    "name": "키리바시",
+    "flag": "🇰🇮",
+    "tier": "D",
+    "gdp": 0.2,
+    "basePrice": 17.44,
+    "volatility": 2.0
+  },
+  {
+    "code": "NRU",
+    "name": "나우루",
+    "flag": "🇳🇷",
+    "tier": "D",
+    "gdp": 0.2,
+    "basePrice": 11.6,
+    "volatility": 2.0
+  },
+  {
+    "code": "TUV",
+    "name": "투발루",
+    "flag": "🇹🇻",
+    "tier": "D",
+    "gdp": 0.1,
+    "basePrice": 5,
+    "volatility": 2.0
+  },
+  {
+    "code": "VAT",
+    "name": "바티칸",
+    "flag": "🇻🇦",
+    "tier": "D",
+    "gdp": 0.0,
+    "basePrice": 5,
+    "volatility": 2.0
+  }
+]

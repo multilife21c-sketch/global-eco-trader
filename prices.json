@@ -1,0 +1,1880 @@
+{
+  "generated_at": "2026-05-20T22:43:32.054642+00:00",
+  "hour_seed": "2026052022",
+  "countries": {
+    "USA": {
+      "price": 798.69,
+      "seed_price": 798.69,
+      "prev_price": 798.69,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.6
+    },
+    "CHN": {
+      "price": 765.06,
+      "seed_price": 765.06,
+      "prev_price": 765.06,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.6
+    },
+    "DEU": {
+      "price": 599.35,
+      "seed_price": 599.35,
+      "prev_price": 634.17,
+      "change_pct": -5.49,
+      "sentiment": -55.5,
+      "volatility": 0.8
+    },
+    "JPN": {
+      "price": 652.44,
+      "seed_price": 652.44,
+      "prev_price": 652.44,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.8
+    },
+    "IND": {
+      "price": 639.06,
+      "seed_price": 639.06,
+      "prev_price": 639.06,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.8
+    },
+    "GBR": {
+      "price": 634.3,
+      "seed_price": 634.3,
+      "prev_price": 634.3,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.8
+    },
+    "FRA": {
+      "price": 626.71,
+      "seed_price": 626.71,
+      "prev_price": 626.71,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.8
+    },
+    "ITA": {
+      "price": 603.6,
+      "seed_price": 603.6,
+      "prev_price": 603.6,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.8
+    },
+    "BRA": {
+      "price": 638.88,
+      "seed_price": 638.88,
+      "prev_price": 615.24,
+      "change_pct": 3.84,
+      "sentiment": 38.8,
+      "volatility": 0.8
+    },
+    "CAN": {
+      "price": 659.84,
+      "seed_price": 659.84,
+      "prev_price": 622.26,
+      "change_pct": 6.04,
+      "sentiment": 61.0,
+      "volatility": 0.8
+    },
+    "RUS": {
+      "price": 532.84,
+      "seed_price": 532.84,
+      "prev_price": 570.42,
+      "change_pct": -6.59,
+      "sentiment": -66.6,
+      "volatility": 0.8
+    },
+    "MEX": {
+      "price": 585.51,
+      "seed_price": 585.51,
+      "prev_price": 585.51,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.8
+    },
+    "AUS": {
+      "price": 582.61,
+      "seed_price": 582.61,
+      "prev_price": 582.61,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.8
+    },
+    "KOR": {
+      "price": 582.11,
+      "seed_price": 582.11,
+      "prev_price": 582.11,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.8
+    },
+    "ESP": {
+      "price": 527.21,
+      "seed_price": 527.21,
+      "prev_price": 557.84,
+      "change_pct": -5.49,
+      "sentiment": -55.5,
+      "volatility": 0.8
+    },
+    "IDN": {
+      "price": 567.76,
+      "seed_price": 567.76,
+      "prev_price": 565.9,
+      "change_pct": 0.33,
+      "sentiment": 3.3,
+      "volatility": 0.8
+    },
+    "NLD": {
+      "price": 548.82,
+      "seed_price": 548.82,
+      "prev_price": 548.82,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.8
+    },
+    "TUR": {
+      "price": 548.09,
+      "seed_price": 548.09,
+      "prev_price": 548.09,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 0.8
+    },
+    "SAU": {
+      "price": 548.12,
+      "seed_price": 548.12,
+      "prev_price": 546.32,
+      "change_pct": 0.33,
+      "sentiment": 3.3,
+      "volatility": 0.8
+    },
+    "CHE": {
+      "price": 561.32,
+      "seed_price": 561.32,
+      "prev_price": 542.47,
+      "change_pct": 3.47,
+      "sentiment": 33.3,
+      "volatility": 1.1
+    },
+    "POL": {
+      "price": 523.74,
+      "seed_price": 523.74,
+      "prev_price": 523.74,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "ARG": {
+      "price": 476.78,
+      "seed_price": 476.78,
+      "prev_price": 493.94,
+      "change_pct": -3.47,
+      "sentiment": -33.3,
+      "volatility": 1.1
+    },
+    "BEL": {
+      "price": 503.7,
+      "seed_price": 503.7,
+      "prev_price": 503.7,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "SWE": {
+      "price": 452.77,
+      "seed_price": 452.77,
+      "prev_price": 480.6,
+      "change_pct": -5.79,
+      "sentiment": -55.5,
+      "volatility": 1.1
+    },
+    "IRL": {
+      "price": 451.33,
+      "seed_price": 451.33,
+      "prev_price": 476.14,
+      "change_pct": -5.21,
+      "sentiment": -50.0,
+      "volatility": 1.1
+    },
+    "ISR": {
+      "price": 489.28,
+      "seed_price": 489.28,
+      "prev_price": 489.28,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "AUT": {
+      "price": 488.48,
+      "seed_price": 488.48,
+      "prev_price": 488.48,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "THA": {
+      "price": 516.6,
+      "seed_price": 516.6,
+      "prev_price": 499.26,
+      "change_pct": 3.47,
+      "sentiment": 33.3,
+      "volatility": 1.1
+    },
+    "NGA": {
+      "price": 486.99,
+      "seed_price": 486.99,
+      "prev_price": 486.99,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "ARE": {
+      "price": 489.4,
+      "seed_price": 489.4,
+      "prev_price": 487.71,
+      "change_pct": 0.35,
+      "sentiment": 3.3,
+      "volatility": 1.1
+    },
+    "SGP": {
+      "price": 486.19,
+      "seed_price": 486.19,
+      "prev_price": 486.19,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "NOR": {
+      "price": 483.68,
+      "seed_price": 483.68,
+      "prev_price": 483.68,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "BGD": {
+      "price": 432.64,
+      "seed_price": 432.64,
+      "prev_price": 459.23,
+      "change_pct": -5.79,
+      "sentiment": -55.5,
+      "volatility": 1.1
+    },
+    "PHL": {
+      "price": 475.49,
+      "seed_price": 475.49,
+      "prev_price": 475.49,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "VNM": {
+      "price": 447.39,
+      "seed_price": 447.39,
+      "prev_price": 463.49,
+      "change_pct": -3.47,
+      "sentiment": -33.3,
+      "volatility": 1.1
+    },
+    "MYS": {
+      "price": 498.92,
+      "seed_price": 498.92,
+      "prev_price": 482.17,
+      "change_pct": 3.47,
+      "sentiment": 33.3,
+      "volatility": 1.1
+    },
+    "DNK": {
+      "price": 469.38,
+      "seed_price": 469.38,
+      "prev_price": 469.38,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "EGY": {
+      "price": 419.91,
+      "seed_price": 419.91,
+      "prev_price": 448.47,
+      "change_pct": -6.37,
+      "sentiment": -61.0,
+      "volatility": 1.1
+    },
+    "IRN": {
+      "price": 466.3,
+      "seed_price": 466.3,
+      "prev_price": 466.3,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "HKG": {
+      "price": 496.54,
+      "seed_price": 496.54,
+      "prev_price": 477.2,
+      "change_pct": 4.05,
+      "sentiment": 38.8,
+      "volatility": 1.1
+    },
+    "ZAF": {
+      "price": 464.75,
+      "seed_price": 464.75,
+      "prev_price": 464.75,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "COL": {
+      "price": 506.1,
+      "seed_price": 506.1,
+      "prev_price": 478.4,
+      "change_pct": 5.79,
+      "sentiment": 55.5,
+      "volatility": 1.1
+    },
+    "ROU": {
+      "price": 415.53,
+      "seed_price": 415.53,
+      "prev_price": 441.07,
+      "change_pct": -5.79,
+      "sentiment": -55.5,
+      "volatility": 1.1
+    },
+    "PAK": {
+      "price": 455.49,
+      "seed_price": 455.49,
+      "prev_price": 455.49,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.1
+    },
+    "CHL": {
+      "price": 456.6,
+      "seed_price": 456.6,
+      "prev_price": 455.54,
+      "change_pct": 0.23,
+      "sentiment": 2.2,
+      "volatility": 1.1
+    },
+    "CZE": {
+      "price": 475.66,
+      "seed_price": 475.66,
+      "prev_price": 462.28,
+      "change_pct": 2.89,
+      "sentiment": 27.8,
+      "volatility": 1.1
+    },
+    "FIN": {
+      "price": 444.97,
+      "seed_price": 444.97,
+      "prev_price": 444.97,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "PRT": {
+      "price": 445.33,
+      "seed_price": 445.33,
+      "prev_price": 443.75,
+      "change_pct": 0.36,
+      "sentiment": 3.3,
+      "volatility": 1.5
+    },
+    "PER": {
+      "price": 436.37,
+      "seed_price": 436.37,
+      "prev_price": 436.37,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "KAZ": {
+      "price": 434.78,
+      "seed_price": 434.78,
+      "prev_price": 434.78,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "IRQ": {
+      "price": 432.19,
+      "seed_price": 432.19,
+      "prev_price": 432.19,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "DZA": {
+      "price": 432.9,
+      "seed_price": 432.9,
+      "prev_price": 431.87,
+      "change_pct": 0.24,
+      "sentiment": 2.2,
+      "volatility": 1.5
+    },
+    "GRC": {
+      "price": 462.52,
+      "seed_price": 462.52,
+      "prev_price": 441.54,
+      "change_pct": 4.75,
+      "sentiment": 44.4,
+      "volatility": 1.5
+    },
+    "QAT": {
+      "price": 427.29,
+      "seed_price": 427.29,
+      "prev_price": 427.29,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "HUN": {
+      "price": 419.25,
+      "seed_price": 419.25,
+      "prev_price": 419.25,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "UKR": {
+      "price": 374.5,
+      "seed_price": 374.5,
+      "prev_price": 393.18,
+      "change_pct": -4.75,
+      "sentiment": -44.4,
+      "volatility": 1.5
+    },
+    "KWT": {
+      "price": 417.89,
+      "seed_price": 417.89,
+      "prev_price": 405.84,
+      "change_pct": 2.97,
+      "sentiment": 27.8,
+      "volatility": 1.5
+    },
+    "ETH": {
+      "price": 397.1,
+      "seed_price": 397.1,
+      "prev_price": 397.1,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "MAR": {
+      "price": 366.61,
+      "seed_price": 366.61,
+      "prev_price": 380.16,
+      "change_pct": -3.56,
+      "sentiment": -33.3,
+      "volatility": 1.5
+    },
+    "SVK": {
+      "price": 383.98,
+      "seed_price": 383.98,
+      "prev_price": 383.07,
+      "change_pct": 0.24,
+      "sentiment": 2.2,
+      "volatility": 1.5
+    },
+    "DOM": {
+      "price": 332.7,
+      "seed_price": 332.7,
+      "prev_price": 358.24,
+      "change_pct": -7.13,
+      "sentiment": -66.6,
+      "volatility": 1.5
+    },
+    "ECU": {
+      "price": 343.16,
+      "seed_price": 343.16,
+      "prev_price": 362.54,
+      "change_pct": -5.35,
+      "sentiment": -50.0,
+      "volatility": 1.5
+    },
+    "KEN": {
+      "price": 370.53,
+      "seed_price": 370.53,
+      "prev_price": 370.53,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "OMN": {
+      "price": 368.31,
+      "seed_price": 368.31,
+      "prev_price": 367.44,
+      "change_pct": 0.24,
+      "sentiment": 2.2,
+      "volatility": 1.5
+    },
+    "CUB": {
+      "price": 366.27,
+      "seed_price": 366.27,
+      "prev_price": 366.27,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "BGR": {
+      "price": 362.62,
+      "seed_price": 362.62,
+      "prev_price": 362.62,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "GTM": {
+      "price": 334.55,
+      "seed_price": 334.55,
+      "prev_price": 351.24,
+      "change_pct": -4.75,
+      "sentiment": -44.4,
+      "volatility": 1.5
+    },
+    "AGO": {
+      "price": 354.65,
+      "seed_price": 354.65,
+      "prev_price": 354.65,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "VEN": {
+      "price": 354.5,
+      "seed_price": 354.5,
+      "prev_price": 354.5,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "UZB": {
+      "price": 374.55,
+      "seed_price": 374.55,
+      "prev_price": 361.66,
+      "change_pct": 3.56,
+      "sentiment": 33.3,
+      "volatility": 1.5
+    },
+    "LUX": {
+      "price": 351.84,
+      "seed_price": 351.84,
+      "prev_price": 351.84,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "CRI": {
+      "price": 319.23,
+      "seed_price": 319.23,
+      "prev_price": 337.26,
+      "change_pct": -5.35,
+      "sentiment": -50.0,
+      "volatility": 1.5
+    },
+    "LKA": {
+      "price": 349.68,
+      "seed_price": 349.68,
+      "prev_price": 348.44,
+      "change_pct": 0.36,
+      "sentiment": 3.3,
+      "volatility": 1.5
+    },
+    "PAN": {
+      "price": 377.03,
+      "seed_price": 377.03,
+      "prev_price": 357.9,
+      "change_pct": 5.35,
+      "sentiment": 50.0,
+      "volatility": 1.5
+    },
+    "TKM": {
+      "price": 325.16,
+      "seed_price": 325.16,
+      "prev_price": 337.18,
+      "change_pct": -3.56,
+      "sentiment": -33.3,
+      "volatility": 1.5
+    },
+    "HRV": {
+      "price": 343.71,
+      "seed_price": 343.71,
+      "prev_price": 343.71,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "LTU": {
+      "price": 343.32,
+      "seed_price": 343.32,
+      "prev_price": 343.32,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "CIV": {
+      "price": 342.98,
+      "seed_price": 342.98,
+      "prev_price": 342.98,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "TZA": {
+      "price": 342.71,
+      "seed_price": 342.71,
+      "prev_price": 342.71,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "AZE": {
+      "price": 343.62,
+      "seed_price": 343.62,
+      "prev_price": 342.81,
+      "change_pct": 0.24,
+      "sentiment": 2.2,
+      "volatility": 1.5
+    },
+    "URY": {
+      "price": 340.82,
+      "seed_price": 340.82,
+      "prev_price": 340.82,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "GHA": {
+      "price": 298.02,
+      "seed_price": 298.02,
+      "prev_price": 322.96,
+      "change_pct": -7.72,
+      "sentiment": -72.2,
+      "volatility": 1.5
+    },
+    "SRB": {
+      "price": 338.74,
+      "seed_price": 338.74,
+      "prev_price": 338.74,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "BLR": {
+      "price": 336.6,
+      "seed_price": 336.6,
+      "prev_price": 336.6,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "SVN": {
+      "price": 333.39,
+      "seed_price": 333.39,
+      "prev_price": 332.21,
+      "change_pct": 0.36,
+      "sentiment": 3.3,
+      "volatility": 1.5
+    },
+    "COD": {
+      "price": 329.14,
+      "seed_price": 329.14,
+      "prev_price": 329.14,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "ZAR": {
+      "price": 329.14,
+      "seed_price": 329.14,
+      "prev_price": 329.14,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "MMR": {
+      "price": 295.27,
+      "seed_price": 295.27,
+      "prev_price": 313.92,
+      "change_pct": -5.94,
+      "sentiment": -55.5,
+      "volatility": 1.5
+    },
+    "JOR": {
+      "price": 308.59,
+      "seed_price": 308.59,
+      "prev_price": 308.59,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 1.5
+    },
+    "CMR": {
+      "price": 306.22,
+      "seed_price": 306.22,
+      "prev_price": 306.22,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "UGA": {
+      "price": 281.88,
+      "seed_price": 281.88,
+      "prev_price": 296.32,
+      "change_pct": -4.87,
+      "sentiment": -44.4,
+      "volatility": 2.0
+    },
+    "TUN": {
+      "price": 323.91,
+      "seed_price": 323.91,
+      "prev_price": 312.49,
+      "change_pct": 3.65,
+      "sentiment": 33.3,
+      "volatility": 2.0
+    },
+    "MAC": {
+      "price": 302.87,
+      "seed_price": 302.87,
+      "prev_price": 302.87,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "LVA": {
+      "price": 302.08,
+      "seed_price": 302.08,
+      "prev_price": 302.08,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "BOL": {
+      "price": 262.34,
+      "seed_price": 262.34,
+      "prev_price": 284.9,
+      "change_pct": -7.92,
+      "sentiment": -72.2,
+      "volatility": 2.0
+    },
+    "LBY": {
+      "price": 322.26,
+      "seed_price": 322.26,
+      "prev_price": 309.08,
+      "change_pct": 4.26,
+      "sentiment": 38.8,
+      "volatility": 2.0
+    },
+    "BHR": {
+      "price": 299.45,
+      "seed_price": 299.45,
+      "prev_price": 298.72,
+      "change_pct": 0.24,
+      "sentiment": 2.2,
+      "volatility": 2.0
+    },
+    "PRY": {
+      "price": 295.7,
+      "seed_price": 295.7,
+      "prev_price": 295.7,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "EST": {
+      "price": 294.58,
+      "seed_price": 294.58,
+      "prev_price": 293.51,
+      "change_pct": 0.36,
+      "sentiment": 3.3,
+      "volatility": 2.0
+    },
+    "NPL": {
+      "price": 292.02,
+      "seed_price": 292.02,
+      "prev_price": 292.02,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "SLV": {
+      "price": 279.11,
+      "seed_price": 279.11,
+      "prev_price": 279.11,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "HND": {
+      "price": 278.73,
+      "seed_price": 278.73,
+      "prev_price": 278.73,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "CYP": {
+      "price": 273.4,
+      "seed_price": 273.4,
+      "prev_price": 273.4,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "SEN": {
+      "price": 292.85,
+      "seed_price": 292.85,
+      "prev_price": 280.88,
+      "change_pct": 4.26,
+      "sentiment": 38.8,
+      "volatility": 2.0
+    },
+    "KHM": {
+      "price": 272.79,
+      "seed_price": 272.79,
+      "prev_price": 272.79,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "PNG": {
+      "price": 271.8,
+      "seed_price": 271.8,
+      "prev_price": 271.8,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "ISL": {
+      "price": 249.43,
+      "seed_price": 249.43,
+      "prev_price": 262.2,
+      "change_pct": -4.87,
+      "sentiment": -44.4,
+      "volatility": 2.0
+    },
+    "GEO": {
+      "price": 269.8,
+      "seed_price": 269.8,
+      "prev_price": 269.8,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "ZMB": {
+      "price": 263.66,
+      "seed_price": 263.66,
+      "prev_price": 263.66,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "TTO": {
+      "price": 263.8,
+      "seed_price": 263.8,
+      "prev_price": 263.8,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "BIH": {
+      "price": 240.39,
+      "seed_price": 240.39,
+      "prev_price": 252.7,
+      "change_pct": -4.87,
+      "sentiment": -44.4,
+      "volatility": 2.0
+    },
+    "ZWE": {
+      "price": 258.54,
+      "seed_price": 258.54,
+      "prev_price": 258.54,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "ARM": {
+      "price": 251.91,
+      "seed_price": 251.91,
+      "prev_price": 251.91,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "GIN": {
+      "price": 275.38,
+      "seed_price": 275.38,
+      "prev_price": 259.57,
+      "change_pct": 6.09,
+      "sentiment": 55.5,
+      "volatility": 2.0
+    },
+    "LBN": {
+      "price": 248.86,
+      "seed_price": 248.86,
+      "prev_price": 248.86,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "ALB": {
+      "price": 248.54,
+      "seed_price": 248.54,
+      "prev_price": 248.54,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "MOZ": {
+      "price": 246.41,
+      "seed_price": 246.41,
+      "prev_price": 245.51,
+      "change_pct": 0.37,
+      "sentiment": 3.3,
+      "volatility": 2.0
+    },
+    "MLI": {
+      "price": 223.43,
+      "seed_price": 223.43,
+      "prev_price": 234.87,
+      "change_pct": -4.87,
+      "sentiment": -44.4,
+      "volatility": 2.0
+    },
+    "GAB": {
+      "price": 241.88,
+      "seed_price": 241.88,
+      "prev_price": 241.88,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "YEM": {
+      "price": 220.23,
+      "seed_price": 220.23,
+      "prev_price": 233.0,
+      "change_pct": -5.48,
+      "sentiment": -50.0,
+      "volatility": 2.0
+    },
+    "MLT": {
+      "price": 256.4,
+      "seed_price": 256.4,
+      "prev_price": 247.36,
+      "change_pct": 3.65,
+      "sentiment": 33.3,
+      "volatility": 2.0
+    },
+    "BFA": {
+      "price": 240.85,
+      "seed_price": 240.85,
+      "prev_price": 240.85,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "BWA": {
+      "price": 224.95,
+      "seed_price": 224.95,
+      "prev_price": 233.48,
+      "change_pct": -3.65,
+      "sentiment": -33.3,
+      "volatility": 2.0
+    },
+    "BEN": {
+      "price": 237.78,
+      "seed_price": 237.78,
+      "prev_price": 237.78,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "HTI": {
+      "price": 238.89,
+      "seed_price": 238.89,
+      "prev_price": 238.02,
+      "change_pct": 0.37,
+      "sentiment": 3.3,
+      "volatility": 2.0
+    },
+    "JAM": {
+      "price": 235.81,
+      "seed_price": 235.81,
+      "prev_price": 235.81,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "MNG": {
+      "price": 219.33,
+      "seed_price": 219.33,
+      "prev_price": 227.65,
+      "change_pct": -3.65,
+      "sentiment": -33.3,
+      "volatility": 2.0
+    },
+    "PRK": {
+      "price": 227.67,
+      "seed_price": 227.67,
+      "prev_price": 227.67,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "NIC": {
+      "price": 227.28,
+      "seed_price": 227.28,
+      "prev_price": 227.28,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "NER": {
+      "price": 226.53,
+      "seed_price": 226.53,
+      "prev_price": 225.71,
+      "change_pct": 0.36,
+      "sentiment": 3.3,
+      "volatility": 2.0
+    },
+    "GUY": {
+      "price": 222.98,
+      "seed_price": 222.98,
+      "prev_price": 222.98,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "MDG": {
+      "price": 195.48,
+      "seed_price": 195.48,
+      "prev_price": 210.89,
+      "change_pct": -7.31,
+      "sentiment": -66.6,
+      "volatility": 2.0
+    },
+    "MDA": {
+      "price": 244.48,
+      "seed_price": 244.48,
+      "prev_price": 230.45,
+      "change_pct": 6.09,
+      "sentiment": 55.5,
+      "volatility": 2.0
+    },
+    "BRN": {
+      "price": 217.37,
+      "seed_price": 217.37,
+      "prev_price": 217.37,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "MKD": {
+      "price": 215.56,
+      "seed_price": 215.56,
+      "prev_price": 215.56,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "AFG": {
+      "price": 214.66,
+      "seed_price": 214.66,
+      "prev_price": 214.66,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "MUS": {
+      "price": 213.75,
+      "seed_price": 213.75,
+      "prev_price": 213.75,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "BHS": {
+      "price": 214.42,
+      "seed_price": 214.42,
+      "prev_price": 213.9,
+      "change_pct": 0.24,
+      "sentiment": 2.2,
+      "volatility": 2.0
+    },
+    "COG": {
+      "price": 213.8,
+      "seed_price": 213.8,
+      "prev_price": 213.8,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "RWA": {
+      "price": 208.02,
+      "seed_price": 208.02,
+      "prev_price": 208.02,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "TCD": {
+      "price": 208.4,
+      "seed_price": 208.4,
+      "prev_price": 207.64,
+      "change_pct": 0.37,
+      "sentiment": 3.3,
+      "volatility": 2.0
+    },
+    "MWI": {
+      "price": 207.3,
+      "seed_price": 207.3,
+      "prev_price": 207.3,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "KGZ": {
+      "price": 204.55,
+      "seed_price": 204.55,
+      "prev_price": 204.55,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "NAM": {
+      "price": 215.28,
+      "seed_price": 215.28,
+      "prev_price": 207.69,
+      "change_pct": 3.65,
+      "sentiment": 33.3,
+      "volatility": 2.0
+    },
+    "GNQ": {
+      "price": 202.23,
+      "seed_price": 202.23,
+      "prev_price": 202.23,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "TJK": {
+      "price": 182.94,
+      "seed_price": 182.94,
+      "prev_price": 193.55,
+      "change_pct": -5.48,
+      "sentiment": -50.0,
+      "volatility": 2.0
+    },
+    "SOM": {
+      "price": 194.45,
+      "seed_price": 194.45,
+      "prev_price": 194.45,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "XKX": {
+      "price": 190.65,
+      "seed_price": 190.65,
+      "prev_price": 190.65,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "MRT": {
+      "price": 189.97,
+      "seed_price": 189.97,
+      "prev_price": 189.97,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "TGO": {
+      "price": 180.86,
+      "seed_price": 180.86,
+      "prev_price": 180.86,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "SYR": {
+      "price": 180.0,
+      "seed_price": 180.0,
+      "prev_price": 180.0,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "MCO": {
+      "price": 176.81,
+      "seed_price": 176.81,
+      "prev_price": 176.81,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "MNE": {
+      "price": 166.37,
+      "seed_price": 166.37,
+      "prev_price": 166.37,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "MDV": {
+      "price": 162.26,
+      "seed_price": 162.26,
+      "prev_price": 162.26,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "LIE": {
+      "price": 174.3,
+      "seed_price": 174.3,
+      "prev_price": 166.2,
+      "change_pct": 4.87,
+      "sentiment": 44.4,
+      "volatility": 2.0
+    },
+    "BRB": {
+      "price": 157.3,
+      "seed_price": 157.3,
+      "prev_price": 157.3,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "SSD": {
+      "price": 152.23,
+      "seed_price": 152.23,
+      "prev_price": 152.23,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "FJI": {
+      "price": 146.68,
+      "seed_price": 146.68,
+      "prev_price": 146.68,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "SWZ": {
+      "price": 137.28,
+      "seed_price": 137.28,
+      "prev_price": 137.28,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "LBR": {
+      "price": 139.62,
+      "seed_price": 139.62,
+      "prev_price": 133.91,
+      "change_pct": 4.26,
+      "sentiment": 38.8,
+      "volatility": 2.0
+    },
+    "SLE": {
+      "price": 123.43,
+      "seed_price": 123.43,
+      "prev_price": 123.43,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "DJI": {
+      "price": 123.76,
+      "seed_price": 123.76,
+      "prev_price": 123.76,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "AND": {
+      "price": 120.98,
+      "seed_price": 120.98,
+      "prev_price": 120.98,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "SUR": {
+      "price": 107.71,
+      "seed_price": 107.71,
+      "prev_price": 113.96,
+      "change_pct": -5.48,
+      "sentiment": -50.0,
+      "volatility": 2.0
+    },
+    "BLZ": {
+      "price": 118.32,
+      "seed_price": 118.32,
+      "prev_price": 114.15,
+      "change_pct": 3.65,
+      "sentiment": 33.3,
+      "volatility": 2.0
+    },
+    "BDI": {
+      "price": 101.88,
+      "seed_price": 101.88,
+      "prev_price": 106.42,
+      "change_pct": -4.27,
+      "sentiment": -38.8,
+      "volatility": 2.0
+    },
+    "ANT": {
+      "price": 110.3,
+      "seed_price": 110.3,
+      "prev_price": 110.3,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "BTN": {
+      "price": 106.79,
+      "seed_price": 106.79,
+      "prev_price": 106.79,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "CPV": {
+      "price": 100.53,
+      "seed_price": 100.53,
+      "prev_price": 100.16,
+      "change_pct": 0.37,
+      "sentiment": 3.3,
+      "volatility": 2.0
+    },
+    "CAF": {
+      "price": 101.0,
+      "seed_price": 101.0,
+      "prev_price": 101.0,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "ERI": {
+      "price": 91.31,
+      "seed_price": 91.31,
+      "prev_price": 95.38,
+      "change_pct": -4.27,
+      "sentiment": -38.8,
+      "volatility": 2.0
+    },
+    "LCA": {
+      "price": 97.48,
+      "seed_price": 97.48,
+      "prev_price": 97.48,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "LSO": {
+      "price": 95.55,
+      "seed_price": 95.55,
+      "prev_price": 95.2,
+      "change_pct": 0.37,
+      "sentiment": 3.3,
+      "volatility": 2.0
+    },
+    "GMB": {
+      "price": 92.86,
+      "seed_price": 92.86,
+      "prev_price": 92.86,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "SYC": {
+      "price": 94.31,
+      "seed_price": 94.31,
+      "prev_price": 91.52,
+      "change_pct": 3.05,
+      "sentiment": 27.8,
+      "volatility": 2.0
+    },
+    "GNB": {
+      "price": 85.1,
+      "seed_price": 85.1,
+      "prev_price": 85.1,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "TLS": {
+      "price": 91.45,
+      "seed_price": 91.45,
+      "prev_price": 88.23,
+      "change_pct": 3.65,
+      "sentiment": 33.3,
+      "volatility": 2.0
+    },
+    "ATG": {
+      "price": 86.66,
+      "seed_price": 86.66,
+      "prev_price": 86.66,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "SMR": {
+      "price": 74.02,
+      "seed_price": 74.02,
+      "prev_price": 78.82,
+      "change_pct": -6.09,
+      "sentiment": -55.5,
+      "volatility": 2.0
+    },
+    "SLB": {
+      "price": 76.77,
+      "seed_price": 76.77,
+      "prev_price": 76.77,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "GRD": {
+      "price": 65.45,
+      "seed_price": 65.45,
+      "prev_price": 65.45,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "COM": {
+      "price": 58.67,
+      "seed_price": 58.67,
+      "prev_price": 62.47,
+      "change_pct": -6.08,
+      "sentiment": -55.5,
+      "volatility": 2.0
+    },
+    "VUT": {
+      "price": 59.11,
+      "seed_price": 59.11,
+      "prev_price": 59.11,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "WSM": {
+      "price": 52.12,
+      "seed_price": 52.12,
+      "prev_price": 51.93,
+      "change_pct": 0.37,
+      "sentiment": 3.3,
+      "volatility": 2.0
+    },
+    "STP": {
+      "price": 41.48,
+      "seed_price": 41.48,
+      "prev_price": 41.48,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "DMA": {
+      "price": 41.02,
+      "seed_price": 41.02,
+      "prev_price": 41.02,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "TON": {
+      "price": 33.24,
+      "seed_price": 33.24,
+      "prev_price": 33.24,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "FSM": {
+      "price": 32.34,
+      "seed_price": 32.34,
+      "prev_price": 30.66,
+      "change_pct": 5.48,
+      "sentiment": 50.0,
+      "volatility": 2.0
+    },
+    "PLW": {
+      "price": 22.81,
+      "seed_price": 22.81,
+      "prev_price": 22.14,
+      "change_pct": 3.03,
+      "sentiment": 27.8,
+      "volatility": 2.0
+    },
+    "MHL": {
+      "price": 19.91,
+      "seed_price": 19.91,
+      "prev_price": 19.91,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "KIR": {
+      "price": 17.54,
+      "seed_price": 17.54,
+      "prev_price": 17.48,
+      "change_pct": 0.34,
+      "sentiment": 3.3,
+      "volatility": 2.0
+    },
+    "NRU": {
+      "price": 11.6,
+      "seed_price": 11.6,
+      "prev_price": 11.6,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "TUV": {
+      "price": 5.0,
+      "seed_price": 5.0,
+      "prev_price": 5.0,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    },
+    "VAT": {
+      "price": 5.0,
+      "seed_price": 5.0,
+      "prev_price": 5.0,
+      "change_pct": 0.0,
+      "sentiment": 0.0,
+      "volatility": 2.0
+    }
+  },
+  "news": [
+    {
+      "code": "DEU",
+      "name": "독일",
+      "flag": "🇩🇪",
+      "title": "독일 정치 불안 심화, 의회 충돌",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "BRA",
+      "name": "브라질",
+      "flag": "🇧🇷",
+      "title": "브라질 중앙은행 금리 인하, 시장 환영",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "CAN",
+      "name": "캐나다",
+      "flag": "🇨🇦",
+      "title": "캐나다 신용등급 상향 조정",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "RUS",
+      "name": "러시아",
+      "flag": "🇷🇺",
+      "title": "러시아 자연재해 발생, 경제 피해 확대",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "ESP",
+      "name": "스페인",
+      "flag": "🇪🇸",
+      "title": "스페인 정부 부채 한계, 국채 발행 난항",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "IDN",
+      "name": "인도네시아",
+      "flag": "🇮🇩",
+      "title": "인도네시아 중앙은행 회의 결과 예상치 부합",
+      "category": "neutral",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "SAU",
+      "name": "사우디아라비아",
+      "flag": "🇸🇦",
+      "title": "사우디아라비아 중앙은행 회의 결과 예상치 부합",
+      "category": "neutral",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "CHE",
+      "name": "스위스",
+      "flag": "🇨🇭",
+      "title": "스위스 대규모 인프라 투자 계획 발표",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "ARG",
+      "name": "아르헨티나",
+      "flag": "🇦🇷",
+      "title": "아르헨티나 주요 수출 품목 단가 하락",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "SWE",
+      "name": "스웨덴",
+      "flag": "🇸🇪",
+      "title": "스웨덴 정부 부채 한계, 국채 발행 난항",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "IRL",
+      "name": "아일랜드",
+      "flag": "🇮🇪",
+      "title": "아일랜드 통화 약세, 자본 유출 심화",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "THA",
+      "name": "태국",
+      "flag": "🇹🇭",
+      "title": "태국 관광 산업 회복, 외화 유입 증가",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "ARE",
+      "name": "아랍에미리트",
+      "flag": "🇦🇪",
+      "title": "아랍에미리트 정부 신규 정책 발표, 영향 분석 중",
+      "category": "neutral",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "BGD",
+      "name": "방글라데시",
+      "flag": "🇧🇩",
+      "title": "방글라데시 정부 부채 한계, 국채 발행 난항",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "VNM",
+      "name": "베트남",
+      "flag": "🇻🇳",
+      "title": "베트남 주요 수출 품목 단가 하락",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "MYS",
+      "name": "말레이시아",
+      "flag": "🇲🇾",
+      "title": "말레이시아 관광 산업 회복, 외화 유입 증가",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "EGY",
+      "name": "이집트",
+      "flag": "🇪🇬",
+      "title": "이집트 신용등급 강등 위기",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "HKG",
+      "name": "홍콩",
+      "flag": "🇭🇰",
+      "title": "홍콩 중앙은행 금리 인하, 시장 환영",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "COL",
+      "name": "콜롬비아",
+      "flag": "🇨🇴",
+      "title": "콜롬비아 신기술 분야 선도, 외국인 투자 급증",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "ROU",
+      "name": "루마니아",
+      "flag": "🇷🇴",
+      "title": "루마니아 정부 부채 한계, 국채 발행 난항",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "CHL",
+      "name": "칠레",
+      "flag": "🇨🇱",
+      "title": "칠레 분기 경제지표 발표 예정",
+      "category": "neutral",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "CZE",
+      "name": "체코",
+      "flag": "🇨🇿",
+      "title": "체코 글로벌 정상회의 개최, 외교 입지 강화",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "PRT",
+      "name": "포르투갈",
+      "flag": "🇵🇹",
+      "title": "포르투갈 정부 신규 정책 발표, 영향 분석 중",
+      "category": "neutral",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "DZA",
+      "name": "알제리",
+      "flag": "🇩🇿",
+      "title": "알제리 분기 경제지표 발표 예정",
+      "category": "neutral",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "GRC",
+      "name": "그리스",
+      "flag": "🇬🇷",
+      "title": "그리스 GDP 예상치 상회, 경제 호조세",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "UKR",
+      "name": "우크라이나",
+      "flag": "🇺🇦",
+      "title": "우크라이나 인플레이션 우려 확대, 물가 급등",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "KWT",
+      "name": "쿠웨이트",
+      "flag": "🇰🇼",
+      "title": "쿠웨이트 글로벌 정상회의 개최, 외교 입지 강화",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "MAR",
+      "name": "모로코",
+      "flag": "🇲🇦",
+      "title": "모로코 주요 수출 품목 단가 하락",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "SVK",
+      "name": "슬로바키아",
+      "flag": "🇸🇰",
+      "title": "슬로바키아 분기 경제지표 발표 예정",
+      "category": "neutral",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "DOM",
+      "name": "도미니카공화국",
+      "flag": "🇩🇴",
+      "title": "도미니카공화국 자연재해 발생, 경제 피해 확대",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "ECU",
+      "name": "에콰도르",
+      "flag": "🇪🇨",
+      "title": "에콰도르 통화 약세, 자본 유출 심화",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "OMN",
+      "name": "오만",
+      "flag": "🇴🇲",
+      "title": "오만 분기 경제지표 발표 예정",
+      "category": "neutral",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "GTM",
+      "name": "과테말라",
+      "flag": "🇬🇹",
+      "title": "과테말라 인플레이션 우려 확대, 물가 급등",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "UZB",
+      "name": "우즈베키스탄",
+      "flag": "🇺🇿",
+      "title": "우즈베키스탄 친환경 에너지 전환 가속",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "CRI",
+      "name": "코스타리카",
+      "flag": "🇨🇷",
+      "title": "코스타리카 무역 분쟁 격화, 관세 우려",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "LKA",
+      "name": "스리랑카",
+      "flag": "🇱🇰",
+      "title": "스리랑카 정부 신규 정책 발표, 영향 분석 중",
+      "category": "neutral",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "PAN",
+      "name": "파나마",
+      "flag": "🇵🇦",
+      "title": "파나마 수출 사상 최대, 무역수지 개선",
+      "category": "positive",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "TKM",
+      "name": "투르크메니스탄",
+      "flag": "🇹🇲",
+      "title": "투르크메니스탄 주요 수출 품목 단가 하락",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "AZE",
+      "name": "아제르바이잔",
+      "flag": "🇦🇿",
+      "title": "아제르바이잔 분기 경제지표 발표 예정",
+      "category": "neutral",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    },
+    {
+      "code": "GHA",
+      "name": "가나",
+      "flag": "🇬🇭",
+      "title": "가나 대형 은행 부실 우려, 금융 충격",
+      "category": "negative",
+      "time": "2026-05-20T22:43:32.054642+00:00"
+    }
+  ]
+}

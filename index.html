@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0a0e1a">
 <title>NationVault — 국가주식 거래소</title>
+
+<!-- 🚨 인앱 브라우저 강제 외부 호출 (카카오톡 등 로그인 에러 방지) -->
+<script>
+  var userAgent = navigator.userAgent.toLowerCase();
+  if (userAgent.indexOf("kakao") > -1) {
+    location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(location.href);
+  } else if (userAgent.indexOf("line") > -1 || userAgent.indexOf("inapp") > -1 || userAgent.indexOf("naver") > -1 || userAgent.indexOf("instagram") > -1) {
+    alert("원활한 구글 로그인을 위해 화면 우측 하단/상단의 메뉴(⋮)를 눌러 '다른 브라우저로 열기(Safari/Chrome)'를 이용해 주세요.");
+  }
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -222,7 +233,7 @@
   .news-title { font-size: 12px; line-height: 1.4; margin-bottom: 3px; }
   .news-time { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); }
 
-  /* BOX PORTFOLIO BAR */
+  /* BOTTOM BAR */
   .bottom-bar { position: fixed; bottom: 16px; right: 356px; background: var(--bg-secondary);
     border: 1px solid var(--border-default); border-radius: 8px; padding: 10px 18px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 20px; z-index: 100; }
@@ -270,6 +281,11 @@
   .toast-msg { color: var(--text-secondary); font-size: 11px; }
 
   /* RANKING */
+  .rank-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+  .rank-tab { flex: 1; padding: 9px; background: var(--bg-tertiary); border: 1px solid var(--border-default);
+    color: var(--text-secondary); font-family: var(--font-kr); font-size: 12px; font-weight: 600;
+    cursor: pointer; border-radius: 6px; }
+  .rank-tab.active { background: var(--accent-amber); color: #0a0e1a; border-color: var(--accent-amber); }
   .rank-row { display: grid; grid-template-columns: 44px 1fr auto auto; gap: 12px; align-items: center;
     padding: 11px 14px; border-radius: 8px; margin-bottom: 6px; background: var(--bg-tertiary);
     border: 1px solid var(--border-default); }
@@ -281,7 +297,7 @@
   .rank-trades { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
   .rank-return { font-family: var(--font-mono); font-size: 14px; font-weight: 700; text-align: right; min-width: 80px; }
 
-  /* QUIZ */
+  /* QUIZ & MISC */
   .quiz-progress { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); margin-bottom: 14px; text-align: center; }
   .quiz-question { font-size: 15px; font-weight: 600; line-height: 1.5; margin-bottom: 18px; }
   .quiz-options { display: flex; flex-direction: column; gap: 8px; }
@@ -296,7 +312,6 @@
   .quiz-next { width: 100%; margin-top: 16px; padding: 12px; background: var(--accent-blue); color: white;
     border: none; border-radius: 6px; font-family: var(--font-display); font-weight: 700; cursor: pointer; font-size: 13px; }
 
-  /* BADGES */
   .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
   .badge-card { padding: 16px 12px; background: var(--bg-tertiary); border: 1px solid var(--border-default);
     border-radius: 10px; text-align: center; opacity: 0.45; transition: all 0.2s; }
@@ -306,7 +321,6 @@
   .badge-name { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
   .badge-desc { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
 
-  /* GLOSSARY */
   .glossary-search { width: 100%; background: var(--bg-tertiary); border: 1px solid var(--border-default);
     color: var(--text-primary); padding: 10px 14px; border-radius: 8px; font-family: var(--font-kr);
     font-size: 13px; outline: none; margin-bottom: 16px; }
@@ -317,7 +331,6 @@
   .glossary-detail { font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
   .glossary-example { font-size: 12px; color: var(--accent-green); font-style: italic; }
 
-  /* NEWS DETAIL */
   .news-detail-flag { font-size: 40px; }
   .news-detail-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
   .news-detail-title { font-size: 17px; font-weight: 700; line-height: 1.4; }
@@ -334,7 +347,6 @@
   .news-goto-btn { width: 100%; padding: 11px; background: var(--accent-blue); color: white; border: none;
     border-radius: 6px; font-family: var(--font-display); font-weight: 600; cursor: pointer; font-size: 13px; margin-top: 8px; }
 
-  /* TOOLTIP */
   [data-tip] { position: relative; }
   [data-tip]:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 5px);
     left: 50%; transform: translateX(-50%); background: var(--bg-elevated); color: var(--text-primary);
@@ -381,13 +393,14 @@
   .sync-dot.syncing { background: var(--accent-amber); animation: pulse 1s infinite; }
   .sync-dot.offline { background: var(--text-muted); }
 
-  /* === RESPONSIVE === */
+  /* === RESPONSIVE: TABLET === */
   @media (max-width: 1100px) {
     .main-container { grid-template-columns: 260px 1fr 300px; }
     .bottom-bar { right: 316px; gap: 14px; padding: 8px 14px; }
     .chart-stats { grid-template-columns: repeat(3, 1fr); gap: 12px; }
   }
 
+  /* === RESPONSIVE: MOBILE (모바일 UI/UX 최적화 적용) === */
   @media (max-width: 768px) {
     .topbar { padding: 0 12px; gap: 10px; }
     .market-status { display: none; }
@@ -398,17 +411,26 @@
     .balance-label { display: none; }
     .balance-display { padding: 4px 8px; }
     .ticker-tape { height: 30px; }
+    
     .main-container { display: block; height: calc(100vh - 86px); height: calc(100dvh - 86px); position: relative; }
     .left-panel, .center-panel, .right-panel {
       position: absolute; inset: 0; border: none;
       display: none; padding-bottom: 56px; }
     .left-panel.mobile-active, .center-panel.mobile-active, .right-panel.mobile-active { display: flex; }
+    
     .mobile-nav { display: flex; }
     .bottom-bar { display: none; }
     .sync-indicator { bottom: 64px; }
-    .chart-header { flex-wrap: wrap; gap: 10px; }
-    .pd-price { font-size: 22px; }
-    .chart-stats { grid-template-columns: repeat(3, 1fr); }
+    
+    /* 차트 및 가격 영역 모바일 최적화 */
+    .chart-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .price-display { text-align: left; margin-top: 5px; }
+    .pd-price { font-size: 32px; } /* 모바일에서 더 크게 */
+    .chart-container { min-height: 280px; flex: none; height: 38vh; padding-top: 10px; } /* 차트 높이 보장 */
+    .trade-panel { overflow-y: auto; max-height: calc(100dvh - 150px); }
+    .form-input { font-size: 16px; } /* iOS 줌인 방지 */
+    
+    .chart-stats { grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .toast-container { top: auto; bottom: 70px; left: 16px; right: 16px; }
     .toast { min-width: 0; }
   }
@@ -416,6 +438,7 @@
 </head>
 <body>
 
+<!-- Login Overlay -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-content">
     <div class="login-logo">NationVault</div>
@@ -426,7 +449,7 @@
         <li>전 세계 194개국이 GDP 기반으로 상장</li>
         <li>가상자금 $1,000,000으로 투자 시작</li>
         <li>실제 시각과 동기화된 시세 — 매시간 뉴스 평가 반영</li>
-        <li>구글 로그인 시 실시간 전 세계 유저 랭킹 반영</li>
+        <li>구글 로그인 시 모든 기기에서 거래내역 동기화</li>
       </ul>
     </div>
     <button class="google-btn" id="googleLoginBtn" onclick="signInWithGoogle()">
@@ -435,11 +458,13 @@
     </button>
     <button class="guest-btn" onclick="playAsGuest()">게스트로 플레이 (이 기기에만 저장)</button>
     <div class="login-note" id="loginNote">
-      구글 로그인 시 모든 기기에서 실시간으로 자산이 동기화됩니다.
+      ※ Firebase 설정 전에는 게스트 모드로만 플레이됩니다.<br>
+      설정 방법은 함께 제공된 README를 참고하세요.
     </div>
   </div>
 </div>
 
+<!-- Top Bar -->
 <div class="topbar">
   <div class="logo">
     <div class="logo-icon">N</div>
@@ -447,7 +472,7 @@
   </div>
   <div class="market-status"><div class="pulse-dot"></div><span>LIVE MARKET</span></div>
   <div class="topbar-menu">
-    <button class="menu-btn" onclick="openRanking()" data-tip="글로벌 실시간 랭킹"><i class="ti">🏆</i><span>랭킹</span></button>
+    <button class="menu-btn" onclick="openRanking()" data-tip="수익률 랭킹"><i class="ti">🏆</i><span>랭킹</span></button>
     <button class="menu-btn" onclick="openQuiz()" data-tip="경제 퀴즈"><i class="ti">🎓</i><span>퀴즈</span></button>
     <button class="menu-btn" onclick="openBadges()" data-tip="배지 수집"><i class="ti">🎖️</i><span>배지</span></button>
     <button class="menu-btn" onclick="openGlossary()" data-tip="용어 사전"><i class="ti">📖</i><span>사전</span></button>
@@ -465,9 +490,12 @@
   </div>
 </div>
 
+<!-- Ticker -->
 <div class="ticker-tape"><div class="ticker-track" id="tickerTrack"></div></div>
 
+<!-- Main -->
 <div class="main-container">
+  <!-- LEFT -->
   <div class="left-panel mobile-active" id="leftPanel">
     <div class="panel-header">
       <div class="panel-title">📊 Markets</div>
@@ -487,6 +515,7 @@
     <div class="country-list" id="countryList"></div>
   </div>
 
+  <!-- CENTER -->
   <div class="center-panel" id="centerPanel">
     <div class="chart-header">
       <div class="selected-country">
@@ -525,6 +554,7 @@
     </div>
   </div>
 
+  <!-- RIGHT -->
   <div class="right-panel" id="rightPanel">
     <div class="trade-panel">
       <div class="trade-tabs">
@@ -562,6 +592,7 @@
   </div>
 </div>
 
+<!-- Bottom Portfolio Bar (desktop) -->
 <div class="bottom-bar">
   <div class="stat-block"><div class="sb-label">총 자산</div><div class="sb-value" id="portfolioValue" style="color: var(--accent-green);">$1,000,000</div></div>
   <div class="stat-block"><div class="sb-label" data-tip="실현+미실현 손익">손익</div><div class="sb-value" id="totalPL">$0.00</div></div>
@@ -569,11 +600,13 @@
   <button class="portfolio-btn" onclick="openPortfolio()">📊 포트폴리오</button>
 </div>
 
+<!-- Sync indicator -->
 <div class="sync-indicator">
   <div class="sync-dot" id="syncDot"></div>
   <span id="syncText">로컬 저장</span>
 </div>
 
+<!-- Mobile Nav -->
 <div class="mobile-nav">
   <button class="active" data-panel="left" onclick="switchMobilePanel('left')"><span class="nav-icon">📊</span>마켓</button>
   <button data-panel="center" onclick="switchMobilePanel('center')"><span class="nav-icon">📈</span>차트</button>
@@ -581,6 +614,7 @@
   <button onclick="openPortfolio()"><span class="nav-icon">💼</span>자산</button>
 </div>
 
+<!-- Portfolio Modal -->
 <div class="modal-backdrop" id="portfolioModal">
   <div class="modal">
     <div class="modal-header">
@@ -591,16 +625,18 @@
   </div>
 </div>
 
+<!-- Ranking Modal -->
 <div class="modal-backdrop" id="rankingModal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">🏆 실시간 글로벌 랭킹</div>
+      <div class="modal-title">🏆 글로벌 실시간 랭킹</div>
       <button class="modal-close" onclick="closeModal('rankingModal')">×</button>
     </div>
     <div class="modal-body" id="rankingBody"></div>
   </div>
 </div>
 
+<!-- Quiz Modal -->
 <div class="modal-backdrop" id="quizModal">
   <div class="modal" style="width:520px;">
     <div class="modal-header">
@@ -611,6 +647,7 @@
   </div>
 </div>
 
+<!-- Badges Modal -->
 <div class="modal-backdrop" id="badgesModal">
   <div class="modal">
     <div class="modal-header">
@@ -621,6 +658,7 @@
   </div>
 </div>
 
+<!-- Glossary Modal -->
 <div class="modal-backdrop" id="glossaryModal">
   <div class="modal">
     <div class="modal-header">
@@ -631,6 +669,7 @@
   </div>
 </div>
 
+<!-- News Detail Modal -->
 <div class="modal-backdrop" id="newsModal">
   <div class="modal" style="width:560px;">
     <div class="modal-header">
@@ -641,6 +680,7 @@
   </div>
 </div>
 
+<!-- Term Popup (작은 용어 설명) -->
 <div class="modal-backdrop" id="termModal">
   <div class="modal" style="width:420px;">
     <div class="modal-header">
@@ -653,6 +693,18 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- 🚨 초대 링크 URL 파싱 -->
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get('ref');
+  if (refCode) {
+    localStorage.setItem('pendingReferral', refCode);
+    // URL 창에서 깔끔하게 지우기 (옵션)
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+</script>
+
+<!-- ============ FIREBASE CONFIG ============ -->
 <script type="module">
   const firebaseConfig = {
     apiKey: "AIzaSyDVHOri8UljixEE1dlPJGlcG8XGetW_nIo",
@@ -668,9 +720,11 @@
 
   if (window.FIREBASE_ENABLED) {
     const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
-    const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } =
+    // 🚨 모바일 로그인을 위한 signInWithRedirect 및 getRedirectResult 임포트 추가
+    const { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } =
       await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
-    const { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs } =
+    // 🚨 친구 초대 쿼리를 위한 where 모듈 추가
+    const { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs, where } =
       await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
 
     const app = initializeApp(firebaseConfig);
@@ -678,8 +732,7 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    // 랭킹 처리에 필요한 Firestore 메서드 추가 노출
-    window.fb = { auth, db, provider, signInWithPopup, signOut, onAuthStateChanged, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs };
+    window.fb = { auth, db, provider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs, where };
 
     onAuthStateChanged(auth, (user) => {
       if (user) window.onUserLogin(user);
@@ -688,10 +741,8 @@
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
+<!-- ============ GAME LOGIC ============ -->
 <script>
-// ============================================================
-// === GLOBALS ===
-// ============================================================
 let COUNTRIES = [];
 let COUNTRY_MAP = {};
 let SEED_DATA = null; 
@@ -711,7 +762,8 @@ let state = {
   badges: [],          
   quizLog: {},         
   stats: { wins: 0, losses: 0, bestTrade: 0, worstTrade: 0, totalTrades: 0 },
-  nickname: '',        
+  nickname: '',
+  claimedReferrals: [] // ⭐ 내가 보상을 받은 친구 UID 목록 저장
 };
 
 let runtimePrices = {}; 
@@ -720,28 +772,16 @@ let saveTimeout = null;
 
 function hashStr(str) {
   let h = 2166136261;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
   return (h >>> 0) / 4294967296; 
 }
 
 function computeLivePrice(code) {
-  const c = COUNTRY_MAP[code];
-  if (!c) return 0;
-
-  let seed = c.basePrice;
-  let vol = c.volatility;
-  let sentiment = 0;
-  if (SEED_DATA && SEED_DATA.countries[code]) {
-    seed = SEED_DATA.countries[code].seed_price;
-    sentiment = SEED_DATA.countries[code].sentiment || 0;
-  }
-
+  const c = COUNTRY_MAP[code]; if (!c) return 0;
+  let seed = c.basePrice, vol = c.volatility, sentiment = 0;
+  if (SEED_DATA && SEED_DATA.countries[code]) { seed = SEED_DATA.countries[code].seed_price; sentiment = SEED_DATA.countries[code].sentiment || 0; }
   const now = new Date();
-  const minuteOfHour = now.getUTCMinutes();
-  const second = now.getUTCSeconds();
+  const minuteOfHour = now.getUTCMinutes(), second = now.getUTCSeconds();
   let price = seed;
   const hourKey = now.getUTCFullYear() + '' + (now.getUTCMonth()+1) + '' + now.getUTCDate() + '' + now.getUTCHours();
   for (let m = 0; m <= minuteOfHour; m++) {
@@ -752,7 +792,6 @@ function computeLivePrice(code) {
   }
   const rSec = hashStr(code + hourKey + '_m' + minuteOfHour + '_s' + Math.floor(second/5));
   price = price * (1 + (rSec - 0.5) * vol * 0.0006);
-
   return Math.max(0.5, price);
 }
 
@@ -761,84 +800,42 @@ function refreshRuntimePrices() {
     const newPrice = computeLivePrice(c.code);
     const prev = runtimePrices[c.code] ? runtimePrices[c.code].current : newPrice;
     if (!runtimePrices[c.code]) {
-      runtimePrices[c.code] = {
-        current: newPrice, prev: newPrice,
-        open: newPrice, high: newPrice, low: newPrice,
-        changePct: 0, history: [],
-      };
+      runtimePrices[c.code] = { current: newPrice, prev: newPrice, open: newPrice, high: newPrice, low: newPrice, changePct: 0, history: [] };
     }
     const rp = runtimePrices[c.code];
-    rp.prev = prev;
-    rp.current = newPrice;
-    rp.changePct = prev ? ((newPrice - prev) / prev) * 100 : 0;
-    rp.high = Math.max(rp.high, newPrice);
-    rp.low = Math.min(rp.low, newPrice);
-    rp.history.push(newPrice);
-    if (rp.history.length > 1500) rp.history.shift();
+    rp.prev = prev; rp.current = newPrice; rp.changePct = prev ? ((newPrice - prev) / prev) * 100 : 0;
+    rp.high = Math.max(rp.high, newPrice); rp.low = Math.min(rp.low, newPrice);
+    rp.history.push(newPrice); if (rp.history.length > 1500) rp.history.shift();
   });
 }
 
 function buildInitialHistory(code) {
-  const c = COUNTRY_MAP[code];
-  if (!c) return [];
+  const c = COUNTRY_MAP[code]; if (!c) return [];
   let seed = c.basePrice, sentiment = 0;
-  if (SEED_DATA && SEED_DATA.countries[code]) {
-    seed = SEED_DATA.countries[code].seed_price;
-    sentiment = SEED_DATA.countries[code].sentiment || 0;
-  }
+  if (SEED_DATA && SEED_DATA.countries[code]) { seed = SEED_DATA.countries[code].seed_price; sentiment = SEED_DATA.countries[code].sentiment || 0; }
   const now = new Date();
   const hourKey = now.getUTCFullYear() + '' + (now.getUTCMonth()+1) + '' + now.getUTCDate() + '' + now.getUTCHours();
   const minuteOfHour = now.getUTCMinutes();
-  const hist = [];
-  let price = seed;
+  const hist = []; let price = seed;
   for (let m = 0; m <= minuteOfHour; m++) {
     const r = hashStr(code + hourKey + '_m' + m);
-    const drift = sentiment * 0.00006;
-    const noise = (r - 0.5) * c.volatility * 0.0022;
-    price = price * (1 + drift + noise);
-    hist.push(price);
+    const drift = sentiment * 0.00006; const noise = (r - 0.5) * c.volatility * 0.0022;
+    price = price * (1 + drift + noise); hist.push(price);
   }
   return hist;
 }
 
 async function loadGameData() {
-  try {
-    const res = await fetch('countries.json');
-    COUNTRIES = await res.json();
-  } catch(e) {
-    console.error('countries.json 로드 실패, 내장 데이터 사용', e);
-    COUNTRIES = FALLBACK_COUNTRIES;
-  }
+  try { const res = await fetch('countries.json'); COUNTRIES = await res.json(); } catch(e) { COUNTRIES = FALLBACK_COUNTRIES; }
   COUNTRIES.forEach(c => COUNTRY_MAP[c.code] = c);
-
-  try {
-    const res = await fetch('prices.json?t=' + Date.now());
-    SEED_DATA = await res.json();
-  } catch(e) {
-    console.warn('prices.json 없음 — 기준가로 시작');
-    SEED_DATA = null;
-  }
-
-  try {
-    const res = await fetch('glossary.json');
-    const g = await res.json();
-    GLOSSARY = g.glossary || {};
-    QUIZ = g.quiz || [];
-  } catch(e) {
-    console.warn('glossary.json 없음');
-    GLOSSARY = {}; QUIZ = [];
-  }
+  try { const res = await fetch('prices.json?t=' + Date.now()); SEED_DATA = await res.json(); } catch(e) { SEED_DATA = null; }
+  try { const res = await fetch('glossary.json'); const g = await res.json(); GLOSSARY = g.glossary || {}; QUIZ = g.quiz || []; } catch(e) { GLOSSARY = {}; QUIZ = []; }
 
   COUNTRIES.forEach(c => {
     const hist = buildInitialHistory(c.code);
     runtimePrices[c.code] = {
-      current: hist[hist.length-1] || c.basePrice,
-      prev: hist[hist.length-2] || c.basePrice,
-      open: hist[0] || c.basePrice,
-      high: Math.max(...hist, c.basePrice),
-      low: Math.min(...hist, c.basePrice),
-      changePct: 0,
-      history: hist,
+      current: hist[hist.length-1] || c.basePrice, prev: hist[hist.length-2] || c.basePrice, open: hist[0] || c.basePrice,
+      high: Math.max(...hist, c.basePrice), low: Math.min(...hist, c.basePrice), changePct: 0, history: hist
     };
   });
 }
@@ -847,39 +844,24 @@ function renderCountryList() {
   const list = document.getElementById('countryList');
   let filtered = COUNTRIES.filter(c => {
     if (state.tierFilter !== 'ALL' && c.tier !== state.tierFilter) return false;
-    if (state.searchQuery) {
-      const q = state.searchQuery.toLowerCase();
-      return c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q);
-    }
+    if (state.searchQuery) { const q = state.searchQuery.toLowerCase(); return c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q); }
     return true;
   });
   document.getElementById('countryCount').textContent = filtered.length;
-
   list.innerHTML = filtered.map(c => {
-    const p = runtimePrices[c.code];
-    const dayChange = p.open ? ((p.current - p.open) / p.open) * 100 : 0;
+    const p = runtimePrices[c.code]; const dayChange = p.open ? ((p.current - p.open) / p.open) * 100 : 0;
     const cls = dayChange > 0.01 ? 'up' : dayChange < -0.01 ? 'down' : 'flat';
     const arrow = dayChange > 0.01 ? '▲' : dayChange < -0.01 ? '▼' : '─';
     return `<div class="country-row ${state.selectedCountry === c.code ? 'selected' : ''}" onclick="selectCountry('${c.code}')">
-      <div class="country-flag">${c.flag}</div>
-      <div class="country-info">
-        <div class="country-code">${c.code} <span class="tier-badge tier-${c.tier}">${c.tier}</span></div>
-        <div class="country-name">${c.name}</div>
-      </div>
-      <div class="country-price">
-        <div class="price-value">$${p.current.toFixed(2)}</div>
-        <div class="price-change ${cls}">${arrow} ${Math.abs(dayChange).toFixed(2)}%</div>
-      </div>
-    </div>`;
+      <div class="country-flag">${c.flag}</div><div class="country-info"><div class="country-code">${c.code} <span class="tier-badge tier-${c.tier}">${c.tier}</span></div><div class="country-name">${c.name}</div></div>
+      <div class="country-price"><div class="price-value">$${p.current.toFixed(2)}</div><div class="price-change ${cls}">${arrow} ${Math.abs(dayChange).toFixed(2)}%</div></div></div>`;
   }).join('');
 }
 
 function renderTickerTape() {
-  const track = document.getElementById('tickerTrack');
-  const top = COUNTRIES.slice(0, 40);
+  const track = document.getElementById('tickerTrack'); const top = COUNTRIES.slice(0, 40);
   const makeItems = () => top.map(c => {
-    const p = runtimePrices[c.code];
-    const dayChange = p.open ? ((p.current - p.open) / p.open) * 100 : 0;
+    const p = runtimePrices[c.code]; const dayChange = p.open ? ((p.current - p.open) / p.open) * 100 : 0;
     const cls = dayChange > 0 ? 'up' : dayChange < 0 ? 'down' : 'flat';
     const arrow = dayChange > 0 ? '▲' : dayChange < 0 ? '▼' : '';
     return `<div class="ticker-item"><span class="ticker-flag">${c.flag}</span><span class="ticker-code">${c.code}</span><span class="ticker-price">$${p.current.toFixed(2)}</span><span class="ticker-change ${cls}">${arrow}${Math.abs(dayChange).toFixed(2)}%</span></div>`;
@@ -888,30 +870,20 @@ function renderTickerTape() {
 }
 
 function selectCountry(code) {
-  state.selectedCountry = code;
-  renderCountryList();
-  updateCenterPanel();
-  updateTradeSummary();
-  scheduleSave();
+  state.selectedCountry = code; renderCountryList(); updateCenterPanel(); updateTradeSummary(); scheduleSave();
   if (window.innerWidth <= 768) switchMobilePanel('center');
 }
 
 function updateCenterPanel() {
-  const c = COUNTRY_MAP[state.selectedCountry];
-  if (!c) return;
-  const p = runtimePrices[c.code];
-
-  document.getElementById('scFlag').textContent = c.flag;
-  document.getElementById('scName').textContent = c.name;
-  document.getElementById('scCode').textContent = c.code;
-  document.getElementById('scTier').textContent = `Tier ${c.tier}`;
+  const c = COUNTRY_MAP[state.selectedCountry]; if (!c) return; const p = runtimePrices[c.code];
+  document.getElementById('scFlag').textContent = c.flag; document.getElementById('scName').textContent = c.name;
+  document.getElementById('scCode').textContent = c.code; document.getElementById('scTier').textContent = `Tier ${c.tier}`;
   document.getElementById('scGDP').textContent = formatGDP(c.gdp);
 
   const prevDisplayed = parseFloat((document.getElementById('pdPrice').textContent || '0').replace(/[$,]/g, '')) || p.current;
   document.getElementById('pdPrice').textContent = `$${p.current.toFixed(2)}`;
 
-  const dayChange = p.current - p.open;
-  const dayPct = p.open ? (dayChange / p.open) * 100 : 0;
+  const dayChange = p.current - p.open; const dayPct = p.open ? (dayChange / p.open) * 100 : 0;
   const changeEl = document.getElementById('pdChange');
   changeEl.textContent = `${dayChange >= 0 ? '+' : ''}$${dayChange.toFixed(2)} (${dayChange >= 0 ? '+' : ''}${dayPct.toFixed(2)}%)`;
   changeEl.style.color = dayChange >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
@@ -919,177 +891,88 @@ function updateCenterPanel() {
   if (p.current > prevDisplayed) { changeEl.classList.remove('flash-down'); changeEl.classList.add('flash-up'); setTimeout(()=>changeEl.classList.remove('flash-up'),600); }
   else if (p.current < prevDisplayed) { changeEl.classList.remove('flash-up'); changeEl.classList.add('flash-down'); setTimeout(()=>changeEl.classList.remove('flash-down'),600); }
 
-  document.getElementById('statHigh').textContent = `$${p.high.toFixed(2)}`;
-  document.getElementById('statLow').textContent = `$${p.low.toFixed(2)}`;
-  document.getElementById('statMcap').textContent = formatGDP(c.gdp);
-  document.getElementById('statVol2').textContent = `${c.volatility.toFixed(1)}%`;
-
+  document.getElementById('statHigh').textContent = `$${p.high.toFixed(2)}`; document.getElementById('statLow').textContent = `$${p.low.toFixed(2)}`;
+  document.getElementById('statMcap').textContent = formatGDP(c.gdp); document.getElementById('statVol2').textContent = `${c.volatility.toFixed(1)}%`;
+  
   let sent = SEED_DATA && SEED_DATA.countries[c.code] ? Math.round(SEED_DATA.countries[c.code].sentiment) : 0;
-  const sentEl = document.getElementById('statSentiment');
-  sentEl.textContent = (sent >= 0 ? '+' : '') + sent;
+  const sentEl = document.getElementById('statSentiment'); sentEl.textContent = (sent >= 0 ? '+' : '') + sent;
   sentEl.style.color = sent > 5 ? 'var(--accent-green)' : sent < -5 ? 'var(--accent-red)' : 'var(--text-secondary)';
 
-  const holding = state.holdings[c.code];
-  document.getElementById('statHolding').textContent = holding ? holding.qty : 0;
-
-  document.getElementById('tradePrice').value = `$${p.current.toFixed(2)}`;
-  drawChart();
+  const holding = state.holdings[c.code]; document.getElementById('statHolding').textContent = holding ? holding.qty : 0;
+  document.getElementById('tradePrice').value = `$${p.current.toFixed(2)}`; drawChart();
 }
 
 function drawChart() {
-  const canvas = document.getElementById('priceChart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const rect = canvas.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const w = rect.width, h = rect.height;
-  ctx.clearRect(0, 0, w, h);
+  const canvas = document.getElementById('priceChart'); if (!canvas) return;
+  const ctx = canvas.getContext('2d'); const rect = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr; canvas.height = rect.height * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const w = rect.width, h = rect.height; ctx.clearRect(0, 0, w, h);
 
-  const p = runtimePrices[state.selectedCountry];
-  if (!p || p.history.length < 2) return;
-  let data = p.history;
-  if (state.chartTimeframe !== 'all') data = data.slice(-state.chartTimeframe);
-  if (data.length < 2) data = p.history;
-
+  const p = runtimePrices[state.selectedCountry]; if (!p || p.history.length < 2) return;
+  let data = p.history; if (state.chartTimeframe !== 'all') data = data.slice(-state.chartTimeframe); if (data.length < 2) data = p.history;
   const minP = Math.min(...data), maxP = Math.max(...data);
-  const range = (maxP - minP) || 1, pad = range * 0.1;
-  const yMin = minP - pad, yMax = maxP + pad;
-  const padL = 58, padR = 16, padT = 16, padB = 26;
-  const cw = w - padL - padR, ch = h - padT - padB;
+  const range = (maxP - minP) || 1, pad = range * 0.1; const yMin = minP - pad, yMax = maxP + pad;
+  const padL = 58, padR = 16, padT = 16, padB = 26; const cw = w - padL - padR, ch = h - padT - padB;
 
-  ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 1;
-  ctx.font = '10px JetBrains Mono'; ctx.fillStyle = '#6b7280';
+  ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 1; ctx.font = '10px JetBrains Mono'; ctx.fillStyle = '#6b7280';
   for (let i = 0; i <= 5; i++) {
-    const y = padT + (ch/5)*i;
-    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(w-padR, y); ctx.stroke();
-    const price = yMax - ((yMax-yMin)/5)*i;
-    ctx.textAlign = 'right'; ctx.fillText(`$${price.toFixed(2)}`, padL-6, y+3);
+    const y = padT + (ch/5)*i; ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(w-padR, y); ctx.stroke();
+    const price = yMax - ((yMax-yMin)/5)*i; ctx.textAlign = 'right'; ctx.fillText(`$${price.toFixed(2)}`, padL-6, y+3);
   }
-
-  const isUp = data[data.length-1] >= data[0];
-  const line = isUp ? '#10b981' : '#ef4444';
-  const fill = isUp ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)';
+  const isUp = data[data.length-1] >= data[0]; const line = isUp ? '#10b981' : '#ef4444'; const fill = isUp ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)';
 
   ctx.beginPath();
-  data.forEach((v,i) => {
-    const x = padL + (cw/(data.length-1))*i;
-    const y = padT + ch - ((v-yMin)/(yMax-yMin))*ch;
-    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-  });
-  ctx.lineTo(padL+cw, padT+ch); ctx.lineTo(padL, padT+ch); ctx.closePath();
-  ctx.fillStyle = fill; ctx.fill();
+  data.forEach((v,i) => { const x = padL + (cw/(data.length-1))*i; const y = padT + ch - ((v-yMin)/(yMax-yMin))*ch; i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y); });
+  ctx.lineTo(padL+cw, padT+ch); ctx.lineTo(padL, padT+ch); ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
 
   ctx.beginPath();
-  data.forEach((v,i) => {
-    const x = padL + (cw/(data.length-1))*i;
-    const y = padT + ch - ((v-yMin)/(yMax-yMin))*ch;
-    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-  });
+  data.forEach((v,i) => { const x = padL + (cw/(data.length-1))*i; const y = padT + ch - ((v-yMin)/(yMax-yMin))*ch; i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y); });
   ctx.strokeStyle = line; ctx.lineWidth = 2; ctx.stroke();
 
   const lx = padL+cw, ly = padT+ch-((data[data.length-1]-yMin)/(yMax-yMin))*ch;
-  ctx.beginPath(); ctx.arc(lx,ly,4,0,Math.PI*2); ctx.fillStyle = line; ctx.fill();
-  ctx.strokeStyle = '#0a0e1a'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.beginPath(); ctx.arc(lx,ly,4,0,Math.PI*2); ctx.fillStyle = line; ctx.fill(); ctx.strokeStyle = '#0a0e1a'; ctx.lineWidth = 2; ctx.stroke();
 }
 
 document.querySelectorAll('.tf-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const tf = btn.dataset.tf;
-    state.chartTimeframe = tf === 'all' ? 'all' : parseInt(tf);
-    drawChart();
-  });
-});
-window.addEventListener('resize', () => { drawChart(); });
+  btn.addEventListener('click', () => { document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); const tf = btn.dataset.tf; state.chartTimeframe = tf === 'all' ? 'all' : parseInt(tf); drawChart(); });
+}); window.addEventListener('resize', () => { drawChart(); });
 
 function renderNews() {
-  const list = document.getElementById('newsList');
-  const news = (SEED_DATA && SEED_DATA.news) ? SEED_DATA.news : [];
+  const list = document.getElementById('newsList'); const news = (SEED_DATA && SEED_DATA.news) ? SEED_DATA.news : [];
   document.getElementById('newsCount').textContent = news.length;
-  if (news.length === 0) {
-    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:12px;">아직 뉴스가 없습니다.<br>매시간 AI 평가가 반영됩니다.</div>';
-    return;
-  }
+  if (news.length === 0) { list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:12px;">아직 뉴스가 없습니다.<br>매시간 AI 평가가 반영됩니다.</div>'; return; }
   list.innerHTML = news.map((n, idx) => {
-    const t = new Date(n.time);
-    const timeStr = t.toLocaleString('ko-KR', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    const timeStr = new Date(n.time).toLocaleString('ko-KR', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
     return `<div class="news-item ${n.category}" onclick="openNewsDetail(${idx})">
-      <div class="news-header">
-        <span class="news-flag">${n.flag}</span>
-        <span class="news-country-code">${n.code}</span>
-        <span class="news-impact ${n.category}">${n.category==='positive'?'+ 호재':n.category==='negative'?'− 악재':'중립'}</span>
-      </div>
-      <div class="news-title">${n.title}</div>
-      <div class="news-time">${timeStr}</div>
-    </div>`;
+      <div class="news-header"><span class="news-flag">${n.flag}</span><span class="news-country-code">${n.code}</span><span class="news-impact ${n.category}">${n.category==='positive'?'+ 호재':n.category==='negative'?'− 악재':'중립'}</span></div>
+      <div class="news-title">${n.title}</div><div class="news-time">${timeStr}</div></div>`;
   }).join('');
 }
 
 function openNewsDetail(idx) {
-  const news = (SEED_DATA && SEED_DATA.news) ? SEED_DATA.news : [];
-  const n = news[idx];
-  if (!n) return;
-  const catLabel = n.category==='positive'?'호재 (가치 상승 요인)':n.category==='negative'?'악재 (가치 하락 요인)':'중립';
-  const catColor = n.category==='positive'?'background:rgba(16,185,129,0.15);color:var(--accent-green);':
-                   n.category==='negative'?'background:rgba(239,68,68,0.15);color:var(--accent-red);':
-                   'background:rgba(156,163,175,0.15);color:var(--text-secondary);';
+  const news = (SEED_DATA && SEED_DATA.news) ? SEED_DATA.news : []; const n = news[idx]; if (!n) return;
+  const catLabel = n.category==='positive'?'호재':n.category==='negative'?'악재':'중립';
+  const catColor = n.category==='positive'?'background:rgba(16,185,129,0.15);color:var(--accent-green);':n.category==='negative'?'background:rgba(239,68,68,0.15);color:var(--accent-red);':'background:rgba(156,163,175,0.15);color:var(--text-secondary);';
   const changeStr = n.change_pct !== undefined ? `${n.change_pct>=0?'+':''}${n.change_pct}%` : '';
-  const termChips = (n.terms && n.terms.length>0) ? 
-    `<div class="news-section-box" style="background:var(--bg-tertiary);">
-       <div class="news-section-label">📚 관련 경제 용어 (클릭하면 설명)</div>
-       <div class="news-term-chips">
-         ${n.terms.map(term => `<span class="news-term-chip" onclick="showTerm('${term}')">${GLOSSARY[term]?GLOSSARY[term].term:term}</span>`).join('')}
-       </div>
-     </div>` : '';
-
+  const termChips = (n.terms && n.terms.length>0) ? `<div class="news-section-box" style="background:var(--bg-tertiary);"><div class="news-section-label">📚 관련 경제 용어 (클릭하면 설명)</div><div class="news-term-chips">${n.terms.map(term => `<span class="news-term-chip" onclick="showTerm('${term}')">${GLOSSARY[term]?GLOSSARY[term].term:term}</span>`).join('')}</div></div>` : '';
   document.getElementById('newsBody').innerHTML = `
-    <div class="news-detail-header">
-      <span class="news-detail-flag">${n.flag}</span>
-      <div>
-        <div class="news-detail-title">${n.title}</div>
-        <span class="news-detail-badge" style="${catColor}">${catLabel} ${changeStr}</span>
-      </div>
-    </div>
-    <div class="news-section-box" style="background:var(--bg-tertiary);">
-      <div class="news-section-label">📄 요약</div>
-      <div class="news-section-text">${n.summary || n.title}</div>
-    </div>
-    <div class="news-section-box news-impact-${n.category}" style="border-radius:0 8px 8px 0;">
-      <div class="news-section-label">💡 이 뉴스가 국가 가치에 미치는 영향</div>
-      <div class="news-section-text">${n.impact || '시장 영향을 분석 중입니다.'}</div>
-    </div>
-    ${termChips}
-    <button class="news-goto-btn" onclick="closeModal('newsModal'); selectCountry('${n.code}');">
-      ${n.flag} ${n.name} 차트 보러가기 →
-    </button>
-  `;
+    <div class="news-detail-header"><span class="news-detail-flag">${n.flag}</span><div><div class="news-detail-title">${n.title}</div><span class="news-detail-badge" style="${catColor}">${catLabel} ${changeStr}</span></div></div>
+    <div class="news-section-box" style="background:var(--bg-tertiary);"><div class="news-section-label">📄 요약</div><div class="news-section-text">${n.summary || n.title}</div></div>
+    <div class="news-section-box news-impact-${n.category}" style="border-radius:0 8px 8px 0;"><div class="news-section-label">💡 이 뉴스가 국가 가치에 미치는 영향</div><div class="news-section-text">${n.impact || '시장 영향을 분석 중입니다.'}</div></div>${termChips}
+    <button class="news-goto-btn" onclick="closeModal('newsModal'); selectCountry('${n.code}');">${n.flag} ${n.name} 차트 보러가기 →</button>`;
   document.getElementById('newsModal').classList.add('active');
 }
 
 function showTerm(termKey) {
-  const g = GLOSSARY[termKey];
-  if (!g) { showToast('warning','용어 없음','해당 용어 설명이 준비 중입니다.'); return; }
+  const g = GLOSSARY[termKey]; if (!g) { showToast('warning','용어 없음','준비 중입니다.'); return; }
   document.getElementById('termTitle').textContent = '📖 ' + g.term;
-  document.getElementById('termBody').innerHTML = `
-    <div style="font-size:13px;color:var(--accent-blue);font-weight:600;margin-bottom:10px;">${g.short}</div>
-    <div style="font-size:13px;line-height:1.7;margin-bottom:12px;">${g.detail}</div>
-    <div style="font-size:12px;color:var(--accent-green);font-style:italic;padding:10px;background:var(--bg-tertiary);border-radius:6px;">예) ${g.example}</div>
-  `;
+  document.getElementById('termBody').innerHTML = `<div style="font-size:13px;color:var(--accent-blue);font-weight:600;margin-bottom:10px;">${g.short}</div><div style="font-size:13px;line-height:1.7;margin-bottom:12px;">${g.detail}</div><div style="font-size:12px;color:var(--accent-green);font-style:italic;padding:10px;background:var(--bg-tertiary);border-radius:6px;">예) ${g.example}</div>`;
   document.getElementById('termModal').classList.add('active');
 }
 
 function switchTradeTab(mode) {
-  state.tradeMode = mode;
-  document.getElementById('tabBuy').classList.toggle('active', mode==='BUY');
-  document.getElementById('tabSell').classList.toggle('active', mode==='SELL');
-  const btn = document.getElementById('tradeBtn');
-  btn.className = `trade-button ${mode.toLowerCase()}`;
-  btn.textContent = mode==='BUY' ? '매수 주문' : '매도 주문';
-  updateTradeSummary();
+  state.tradeMode = mode; document.getElementById('tabBuy').classList.toggle('active', mode==='BUY'); document.getElementById('tabSell').classList.toggle('active', mode==='SELL');
+  const btn = document.getElementById('tradeBtn'); btn.className = `trade-button ${mode.toLowerCase()}`; btn.textContent = mode==='BUY' ? '매수 주문' : '매도 주문'; updateTradeSummary();
 }
 function setQty(n){ document.getElementById('tradeQty').value=n; updateTradeSummary(); }
 function setMaxQty(){
@@ -1099,92 +982,84 @@ function setMaxQty(){
   updateTradeSummary();
 }
 function updateTradeSummary() {
-  const p = runtimePrices[state.selectedCountry];
-  if (!p) return;
+  const p = runtimePrices[state.selectedCountry]; if (!p) return;
   const qty = parseInt(document.getElementById('tradeQty').value)||0;
   const total = qty*p.current, fee = total*0.001;
-  document.getElementById('estPrice').textContent = `$${p.current.toFixed(2)}`;
-  document.getElementById('estTotal').textContent = `$${total.toFixed(2)}`;
-  document.getElementById('estFee').textContent = `$${fee.toFixed(2)}`;
-  const btn = document.getElementById('tradeBtn');
-  let ok = qty>0;
+  document.getElementById('estPrice').textContent = `$${p.current.toFixed(2)}`; document.getElementById('estTotal').textContent = `$${total.toFixed(2)}`; document.getElementById('estFee').textContent = `$${fee.toFixed(2)}`;
+  const btn = document.getElementById('tradeBtn'); let ok = qty>0;
   if (state.tradeMode==='BUY' && (total+fee)>state.cash) ok=false;
   if (state.tradeMode==='SELL'){ const h=state.holdings[state.selectedCountry]; if(!h||h.qty<qty) ok=false; }
   btn.disabled = !ok;
 }
 function executeTrade() {
-  const qty = parseInt(document.getElementById('tradeQty').value);
-  if (!qty||qty<=0){ showToast('error','잘못된 수량','수량을 확인하세요.'); return; }
-  const code = state.selectedCountry, c = COUNTRY_MAP[code];
-  const price = runtimePrices[code].current;
+  const qty = parseInt(document.getElementById('tradeQty').value); if (!qty||qty<=0){ showToast('error','잘못된 수량','수량을 확인하세요.'); return; }
+  const code = state.selectedCountry, c = COUNTRY_MAP[code], price = runtimePrices[code].current;
   const total = qty*price, fee = total*0.001;
   if (state.tradeMode==='BUY') {
     if (total+fee>state.cash){ showToast('error','잔액 부족','보유 현금이 부족합니다.'); return; }
-    state.cash -= (total+fee);
-    if(!state.holdings[code]) state.holdings[code]={qty:0,avgPrice:0};
-    const h=state.holdings[code];
-    h.avgPrice = (h.avgPrice*h.qty + price*qty)/(h.qty+qty); h.qty += qty;
-    state.trades.push({type:'BUY',code,qty,price,total,fee,time:Date.now()});
-    state.stats.totalTrades++;
+    state.cash -= (total+fee); if(!state.holdings[code]) state.holdings[code]={qty:0,avgPrice:0};
+    const h=state.holdings[code]; h.avgPrice = (h.avgPrice*h.qty + price*qty)/(h.qty+qty); h.qty += qty;
+    state.trades.push({type:'BUY',code,qty,price,total,fee,time:Date.now()}); state.stats.totalTrades++;
     showToast('success','매수 체결',`${c.flag} ${c.name} ${qty}주 매수 완료`);
   } else {
-    const h=state.holdings[code];
-    if(!h||h.qty<qty){ showToast('error','보유량 부족','보유 수량이 부족합니다.'); return; }
-    state.cash += (total-fee);
-    const profit=(price-h.avgPrice)*qty-fee;
+    const h=state.holdings[code]; if(!h||h.qty<qty){ showToast('error','보유량 부족','수량이 부족합니다.'); return; }
+    state.cash += (total-fee); const profit=(price-h.avgPrice)*qty-fee;
     h.qty-=qty; if(h.qty===0) delete state.holdings[code];
-    state.trades.push({type:'SELL',code,qty,price,total,fee,profit,time:Date.now()});
-    state.stats.totalTrades++;
-    if (profit >= 0) { state.stats.wins++; state.stats.bestTrade = Math.max(state.stats.bestTrade, profit); }
-    else { state.stats.losses++; state.stats.worstTrade = Math.min(state.stats.worstTrade, profit); }
+    state.trades.push({type:'SELL',code,qty,price,total,fee,profit,time:Date.now()}); state.stats.totalTrades++;
+    if (profit >= 0) { state.stats.wins++; state.stats.bestTrade = Math.max(state.stats.bestTrade, profit); } else { state.stats.losses++; state.stats.worstTrade = Math.min(state.stats.worstTrade, profit); }
     showToast(profit>=0?'success':'warning','매도 체결',`${c.flag} ${c.name} ${qty}주 / 손익 ${profit>=0?'+':''}$${profit.toFixed(2)}`);
   }
   updatePortfolioStats(); updateTradeSummary(); updateCenterPanel(); checkBadges(); scheduleSave();
 }
 
 function updatePortfolioStats() {
-  let hv = 0;
-  Object.entries(state.holdings).forEach(([code,h]) => { hv += h.qty*runtimePrices[code].current; });
+  let hv = 0; Object.entries(state.holdings).forEach(([code,h]) => { hv += h.qty*runtimePrices[code].current; });
   const total = state.cash+hv, pl = total-state.initialCash, ret = pl/state.initialCash*100;
-  document.getElementById('cashBalance').textContent = `$${Math.round(state.cash).toLocaleString()}`;
-  document.getElementById('portfolioValue').textContent = `$${Math.round(total).toLocaleString()}`;
-  const plEl=document.getElementById('totalPL'); plEl.textContent=`${pl>=0?'+':''}$${Math.round(pl).toLocaleString()}`;
-  plEl.style.color = pl>=0?'var(--accent-green)':'var(--accent-red)';
-  const rEl=document.getElementById('returnPct'); rEl.textContent=`${ret>=0?'+':''}${ret.toFixed(2)}%`;
-  rEl.style.color = ret>=0?'var(--accent-green)':'var(--accent-red)';
+  document.getElementById('cashBalance').textContent = `$${Math.round(state.cash).toLocaleString()}`; document.getElementById('portfolioValue').textContent = `$${Math.round(total).toLocaleString()}`;
+  const plEl=document.getElementById('totalPL'); plEl.textContent=`${pl>=0?'+':''}$${Math.round(pl).toLocaleString()}`; plEl.style.color = pl>=0?'var(--accent-green)':'var(--accent-red)';
+  const rEl=document.getElementById('returnPct'); rEl.textContent=`${ret>=0?'+':''}${ret.toFixed(2)}%`; rEl.style.color = ret>=0?'var(--accent-green)':'var(--accent-red)';
+}
+
+// ⭐ 친구 초대 링크 복사 함수
+function copyReferralLink() {
+  if (!currentUser) { showToast('warning', '로그인 필요', '초대 링크를 만드시려면 구글 로그인이 필요합니다.'); return; }
+  const link = window.location.origin + window.location.pathname + '?ref=' + currentUser.uid;
+  navigator.clipboard.writeText(link).then(() => {
+    showToast('success', '초대 링크 복사 완료!', '친구에게 보내고 10만 달러 보상을 받으세요!');
+  });
 }
 
 function openPortfolio() {
-  const body = document.getElementById('portfolioBody');
-  const holdings = Object.entries(state.holdings);
+  const body = document.getElementById('portfolioBody'); const holdings = Object.entries(state.holdings);
   let hv=0, html='';
-  if (holdings.length===0) {
-    html = '<div style="padding:40px;text-align:center;color:var(--text-muted);">아직 보유한 국가가 없습니다.<br>국가를 매수해보세요!</div>';
-  } else {
-    html = `<h3 style="font-family:var(--font-display);font-size:13px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">보유 종목</h3>
+  if (holdings.length===0) { html = '<div style="padding:40px;text-align:center;color:var(--text-muted);">아직 보유한 국가가 없습니다.</div>'; } 
+  else {
+    html = `<h3 style="font-family:var(--font-display);font-size:13px;color:var(--text-secondary);text-transform:uppercase;margin-bottom:12px;">보유 종목</h3>
     <table class="holdings-table"><thead><tr><th>국가</th><th class="right">수량</th><th class="right">평단</th><th class="right">현재가</th><th class="right">평가액</th><th class="right">손익</th></tr></thead><tbody>`;
     holdings.forEach(([code,h]) => {
-      const c=COUNTRY_MAP[code], cur=runtimePrices[code].current;
-      const val=h.qty*cur, profit=(cur-h.avgPrice)*h.qty, pct=(cur-h.avgPrice)/h.avgPrice*100;
-      hv+=val;
+      const c=COUNTRY_MAP[code], cur=runtimePrices[code].current; const val=h.qty*cur, profit=(cur-h.avgPrice)*h.qty, pct=(cur-h.avgPrice)/h.avgPrice*100; hv+=val;
       const col=profit>=0?'var(--accent-green)':'var(--accent-red)';
       html+=`<tr><td>${c.flag} ${c.name}</td><td class="right">${h.qty}</td><td class="right">$${h.avgPrice.toFixed(2)}</td><td class="right">$${cur.toFixed(2)}</td><td class="right">$${val.toFixed(2)}</td><td class="right" style="color:${col};">${profit>=0?'+':''}$${profit.toFixed(2)}<br><span style="font-size:10px;">(${pct>=0?'+':''}${pct.toFixed(2)}%)</span></td></tr>`;
-    });
-    html+='</tbody></table>';
+    }); html+='</tbody></table>';
   }
   let tradesHtml='';
   if (state.trades.length>0) {
-    tradesHtml = `<h3 style="font-family:var(--font-display);font-size:13px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px;">최근 거래 (${state.trades.length})</h3>
+    tradesHtml = `<h3 style="font-family:var(--font-display);font-size:13px;color:var(--text-secondary);text-transform:uppercase;margin:24px 0 12px;">최근 거래 (${state.trades.length})</h3>
     <table class="holdings-table"><thead><tr><th>구분</th><th>국가</th><th class="right">수량</th><th class="right">가격</th><th class="right">손익</th></tr></thead><tbody>`;
     state.trades.slice(-15).reverse().forEach(t => {
-      const c=COUNTRY_MAP[t.code];
-      const ps = (t.type==='SELL'&&t.profit!==undefined)?`<span style="color:${t.profit>=0?'var(--accent-green)':'var(--accent-red)'};">${t.profit>=0?'+':''}$${t.profit.toFixed(2)}</span>`:'<span style="color:var(--text-muted);">—</span>';
+      const c=COUNTRY_MAP[t.code]; const ps = (t.type==='SELL'&&t.profit!==undefined)?`<span style="color:${t.profit>=0?'var(--accent-green)':'var(--accent-red)'};">${t.profit>=0?'+':''}$${t.profit.toFixed(2)}</span>`:'<span style="color:var(--text-muted);">—</span>';
       tradesHtml+=`<tr><td><span style="color:${t.type==='BUY'?'var(--accent-green)':'var(--accent-red)'};font-weight:600;">${t.type==='BUY'?'매수':'매도'}</span></td><td>${c.flag} ${t.code}</td><td class="right">${t.qty}</td><td class="right">$${t.price.toFixed(2)}</td><td class="right">${ps}</td></tr>`;
-    });
-    tradesHtml+='</tbody></table>';
+    }); tradesHtml+='</tbody></table>';
   }
   const total=state.cash+hv, ret=(total-state.initialCash)/state.initialCash*100;
-  body.innerHTML = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
+  
+  // 포트폴리오 상단에 친구 초대 버튼 추가 ⭐
+  const inviteBtnHtml = `<div style="text-align:center; margin-bottom: 20px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:8px; padding:12px;">
+      <div style="font-size:12px; color:var(--text-secondary); margin-bottom:6px;">친구가 내 링크로 가입할 때마다 무제한 보상!</div>
+      <button onclick="copyReferralLink()" style="background:var(--accent-green); color:#0a0e1a; border:none; padding:10px 16px; border-radius:6px; font-weight:700; cursor:pointer; font-family:var(--font-kr);">🔗 친구 초대 링크 복사 (1명당 $100,000)</button>
+    </div>`;
+
+  body.innerHTML = `${inviteBtnHtml}<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
     <div style="background:var(--bg-tertiary);padding:12px;border-radius:8px;border:1px solid var(--border-default);"><div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:4px;">현금</div><div style="font-family:var(--font-mono);font-size:15px;font-weight:700;">$${Math.round(state.cash).toLocaleString()}</div></div>
     <div style="background:var(--bg-tertiary);padding:12px;border-radius:8px;border:1px solid var(--border-default);"><div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:4px;">평가액</div><div style="font-family:var(--font-mono);font-size:15px;font-weight:700;">$${Math.round(hv).toLocaleString()}</div></div>
     <div style="background:var(--bg-tertiary);padding:12px;border-radius:8px;border:1px solid var(--border-default);"><div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:4px;">총 자산</div><div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--accent-blue);">$${Math.round(total).toLocaleString()}</div></div>
@@ -1200,14 +1075,12 @@ function closePortfolio(){ document.getElementById('portfolioModal').classList.r
 function closeModal(id){ document.getElementById(id).classList.remove('active'); }
 
 function getMyReturn() {
-  let hv = 0;
-  Object.entries(state.holdings).forEach(([code,h]) => { hv += h.qty*runtimePrices[code].current; });
-  const total = state.cash + hv;
-  return (total - state.initialCash) / state.initialCash * 100;
+  let hv = 0; Object.entries(state.holdings).forEach(([code,h]) => { hv += h.qty*runtimePrices[code].current; });
+  const total = state.cash + hv; return (total - state.initialCash) / state.initialCash * 100;
 }
 
 // ============================================================
-// === RANKING (Firestore 실시간 연동 및 가짜 봇 제거) ===
+// === RANKING (실시간 글로벌) ===
 // ============================================================
 async function openRanking() {
   document.getElementById('rankingModal').classList.add('active');
@@ -1215,63 +1088,33 @@ async function openRanking() {
   body.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary);font-size:13px;">🌐 실시간 글로벌 랭킹 분석 중...</div>';
   
   let entries = [];
-
-  // 1. 파이어베이스가 세팅되어 있다면 'rankings' 컬렉션에서 실제 등록된 유저 데이터를 역순 정렬해 가져옴
   if (window.FIREBASE_ENABLED && window.fb) {
     try {
-      const q = window.fb.query(
-        window.fb.collection(window.fb.db, 'rankings'),
-        window.fb.orderBy('return', 'desc'),
-        window.fb.limit(30)
-      );
+      const q = window.fb.query(window.fb.collection(window.fb.db, 'rankings'), window.fb.orderBy('return', 'desc'), window.fb.limit(30));
       const querySnapshot = await window.fb.getDocs(q);
       querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        entries.push({
-          name: data.name || '알 수 없는 투자자',
-          return: data.return ?? 0,
-          trades: data.trades ?? 0,
-          isMe: currentUser && doc.id === currentUser.uid
-        });
+        const data = doc.data(); entries.push({ name: data.name || '알 수 없는 투자자', return: data.return ?? 0, trades: data.trades ?? 0, isMe: currentUser && doc.id === currentUser.uid });
       });
-    } catch(e) {
-      console.error('글로벌 랭킹 수집 실패:', e);
-    }
+    } catch(e) { console.error('글로벌 랭킹 수집 실패:', e); }
   }
 
-  // 2. 현재 로그인한 본인 데이터 패칭 및 예외 핸들링
   const myName = (currentUser && currentUser.displayName) ? currentUser.displayName : (state.nickname || '나 (게스트)');
-  const myReturn = getMyReturn();
-  const myEntry = { name: myName, return: myReturn, trades: state.stats.totalTrades, isMe: true };
+  const myReturn = getMyReturn(); const myEntry = { name: myName, return: myReturn, trades: state.stats.totalTrades, isMe: true };
 
-  // 불러온 데이터 리스트에 본인이 빠져있다면 추가
-  const alreadyHasMe = entries.some(e => e.isMe);
-  if (!alreadyHasMe) {
-    entries.push(myEntry);
-  }
+  const alreadyHasMe = entries.some(e => e.isMe); if (!alreadyHasMe) { entries.push(myEntry); }
+  entries.sort((a,b) => b.return - a.return); const myRank = entries.findIndex(e => e.isMe) + 1;
 
-  // 실시간 최종 소팅 정렬
-  entries.sort((a,b) => b.return - a.return);
-  const myRank = entries.findIndex(e => e.isMe) + 1;
-
-  let html = `
-    <div style="background:rgba(59,130,246,0.08);border:1px solid var(--accent-blue);border-radius:8px;padding:12px 14px;margin-bottom:16px;text-align:center;">
+  let html = `<div style="background:rgba(59,130,246,0.08);border:1px solid var(--accent-blue);border-radius:8px;padding:12px 14px;margin-bottom:16px;text-align:center;">
       <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;">내 현재 글로벌 순위</div>
       <div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--accent-blue);">${myRank}위 <span style="font-size:13px;color:var(--text-secondary);">/ 총 ${entries.length}명</span></div>
       <div style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:${myReturn>=0?'var(--accent-green)':'var(--accent-red)'};margin-top:4px;">수익률 ${myReturn>=0?'+':''}${myReturn.toFixed(2)}%</div>
-    </div>
-  `;
+    </div>`;
 
   if (entries.length <= 1 && !currentUser) {
-    html += `<div style="text-align:center;padding:30px 10px;color:var(--text-muted);font-size:12px;line-height:1.6;">
-      현재 등록된 다른 실제 유저가 없습니다.<br>
-      구글 로그인 후 거래를 체결하시면 실시간 글로벌 순위 보드에 즉시 랭킹이 기록됩니다!
-    </div>`;
+    html += `<div style="text-align:center;padding:30px 10px;color:var(--text-muted);font-size:12px;line-height:1.6;">현재 등록된 다른 실제 유저가 없습니다.<br>구글 로그인 후 거래를 체결하시면 실시간 글로벌 순위 보드에 즉시 랭킹이 기록됩니다!</div>`;
   } else {
     html += entries.map((e, i) => {
-      const rank = i+1;
-      const rankCls = rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
-      const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+      const rank = i+1; const rankCls = rank===1?'gold':rank===2?'silver':rank===3?'bronze':''; const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
       return `<div class="rank-row ${e.isMe?'me':''}">
         <div class="rank-num ${rankCls}">${medal}</div>
         <div class="rank-name">${e.name}${e.isMe?'<span class="rank-bot-tag" style="background:var(--accent-blue);color:white;">ME</span>':''}</div>
@@ -1280,7 +1123,6 @@ async function openRanking() {
       </div>`;
     }).join('');
   }
-
   body.innerHTML = html;
 }
 
@@ -1291,217 +1133,101 @@ let quizState = { idx: 0, score: 0, todayQuestions: [], answered: false };
 function openQuiz() {
   const today = new Date().toISOString().slice(0,10);
   if (state.quizLog[today] && state.quizLog[today].completed) {
-    document.getElementById('quizBody').innerHTML = `
-      <div style="text-align:center;padding:30px 20px;">
-        <div style="font-size:40px;margin-bottom:12px;">✅</div>
-        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">오늘의 퀴즈 완료!</div>
-        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:6px;">점수: ${state.quizLog[today].score} / ${state.quizLog[today].total}</div>
-        <div style="font-size:12px;color:var(--text-muted);">내일 새로운 퀴즈로 만나요. (보상: 가상자금 지급 완료)</div>
-      </div>`;
-    document.getElementById('quizModal').classList.add('active');
-    return;
+    document.getElementById('quizBody').innerHTML = `<div style="text-align:center;padding:30px 20px;"><div style="font-size:40px;margin-bottom:12px;">✅</div><div style="font-size:15px;font-weight:600;margin-bottom:8px;">오늘의 퀴즈 완료!</div><div style="font-size:13px;color:var(--text-secondary);margin-bottom:6px;">점수: ${state.quizLog[today].score} / ${state.quizLog[today].total}</div><div style="font-size:12px;color:var(--text-muted);">내일 새로운 퀴즈로 만나요.</div></div>`;
+    document.getElementById('quizModal').classList.add('active'); return;
   }
   const shuffled = [...QUIZ].map((q,i)=>({q, sort: hashStr(today+'_q'+i)})).sort((a,b)=>a.sort-b.sort).map(x=>x.q);
   quizState = { idx: 0, score: 0, todayQuestions: shuffled.slice(0, 5), answered: false };
-  document.getElementById('quizModal').classList.add('active');
-  renderQuiz();
+  document.getElementById('quizModal').classList.add('active'); renderQuiz();
 }
 function renderQuiz() {
-  const body = document.getElementById('quizBody');
-  const q = quizState.todayQuestions[quizState.idx];
-  if (!q) return;
-  body.innerHTML = `
-    <div class="quiz-progress">문제 ${quizState.idx+1} / ${quizState.todayQuestions.length} · 현재 점수 ${quizState.score}</div>
-    <div class="quiz-question">${q.q}</div>
-    <div class="quiz-options" id="quizOptions">
-      ${q.options.map((opt, i) => `<button class="quiz-opt" onclick="answerQuiz(${i})">${opt}</button>`).join('')}
-    </div>
-    <div id="quizExplain"></div>
-  `;
+  const body = document.getElementById('quizBody'); const q = quizState.todayQuestions[quizState.idx]; if (!q) return;
+  body.innerHTML = `<div class="quiz-progress">문제 ${quizState.idx+1} / ${quizState.todayQuestions.length} · 현재 점수 ${quizState.score}</div>
+    <div class="quiz-question">${q.q}</div><div class="quiz-options" id="quizOptions">${q.options.map((opt, i) => `<button class="quiz-opt" onclick="answerQuiz(${i})">${opt}</button>`).join('')}</div><div id="quizExplain"></div>`;
 }
 function answerQuiz(choice) {
-  if (quizState.answered) return;
-  quizState.answered = true;
-  const q = quizState.todayQuestions[quizState.idx];
+  if (quizState.answered) return; quizState.answered = true; const q = quizState.todayQuestions[quizState.idx];
   const opts = document.querySelectorAll('.quiz-opt');
-  opts.forEach((o, i) => {
-    o.disabled = true;
-    if (i === q.answer) o.classList.add('correct');
-    if (i === choice && choice !== q.answer) o.classList.add('wrong');
-  });
-  const correct = choice === q.answer;
-  if (correct) quizState.score++;
-  const isLast = quizState.idx === quizState.todayQuestions.length - 1;
-  document.getElementById('quizExplain').innerHTML = `
-    <div class="quiz-explain">
-      <strong style="color:${correct?'var(--accent-green)':'var(--accent-red)'};">${correct?'정답입니다! 🎉':'아쉬워요 😅'}</strong><br>${q.explain}
-    </div>
-    <button class="quiz-next" onclick="${isLast?'finishQuiz()':'nextQuiz()'}">${isLast?'결과 보기':'다음 문제 →'}</button>
-  `;
+  opts.forEach((o, i) => { o.disabled = true; if (i === q.answer) o.classList.add('correct'); if (i === choice && choice !== q.answer) o.classList.add('wrong'); });
+  const correct = choice === q.answer; if (correct) quizState.score++; const isLast = quizState.idx === quizState.todayQuestions.length - 1;
+  document.getElementById('quizExplain').innerHTML = `<div class="quiz-explain"><strong style="color:${correct?'var(--accent-green)':'var(--accent-red)'};">${correct?'정답입니다! 🎉':'아쉬워요 😅'}</strong><br>${q.explain}</div>
+    <button class="quiz-next" onclick="${isLast?'finishQuiz()':'nextQuiz()'}">${isLast?'결과 보기':'다음 문제 →'}</button>`;
 }
-function defaultExplain() { document.getElementById('quizExplain').innerHTML = ''; }
 function nextQuiz() { quizState.idx++; quizState.answered = false; renderQuiz(); }
 function finishQuiz() {
-  const today = new Date().toISOString().slice(0,10);
-  const reward = quizState.score * 5000; 
-  state.cash += reward;
+  const today = new Date().toISOString().slice(0,10); const reward = quizState.score * 5000; state.cash += reward;
   state.quizLog[today] = { completed: true, score: quizState.score, total: quizState.todayQuestions.length };
-  checkBadges();
-  updatePortfolioStats();
-  scheduleSave();
-  document.getElementById('quizBody').innerHTML = `
-    <div style="text-align:center;padding:30px 20px;">
-      <div style="font-size:40px;margin-bottom:12px;">${quizState.score>=4?'🏆':quizState.score>=2?'👍':'📚'}</div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:8px;">${quizState.score} / ${quizState.todayQuestions.length} 정답</div>
-      <div style="font-size:14px;color:var(--accent-green);font-weight:600;margin-bottom:16px;">💰 보상: $${reward.toLocaleString()} 지급!</div>
-      <div style="font-size:12px;color:var(--text-muted);">매일 새로운 퀴즈로 경제 지식을 쌓아보세요.</div>
-    </div>`;
+  checkBadges(); updatePortfolioStats(); scheduleSave();
+  document.getElementById('quizBody').innerHTML = `<div style="text-align:center;padding:30px 20px;"><div style="font-size:40px;margin-bottom:12px;">${quizState.score>=4?'🏆':quizState.score>=2?'👍':'📚'}</div><div style="font-size:18px;font-weight:700;margin-bottom:8px;">${quizState.score} / ${quizState.todayQuestions.length} 정답</div><div style="font-size:14px;color:var(--accent-green);font-weight:600;margin-bottom:16px;">💰 보상: $${reward.toLocaleString()} 지급!</div><div style="font-size:12px;color:var(--text-muted);">매일 새로운 퀴즈로 지식을 쌓아보세요.</div></div>`;
 }
 
 // ============================================================
-// === BADGES ===
+// === BADGES & GLOSSARY ===
 // ============================================================
 const BADGE_DEFS = [
   { id: 'first_trade', icon: '🌱', name: '첫 거래', desc: '첫 매수 또는 매도 완료', check: s => s.stats.totalTrades >= 1 },
   { id: 'ten_trades', icon: '📊', name: '활발한 거래자', desc: '거래 10회 달성', check: s => s.stats.totalTrades >= 10 },
   { id: 'profit_10', icon: '💰', name: '첫 수익', desc: '수익률 +10% 돌파', check: s => getMyReturn() >= 10 },
   { id: 'profit_30', icon: '🚀', name: '고수익 투자자', desc: '수익률 +30% 돌파', check: s => getMyReturn() >= 30 },
-  { id: 'diversify', icon: '🌍', name: '분산 투자자', desc: '5개국 이상 동시 보유', check: s => Object.keys(s.holdings).length >= 5 },
+  { id: 'diversify', icon: '🌍', name: '분산 투자자', desc: '5개국 이상 보유', check: s => Object.keys(s.holdings).length >= 5 },
   { id: 'tier_s', icon: '👑', name: '강대국 투자', desc: 'Tier S 국가 보유', check: s => Object.keys(s.holdings).some(c => COUNTRY_MAP[c] && COUNTRY_MAP[c].tier==='S') },
-  { id: 'quiz_master', icon: '🎓', name: '퀴즈 마스터', desc: '퀴즈 만점 달성', check: s => Object.values(s.quizLog).some(q => q.completed && q.score === q.total && q.total >= 5) },
-  { id: 'continent', icon: '🗺️', name: '세계 일주', desc: '10개국 이상 거래 경험', check: s => new Set(s.trades.map(t=>t.code)).size >= 10 },
-  { id: 'comeback', icon: '🔥', name: '역전의 명수', desc: '손실 후 수익 전환', check: s => s.stats.losses > 0 && getMyReturn() > 0 },
 ];
 function checkBadges() {
-  let newBadges = [];
-  BADGE_DEFS.forEach(b => {
-    if (!state.badges.includes(b.id) && b.check(state)) {
-      state.badges.push(b.id);
-      newBadges.push(b);
-    }
-  });
-  newBadges.forEach(b => showToast('success', `🎖️ 배지 획득: ${b.name}`, b.desc));
-  if (newBadges.length > 0) scheduleSave();
+  let newBadges = []; BADGE_DEFS.forEach(b => { if (!state.badges.includes(b.id) && b.check(state)) { state.badges.push(b.id); newBadges.push(b); } });
+  newBadges.forEach(b => showToast('success', `🎖️ 배지 획득: ${b.name}`, b.desc)); if (newBadges.length > 0) scheduleSave();
 }
 function openBadges() {
-  checkBadges();
-  const earned = state.badges.length;
-  document.getElementById('badgesBody').innerHTML = `
-    <div style="text-align:center;margin-bottom:18px;">
-      <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary);">획득한 배지</div>
-      <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--accent-amber);">${earned} / ${BADGE_DEFS.length}</div>
-    </div>
-    <div class="badge-grid">
-      ${BADGE_DEFS.map(b => `
-        <div class="badge-card ${state.badges.includes(b.id)?'earned':''}">
-          <div class="badge-icon">${b.icon}</div>
-          <div class="badge-name">${b.name}</div>
-          <div class="badge-desc">${b.desc}</div>
-        </div>`).join('')}
-    </div>`;
+  checkBadges(); const earned = state.badges.length;
+  document.getElementById('badgesBody').innerHTML = `<div style="text-align:center;margin-bottom:18px;"><div style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary);">획득한 배지</div><div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--accent-amber);">${earned} / ${BADGE_DEFS.length}</div></div>
+    <div class="badge-grid">${BADGE_DEFS.map(b => `<div class="badge-card ${state.badges.includes(b.id)?'earned':''}"><div class="badge-icon">${b.icon}</div><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div></div>`).join('')}</div>`;
   document.getElementById('badgesModal').classList.add('active');
 }
-
-// ============================================================
-// === GLOSSARY ===
-// ============================================================
-function openGlossary() {
-  renderGlossary('');
-  document.getElementById('glossaryModal').classList.add('active');
-}
+function openGlossary() { renderGlossary(''); document.getElementById('glossaryModal').classList.add('active'); }
 function renderGlossary(query) {
   const body = document.getElementById('glossaryBody');
-  const entries = Object.entries(GLOSSARY).filter(([k,g]) => {
-    if (!query) return true;
-    const q = query.toLowerCase();
-    return g.term.toLowerCase().includes(q) || g.short.toLowerCase().includes(q) || g.detail.toLowerCase().includes(q);
-  });
-  body.innerHTML = `
-    <input type="text" class="glossary-search" placeholder="용어 검색..." oninput="renderGlossary(this.value)" value="${query}" id="glossarySearchInput">
-    ${entries.length === 0 ? '<div style="text-align:center;padding:30px;color:var(--text-muted);">검색 결과가 없습니다.</div>' :
-      entries.map(([k,g]) => `
-        <div class="glossary-item">
-          <div class="glossary-term">${g.term}</div>
-          <div class="glossary-short">${g.short}</div>
-          <div class="glossary-detail">${g.detail}</div>
-          <div class="glossary-example">예) ${g.example}</div>
-        </div>`).join('')}
-  `;
+  const entries = Object.entries(GLOSSARY).filter(([k,g]) => { if (!query) return true; const q = query.toLowerCase(); return g.term.toLowerCase().includes(q) || g.short.toLowerCase().includes(q) || g.detail.toLowerCase().includes(q); });
+  body.innerHTML = `<input type="text" class="glossary-search" placeholder="용어 검색..." oninput="renderGlossary(this.value)" value="${query}" id="glossarySearchInput">
+    ${entries.length === 0 ? '<div style="text-align:center;padding:30px;color:var(--text-muted);">검색 결과가 없습니다.</div>' : entries.map(([k,g]) => `<div class="glossary-item"><div class="glossary-term">${g.term}</div><div class="glossary-short">${g.short}</div><div class="glossary-detail">${g.detail}</div><div class="glossary-example">예) ${g.example}</div></div>`).join('')}`;
   if (query) { const inp = document.getElementById('glossarySearchInput'); if(inp){ inp.focus(); inp.setSelectionRange(query.length, query.length);} }
 }
 
 async function resetGame() {
   if(!confirm('정말 리셋하시겠습니까? 모든 거래 내역과 잔액이 초기화됩니다.')) return;
-  state.cash=1000000; state.holdings={}; state.trades=[];
-  await saveState();
-  location.reload();
+  state.cash=1000000; state.holdings={}; state.trades=[]; await saveState(); location.reload();
 }
 
 function filterCountries(){ state.searchQuery=document.getElementById('searchInput').value; renderCountryList(); }
 function filterByTier(t){ state.tierFilter=t; document.querySelectorAll('.tier-btn').forEach(b=>b.classList.toggle('active',b.dataset.tier===t)); renderCountryList(); }
 
 function switchMobilePanel(panel) {
-  ['left','center','right'].forEach(p => {
-    document.getElementById(p+'Panel').classList.toggle('mobile-active', p===panel);
-  });
-  document.querySelectorAll('.mobile-nav button[data-panel]').forEach(b => {
-    b.classList.toggle('active', b.dataset.panel===panel);
-  });
+  ['left','center','right'].forEach(p => { document.getElementById(p+'Panel').classList.toggle('mobile-active', p===panel); });
+  document.querySelectorAll('.mobile-nav button[data-panel]').forEach(b => { b.classList.toggle('active', b.dataset.panel===panel); });
   if (panel==='center') setTimeout(drawChart, 50);
 }
-
-function updateClock() {
-  const now = new Date();
-  document.getElementById('realClock').textContent = now.toLocaleTimeString('ko-KR');
-}
-
-function liveLoop() {
-  refreshRuntimePrices();
-  renderCountryList();
-  renderTickerTape();
-  updateCenterPanel();
-  updatePortfolioStats();
-  updateTradeSummary();
-}
+function updateClock() { document.getElementById('realClock').textContent = new Date().toLocaleTimeString('ko-KR'); }
+function liveLoop() { refreshRuntimePrices(); renderCountryList(); renderTickerTape(); updateCenterPanel(); updatePortfolioStats(); updateTradeSummary(); }
 
 function formatGDP(b){ if(b>=1000) return `$${(b/1000).toFixed(1)}T`; if(b>=1) return `$${b.toFixed(0)}B`; return `$${(b*1000).toFixed(0)}M`; }
 function showToast(type,title,msg){
   const c=document.getElementById('toastContainer'); const t=document.createElement('div');
-  t.className=`toast ${type}`; t.innerHTML=`<div class="toast-title">${title}</div><div class="toast-msg">${msg}</div>`;
-  c.appendChild(t);
+  t.className=`toast ${type}`; t.innerHTML=`<div class="toast-title">${title}</div><div class="toast-msg">${msg}</div>`; c.appendChild(t);
   setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(100%)'; t.style.transition='all 0.3s'; setTimeout(()=>t.remove(),300); },3500);
 }
 
 // ============================================================
-// === PERSISTENCE (Firebase 데이터 백업 및 연동) ===
+// === DATA PERSISTENCE & REFERRAL LOGIC ===
 // ============================================================
 function getSaveData() {
-  return { cash:state.cash, holdings:state.holdings, trades:state.trades.slice(-50),
-           selectedCountry:state.selectedCountry, badges:state.badges, quizLog:state.quizLog,
-           stats:state.stats, nickname:state.nickname, updatedAt:Date.now() };
+  return { cash:state.cash, holdings:state.holdings, trades:state.trades.slice(-50), selectedCountry:state.selectedCountry, badges:state.badges, quizLog:state.quizLog, stats:state.stats, nickname:state.nickname, claimedReferrals:state.claimedReferrals, updatedAt:Date.now() };
 }
-function scheduleSave() {
-  clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(saveState, 1500);
-}
+function scheduleSave() { clearTimeout(saveTimeout); saveTimeout = setTimeout(saveState, 1500); }
 async function saveState() {
-  const data = getSaveData();
-  try { localStorage.setItem('nationvault_save', JSON.stringify(data)); } catch(e){}
-  
+  const data = getSaveData(); try { localStorage.setItem('nationvault_save', JSON.stringify(data)); } catch(e){}
   if (currentUser && window.fb) {
     setSyncStatus('syncing');
     try {
-      // 전체 자산 세이브 데이터 백업
       await window.fb.setDoc(window.fb.doc(window.fb.db,'users',currentUser.uid), data);
-      
-      // 실시간 글로벌 랭킹 보드용 단일 다큐먼트 갱신 연동
-      await window.fb.setDoc(window.fb.doc(window.fb.db, 'rankings', currentUser.uid), {
-        name: currentUser.displayName || '익명의 게스트',
-        return: getMyReturn(),
-        trades: state.stats.totalTrades,
-        updatedAt: Date.now()
-      });
-      
+      await window.fb.setDoc(window.fb.doc(window.fb.db, 'rankings', currentUser.uid), { name: currentUser.displayName || '익명', return: getMyReturn(), trades: state.stats.totalTrades, updatedAt: Date.now() });
       setSyncStatus('synced');
     } catch(e){ console.error('Firestore 저장 실패',e); setSyncStatus('offline'); }
   }
@@ -1509,93 +1235,107 @@ async function saveState() {
 async function loadState() {
   let data = null;
   if (currentUser && window.fb) {
-    try {
-      const snap = await window.fb.getDoc(window.fb.doc(window.fb.db,'users',currentUser.uid));
-      if (snap.exists()) data = snap.data();
-    } catch(e){ console.error('Firestore 로드 실패',e); }
+    try { const snap = await window.fb.getDoc(window.fb.doc(window.fb.db,'users',currentUser.uid)); if (snap.exists()) data = snap.data(); } catch(e){}
   }
-  if (!data) {
-    try { const s=localStorage.getItem('nationvault_save'); if(s) data=JSON.parse(s); } catch(e){}
-  }
+  if (!data) { try { const s=localStorage.getItem('nationvault_save'); if(s) data=JSON.parse(s); } catch(e){} }
   if (data) {
-    state.cash = data.cash ?? 1000000;
-    state.holdings = data.holdings || {};
-    state.trades = data.trades || [];
-    state.selectedCountry = data.selectedCountry || 'USA';
-    state.badges = data.badges || [];
-    state.quizLog = data.quizLog || {};
-    state.stats = data.stats || { wins:0, losses:0, bestTrade:0, worstTrade:0, totalTrades:0 };
-    state.nickname = data.nickname || '';
+    state.cash = data.cash ?? 1000000; state.holdings = data.holdings || {}; state.trades = data.trades || [];
+    state.selectedCountry = data.selectedCountry || 'USA'; state.badges = data.badges || []; state.quizLog = data.quizLog || {};
+    state.stats = data.stats || { wins:0, losses:0, bestTrade:0, worstTrade:0, totalTrades:0 }; state.nickname = data.nickname || '';
+    state.claimedReferrals = data.claimedReferrals || []; // 초대 보상 기록
   }
 }
 function setSyncStatus(status) {
-  const dot=document.getElementById('syncDot'), txt=document.getElementById('syncText');
-  dot.className='sync-dot';
-  if(status==='syncing'){ dot.classList.add('syncing'); txt.textContent='동기화 중...'; }
-  else if(status==='synced'){ txt.textContent='클라우드 동기화됨'; }
-  else if(status==='offline'){ dot.classList.add('offline'); txt.textContent='오프라인'; }
-  else { txt.textContent = currentUser?'클라우드 동기화됨':'로컬 저장'; }
+  const dot=document.getElementById('syncDot'), txt=document.getElementById('syncText'); dot.className='sync-dot';
+  if(status==='syncing'){ dot.classList.add('syncing'); txt.textContent='동기화 중...'; } else if(status==='synced'){ txt.textContent='클라우드 동기화됨'; } else if(status==='offline'){ dot.classList.add('offline'); txt.textContent='오프라인'; } else { txt.textContent = currentUser?'클라우드 동기화됨':'로컬 저장'; }
 }
 
-async function signInWithGoogle() {
-  if (!window.FIREBASE_ENABLED || !window.fb) {
-    showToast('warning','Firebase 미설정','게스트 모드로 진행합니다.');
-    playAsGuest();
-    return;
+// ⭐ 친구 초대 기록 등록 (새 친구 로그인 시 동작)
+async function processPendingReferral(user) {
+  const ref = localStorage.getItem('pendingReferral');
+  if (ref && ref !== user.uid && window.fb) {
+    try {
+      const myRefDoc = await window.fb.getDoc(window.fb.doc(window.fb.db, 'referrals', user.uid));
+      if (!myRefDoc.exists()) {
+        await window.fb.setDoc(window.fb.doc(window.fb.db, 'referrals', user.uid), { inviter: ref, timestamp: Date.now() });
+      }
+      localStorage.removeItem('pendingReferral');
+    } catch(e) { console.error('추천인 기록 실패', e); }
   }
+}
+
+// ⭐ 친구 초대 보상 수령 (나의 초대 링크로 가입한 친구가 있는지 확인)
+async function checkReferralRewards() {
+  if (!currentUser || !window.fb) return;
   try {
-    await window.fb.signInWithPopup(window.fb.auth, window.fb.provider);
+    const q = window.fb.query(window.fb.collection(window.fb.db, 'referrals'), window.fb.where('inviter', '==', currentUser.uid));
+    const snap = await window.fb.getDocs(q);
+    let newClaims = 0;
+    snap.forEach(doc => {
+      // 내 보상 기록에 없는 새로운 친구라면 보상 지급
+      if (!state.claimedReferrals.includes(doc.id)) {
+        state.claimedReferrals.push(doc.id);
+        state.cash += 100000;
+        newClaims++;
+      }
+    });
+    if (newClaims > 0) {
+      showToast('success', '친구 초대 보상!', `${newClaims}명의 친구가 가입하여 총 $${(newClaims * 100000).toLocaleString()} 지급 완료!`);
+      updatePortfolioStats();
+      scheduleSave();
+    }
+  } catch(e) { console.error('보상 수령 실패', e); }
+}
+
+// ============================================================
+// === AUTH ===
+// ============================================================
+async function signInWithGoogle() {
+  if (!window.FIREBASE_ENABLED || !window.fb) { showToast('warning','Firebase 미설정','게스트 모드로 진행합니다.'); playAsGuest(); return; }
+  try {
+    // 🚨 모바일은 리다이렉트 방식으로 팝업 에러 방지, PC는 기존 팝업 유지
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      await window.fb.signInWithRedirect(window.fb.auth, window.fb.provider);
+    } else {
+      await window.fb.signInWithPopup(window.fb.auth, window.fb.provider);
+    }
   } catch(e){ console.error(e); showToast('error','로그인 실패',e.message); }
 }
 window.onUserLogin = async function(user) {
-  currentUser = user;
-  document.getElementById('userName').textContent = user.displayName || '사용자';
+  currentUser = user; document.getElementById('userName').textContent = user.displayName || '사용자';
   if (user.photoURL) document.getElementById('userAvatar').innerHTML = `<img src="${user.photoURL}" alt="">`;
   setSyncStatus('synced');
+  
+  await processPendingReferral(user); // 초대받은 유저라면 기록 남기기
   await loadState();
+  await checkReferralRewards(); // 내가 초대한 친구가 있는지 확인 후 돈 받기
+  
   startGame();
 };
-async function signOutUser() {
-  if (window.fb) await window.fb.signOut(window.fb.auth);
-  location.reload();
-}
-function playAsGuest() {
-  currentUser = null;
-  document.getElementById('userName').textContent = '게스트';
-  loadState().then(startGame);
-}
+async function signOutUser() { if (window.fb) await window.fb.signOut(window.fb.auth); location.reload(); }
+function playAsGuest() { currentUser = null; document.getElementById('userName').textContent = '게스트'; loadState().then(startGame); }
 
 let gameStarted = false;
 function startGame() {
-  if (gameStarted) return;
-  gameStarted = true;
+  if (gameStarted) return; gameStarted = true;
   document.getElementById('loginOverlay').classList.add('hidden');
-  setSyncStatus();
-  renderCountryList();
-  renderTickerTape();
-  renderNews();
-  selectCountry(state.selectedCountry);
-  updatePortfolioStats();
-  switchTradeTab('BUY');
-
-  updateClock();
-  setInterval(updateClock, 1000);
-  setInterval(liveLoop, 1000);  
-
-  checkBadges();  
-
-  document.querySelectorAll('.modal-backdrop').forEach(bd => {
-    bd.addEventListener('click', e => { if (e.target === bd) bd.classList.remove('active'); });
-  });
+  setSyncStatus(); renderCountryList(); renderTickerTape(); renderNews(); selectCountry(state.selectedCountry); updatePortfolioStats(); switchTradeTab('BUY');
+  updateClock(); setInterval(updateClock, 1000); setInterval(liveLoop, 1000); checkBadges(); 
+  document.querySelectorAll('.modal-backdrop').forEach(bd => { bd.addEventListener('click', e => { if (e.target === bd) bd.classList.remove('active'); }); });
 }
 
 async function bootstrap() {
   await loadGameData();
-  if (window.FIREBASE_ENABLED) {
-    document.getElementById('loginNote').textContent = '구글 로그인 시 실시간 글로벌 랭킹 순위표에 자동 랭크됩니다.';
+  
+  // 리다이렉트 로그인 후 돌아왔을 때 처리 (모바일용)
+  if (window.FIREBASE_ENABLED && window.fb) {
+    try {
+      const result = await window.fb.getRedirectResult(window.fb.auth);
+      if (result && result.user) { window.onUserLogin(result.user); }
+    } catch(e) { console.error('Redirect login error', e); }
   }
 }
-
 window.addEventListener('firebase-ready', bootstrap);
 setTimeout(() => { if (COUNTRIES.length === 0) bootstrap(); }, 2000);
 

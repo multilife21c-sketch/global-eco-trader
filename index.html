@@ -63,6 +63,14 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   font-weight:700; letter-spacing:1.5px; cursor:pointer; transition:opacity .2s; }
 .onboard-start:hover { opacity:0.9; }
 .onboard-start:disabled { opacity:0.4; cursor:not-allowed; }
+.google-login-btn { width:100%; padding:14px; background:#fff; border:none; border-radius:10px;
+  color:#1a1a1a; font-family:var(--font-kr); font-size:14px; font-weight:600; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:10px; transition:opacity .2s; }
+.google-login-btn:hover { opacity:0.9; }
+.guest-login-btn { width:100%; margin-top:10px; padding:12px; background:transparent;
+  border:1px solid var(--border2); border-radius:10px; color:var(--txt2);
+  font-family:var(--font-kr); font-size:12px; cursor:pointer; transition:all .2s; }
+.guest-login-btn:hover { color:var(--txt1); border-color:var(--border2); }
 .flag-selector { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-top:10px; max-height:156px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border2) transparent; background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:8px; }
 .flag-selector::-webkit-scrollbar{width:4px;} .flag-selector::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 .flag-opt { padding:8px 4px; border:2px solid var(--border); border-radius:8px; background:var(--bg2);
@@ -96,6 +104,9 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
 .mn-gdp { font-family:var(--font-mono); font-size:10px; color:var(--txt2); }
 .mn-rank { font-family:var(--font-mono); font-size:11px; color:var(--amber); font-weight:700; }
 .top-clock { font-family:var(--font-mono); font-size:11px; color:var(--txt3); }
+.account-btn { width:34px; height:34px; border-radius:50%; background:var(--bg2); border:1px solid var(--border2);
+  color:var(--txt1); font-size:15px; cursor:pointer; flex-shrink:0; }
+.account-btn:hover { background:var(--bg3); }
 
 /* ===== TICKER ===== */
 .ticker { height:30px; background:var(--bg1); border-bottom:1px solid var(--border);
@@ -154,7 +165,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
 .center-panel { background:var(--bg0); border-left:1px solid var(--border); }
 
 /* CHART VIEW */
-.chart-view { display:flex; flex-direction:column; height:100%; }
+.chart-view { display:none; flex-direction:column; height:100%; }
 .chart-hdr { padding:12px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
 .ch-left { display:flex; align-items:center; gap:12px; }
 .ch-flag { font-size:28px; }
@@ -210,8 +221,8 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
 
 /* POLICY TABS */
 .policy-tabs { display:flex; gap:0; border-bottom:1px solid var(--border); flex-shrink:0; }
-.pt-btn { flex:1; padding:9px 4px; background:transparent; border:none; border-bottom:2px solid transparent;
-  color:var(--txt2); font-family:var(--font-kr); font-size:11px; cursor:pointer; text-align:center; }
+.pt-btn { flex:1; padding:9px 2px; background:transparent; border:none; border-bottom:2px solid transparent;
+  color:var(--txt2); font-family:var(--font-kr); font-size:10.5px; cursor:pointer; text-align:center; white-space:nowrap; }
 .pt-btn.act { color:var(--amber); border-bottom-color:var(--amber); }
 
 .policy-panels { flex:1; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border2) transparent; }
@@ -409,23 +420,37 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
 
 <!-- ===== ONBOARDING ===== -->
 <div class="onboard-overlay" id="onboardOverlay">
-  <div class="onboard-card">
+  <!-- STEP 1: Login -->
+  <div class="onboard-card" id="loginCard">
     <div class="onboard-logo">NATION RISE</div>
-    <div class="onboard-sub">🌐 가상 세계 경제 시뮬레이션 — 내 나라를 세계 최강으로!</div>
+    <div class="onboard-sub">🌐 글로벌 경제 시뮬레이션 — 내 나라를 세계 최강으로!</div>
     <div class="onboard-steps">
       <div class="onboard-step">
         <div class="step-num">1</div>
-        <div class="step-text"><strong>나라 이름과 국기를 선택</strong>하세요. 당신만의 고유한 국가가 탄생합니다.</div>
+        <div class="step-text"><strong>나만의 국가를 건국</strong>하고 GDP 꼴찌에서 시작합니다.</div>
       </div>
       <div class="onboard-step">
         <div class="step-num">2</div>
-        <div class="step-text"><strong>GDP 꼴찌에서 시작</strong>! 정책, 외교, 기술 투자 등 다양한 행동으로 GDP를 높이세요.</div>
+        <div class="step-text"><strong>경제·기술·외교·금융</strong> 정책과 주식·국채 투자로 GDP를 키우세요.</div>
       </div>
       <div class="onboard-step">
         <div class="step-num">3</div>
-        <div class="step-text"><strong>세계 랭킹 1위</strong>를 목표로! 가상 세계의 뉴스와 이벤트에 대응하며 경제력을 키우세요.</div>
+        <div class="step-text"><strong>전 세계 플레이어들과 GDP 랭킹 경쟁!</strong> 방심하면 GDP가 떨어질 수도 있습니다.</div>
       </div>
     </div>
+    <button class="google-login-btn" id="googleLoginBtn" onclick="signInWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Google 계정으로 로그인
+    </button>
+    <button class="guest-login-btn" onclick="playAsGuest()">게스트로 플레이 (이 기기에만 저장)</button>
+    <div class="onboard-hint" style="text-align:center;margin-top:14px;" id="loginNote">
+      ※ Google 로그인 시 모든 기기에서 진행 상황이 동기화되고<br>전 세계 플레이어들과 랭킹을 겨룰 수 있습니다.
+    </div>
+  </div>
+  <!-- STEP 2: Nation Creation -->
+  <div class="onboard-card" id="createCard" style="display:none;">
+    <div class="onboard-logo">건국하기</div>
+    <div class="onboard-sub" id="createWelcome">🎉 환영합니다! 당신의 국가를 만들어보세요.</div>
     <div class="onboard-field" style="margin-bottom:12px;">
       <label>🏳️ 국기 선택</label>
       <div class="flag-selector" id="flagSelector"></div>
@@ -438,6 +463,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
     <button class="onboard-start" id="onboardStartBtn" onclick="createMyNation()" disabled>🚀 내 나라 건국하기</button>
   </div>
 </div>
+
 
 <!-- ===== TOP BAR ===== -->
 <div class="topbar">
@@ -460,6 +486,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
       </div>
       <div class="mn-rank" id="mnRank">#—</div>
     </div>
+    <button class="account-btn" id="accountBtn" onclick="openAccount()" title="계정">👤</button>
   </div>
 </div>
 <div class="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
@@ -515,7 +542,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
           <button class="tf-btn" data-tf="1440" onclick="setTF(1440)">24H</button>
           <button class="tf-btn" data-tf="0" onclick="setTF(0)">ALL</button>
         </div>
-        <div class="chart-badge" id="virtualWorldBadge">🌐 가상 세계 시뮬레이션</div>
+        <div class="chart-badge" id="virtualWorldBadge">📊 실시간 GDP</div>
       </div>
       <div class="chart-area"><canvas id="gdpChart"></canvas></div>
       <div class="chart-stats">
@@ -527,8 +554,8 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
       </div>
       <!-- News strip -->
       <div class="ph" style="flex-shrink:0;">
-        <div class="ph-title">📡 가상 세계 뉴스</div>
-        <div class="ph-title" style="color:var(--txt3);font-size:9px;">※ 이 게임의 가상 세계에서 발생하는 이벤트입니다</div>
+        <div class="ph-title">📡 글로벌 경제 뉴스</div>
+        <div class="ph-title" style="color:var(--txt3);font-size:9px;">실시간 글로벌 경제 동향</div>
       </div>
       <div class="news-panel" id="newsPanel"></div>
     </div>
@@ -536,7 +563,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
     <div class="map-view" id="mapView">
       <div class="map-hdr">
         <div class="map-title">🌐 WORLD GDP MAP</div>
-        <div style="font-size:10px;color:var(--txt3);font-family:var(--font-mono);">※ 가상 세계 경제 지도</div>
+        <div style="font-size:10px;color:var(--txt3);font-family:var(--font-mono);">세계 경제 지도</div>
         <div class="map-view-toggle">
           <button class="mvt-btn act" id="mvtGlobe" onclick="setMapMode('globe')">🌍 지구본</button>
           <button class="mvt-btn" id="mvtFlat" onclick="setMapMode('flat')">🗺️ 평면</button>
@@ -581,16 +608,26 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
       <div class="mnc-stats">
         <div class="mns"><div class="mns-lbl">GDP 총액</div><div class="mns-val" style="color:var(--amber);" id="mnsGDP">$0</div></div>
         <div class="mns"><div class="mns-lbl">성장률</div><div class="mns-val" id="mnsGrowth" style="color:var(--green);">+0.00%</div></div>
-        <div class="mns"><div class="mns-lbl">정책 포인트</div><div class="mns-val" style="color:var(--cyan);" id="mnsPP">0 AP</div></div>
-        <div class="mns"><div class="mns-lbl">경제 체력</div><div class="mns-val" id="mnsHealth">💚 양호</div></div>
+        <div class="mns"><div class="mns-lbl">💰 국고</div><div class="mns-val" style="color:var(--green);" id="mnsTreasury">$0</div></div>
+        <div class="mns"><div class="mns-lbl">📉 국가부채</div><div class="mns-val" style="color:var(--red);" id="mnsDebt">$0</div></div>
+        <div class="mns"><div class="mns-lbl">⭐ 신용등급</div><div class="mns-val" style="color:var(--cyan);" id="mnsCredit">BBB</div></div>
+        <div class="mns"><div class="mns-lbl">❤️ 경제 체력</div><div class="mns-val" id="mnsHealth">💚 양호</div></div>
+      </div>
+      <div class="gdp-bar-wrap" style="margin-bottom:8px;">
+        <div class="gdp-bar-lbl">
+          <span>❤️ 경제 체력 (방치 시 GDP 하락!)</span>
+          <span id="healthPct">100%</span>
+        </div>
+        <div class="gdp-bar-bg"><div class="gdp-bar-fill" id="healthBarFill" style="width:100%;background:linear-gradient(90deg,var(--red),var(--green));"></div></div>
       </div>
       <div class="gdp-bar-wrap">
         <div class="gdp-bar-lbl">
-          <span>GDP 달성률</span>
+          <span>🏆 1위 대비 GDP</span>
           <span id="gdpPct">0%</span>
         </div>
         <div class="gdp-bar-bg"><div class="gdp-bar-fill" id="gdpBarFill" style="width:0%"></div></div>
       </div>
+      <button onclick="openStockMarket()" style="width:100%;margin-top:10px;padding:10px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.3);border-radius:8px;color:var(--cyan);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">📊 글로벌 주식시장 (다른 나라에 투자)</button>
     </div>
     <!-- Action Point bar -->
     <div class="ap-bar">
@@ -602,19 +639,17 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
     </div>
     <!-- Policy Tabs -->
     <div class="policy-tabs">
-      <button class="pt-btn act" onclick="switchPol('economy')">💰 경제</button>
-      <button class="pt-btn" onclick="switchPol('tech')">🔬 기술</button>
-      <button class="pt-btn" onclick="switchPol('diplomacy')">🤝 외교</button>
-      <button class="pt-btn" onclick="switchPol('society')">🏙️ 사회</button>
+      <button class="pt-btn act" onclick="switchPol('economy')">💰경제</button>
+      <button class="pt-btn" onclick="switchPol('finance')">💵금융</button>
+      <button class="pt-btn" onclick="switchPol('tech')">🔬기술</button>
+      <button class="pt-btn" onclick="switchPol('diplomacy')">🤝외교</button>
+      <button class="pt-btn" onclick="switchPol('society')">🏙️사회</button>
     </div>
     <div class="policy-panels" id="policyPanels">
-      <!-- Economy -->
       <div class="policy-panel act" id="pol-economy"></div>
-      <!-- Tech -->
+      <div class="policy-panel" id="pol-finance"></div>
       <div class="policy-panel" id="pol-tech"></div>
-      <!-- Diplomacy -->
       <div class="policy-panel" id="pol-diplomacy"></div>
-      <!-- Society -->
       <div class="policy-panel" id="pol-society"></div>
     </div>
   </div>
@@ -682,6 +717,22 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   </div>
 </div>
 
+<!-- Account -->
+<div class="modal-bd" id="accountModal">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mh-title">👤 내 계정</div><button class="mh-close" onclick="closeModal('accountModal')">×</button></div>
+    <div class="mb" id="accountBody"></div>
+  </div>
+</div>
+
+<!-- Stock Market -->
+<div class="modal-bd" id="stockModal">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">📊 글로벌 주식시장</div><button class="mh-close" onclick="closeModal('stockModal')">×</button></div>
+    <div class="mb" id="stockBody"></div>
+  </div>
+</div>
+
 <div class="toast-wrap" id="toastWrap"></div>
 
 <!-- ===== FIREBASE ===== -->
@@ -698,11 +749,20 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   if (window.FIREBASE_ENABLED) {
     try {
       const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
-      const { getFirestore, doc, getDoc, setDoc, collection, getDocs } =
+      const { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } =
+        await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+      const { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit } =
         await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
-      window.fb = { db, doc, getDoc, setDoc, collection, getDocs };
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+      window.fb = { db, auth, provider, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit,
+        signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged };
+      // Handle mobile redirect result
+      getRedirectResult(auth).catch(e=>console.error('redirect result error', e));
+      // Auth state listener
+      onAuthStateChanged(auth, (user)=>{ if (window.onAuthChange) window.onAuthChange(user); });
     } catch(e) { console.error('Firebase 초기화 실패', e); window.FIREBASE_ENABLED = false; }
   }
   window.dispatchEvent(new Event('firebase-ready'));
@@ -888,27 +948,27 @@ const QUIZ_DATA = [
   {q:"환율이 오르면(자국 화폐 약세) 유리한 쪽은?",options:["수입 기업","수출 기업","둘 다 불리","관계 없음"],answer:1,explain:"자국 화폐가 싸지면 수출품 가격 경쟁력이 올라 수출 기업에 유리합니다."},
 ];
 
-// 가상 세계 뉴스 템플릿 (명확하게 "가상 세계" 컨셉)
+// 글로벌 경제 뉴스 템플릿
 const VIRTUAL_NEWS_POOL = [
-  {title:"{c} 가상 세계 정상회의 주재, 외교력 급상승",body:"{c}이 이번 가상 세계 정상회의를 성공적으로 주재하며 국제 무대에서 큰 영향력을 행사했습니다. 가상 세계의 주요국들이 모여 경제 협력 방안을 논의했으며, 특히 {c}의 외교 전략이 높은 평가를 받았습니다.",effect:0.8,type:'pos',emoji:'🌐'},
-  {title:"{c} 첨단 AI 기술 도시 건설 착공",body:"가상 세계에서 {c}이 미래형 AI 연구 도시 건설에 돌입했습니다. 이 도시는 인공지능, 로봇공학, 양자컴퓨팅의 중심지가 될 예정으로, 전 세계 기업들의 투자가 몰리고 있습니다.",effect:1.0,type:'pos',emoji:'🤖'},
-  {title:"{c} 우주 개발 프로그램 대성공",body:"{c}의 국가 우주청이 가상 세계 최초의 달 기지 건설에 성공했다고 발표했습니다. 이는 {c}의 기술력을 세계에 알리는 역사적인 사건으로, 첨단 산업 분야의 신뢰도가 크게 높아졌습니다.",effect:1.2,type:'pos',emoji:'🚀'},
-  {title:"{c} 청정에너지 100% 달성 선언",body:"{c} 정부가 가상 세계 최초로 국가 에너지의 100%를 재생에너지로 충당하는 데 성공했다고 발표했습니다. 이 성과는 다른 국가들의 모범이 되며 환경 친화적 투자 유입으로 이어지고 있습니다.",effect:0.9,type:'pos',emoji:'🌱'},
-  {title:"{c} 교육 혁명 — 세계 최고 인재 양성 센터 지정",body:"가상 세계 교육 기관 평가에서 {c}의 교육 시스템이 세계 최고 수준으로 선정됐습니다. 우수한 인력 풀은 기업 유치에 직접적인 영향을 미치며 장기 경제 성장의 핵심 동력으로 꼽힙니다.",effect:0.7,type:'pos',emoji:'🎓'},
-  {title:"{c} 가상 세계 무역 박람회 최대 수출 기록",body:"{c}이 이번 가상 세계 무역 박람회에서 역대 최대 수출 계약을 성사시켰습니다. 기술 제품과 문화 콘텐츠를 중심으로 수십 개국과 협약을 체결하며 무역 흑자 폭이 크게 늘었습니다.",effect:0.85,type:'pos',emoji:'📦'},
-  {title:"{c} 관광 허브로 급부상, 외화 수입 폭증",body:"가상 세계의 여행자들 사이에서 {c}이 새로운 관광 명소로 주목받고 있습니다. 독특한 문화와 첨단 인프라를 갖춘 {c}으로의 관광객 유입이 급증하며 서비스 산업 전반이 활기를 띠고 있습니다.",effect:0.65,type:'pos',emoji:'✈️'},
+  {title:"{c} 글로벌 정상회의 주재, 외교력 급상승",body:"{c}이 이번 글로벌 정상회의를 성공적으로 주재하며 국제 무대에서 큰 영향력을 행사했습니다. 세계 주요국들이 모여 경제 협력 방안을 논의했으며, 특히 {c}의 외교 전략이 높은 평가를 받았습니다.",effect:0.8,type:'pos',emoji:'🌐'},
+  {title:"{c} 첨단 AI 기술 도시 건설 착공",body:"{c}이 미래형 AI 연구 도시 건설에 돌입했습니다. 이 도시는 인공지능, 로봇공학, 양자컴퓨팅의 중심지가 될 예정으로, 전 세계 기업들의 투자가 몰리고 있습니다.",effect:1.0,type:'pos',emoji:'🤖'},
+  {title:"{c} 우주 개발 프로그램 대성공",body:"{c}의 국가 우주청이 세계 최초의 달 기지 건설에 성공했다고 발표했습니다. 이는 {c}의 기술력을 세계에 알리는 역사적인 사건으로, 첨단 산업 분야의 신뢰도가 크게 높아졌습니다.",effect:1.2,type:'pos',emoji:'🚀'},
+  {title:"{c} 청정에너지 100% 달성 선언",body:"{c} 정부가 세계 최초로 국가 에너지의 100%를 재생에너지로 충당하는 데 성공했다고 발표했습니다. 이 성과는 다른 국가들의 모범이 되며 환경 친화적 투자 유입으로 이어지고 있습니다.",effect:0.9,type:'pos',emoji:'🌱'},
+  {title:"{c} 교육 혁명 — 세계 최고 인재 양성 센터 지정",body:"국제 교육 기관 평가에서 {c}의 교육 시스템이 세계 최고 수준으로 선정됐습니다. 우수한 인력 풀은 기업 유치에 직접적인 영향을 미치며 장기 경제 성장의 핵심 동력으로 꼽힙니다.",effect:0.7,type:'pos',emoji:'🎓'},
+  {title:"{c} 국제 무역 박람회 최대 수출 기록",body:"{c}이 이번 국제 무역 박람회에서 역대 최대 수출 계약을 성사시켰습니다. 기술 제품과 문화 콘텐츠를 중심으로 수십 개국과 협약을 체결하며 무역 흑자 폭이 크게 늘었습니다.",effect:0.85,type:'pos',emoji:'📦'},
+  {title:"{c} 관광 허브로 급부상, 외화 수입 폭증",body:"전 세계 여행자들 사이에서 {c}이 새로운 관광 명소로 주목받고 있습니다. 독특한 문화와 첨단 인프라를 갖춘 {c}으로의 관광객 유입이 급증하며 서비스 산업 전반이 활기를 띠고 있습니다.",effect:0.65,type:'pos',emoji:'✈️'},
   {title:"{c} 중앙은행 금리 인하, 투자 붐 예고",body:"{c} 중앙은행이 기준금리를 대폭 인하했습니다. 이 결정으로 기업 대출 비용이 낮아지고 가계 소비가 늘어날 것으로 기대됩니다. 외국인 투자자들도 {c} 시장에 주목하기 시작했습니다.",effect:0.75,type:'pos',emoji:'🏦'},
-  {title:"{c} 신기술 특허 가상 세계 1위 등극",body:"가상 세계 지적재산권 기구 발표에 따르면 {c}이 올해 가장 많은 첨단 기술 특허를 출원한 국가로 선정됐습니다. 이는 {c}의 연구개발 투자가 성과를 내고 있다는 강력한 신호로 해석됩니다.",effect:0.95,type:'pos',emoji:'💡'},
-  {title:"{c} 가상 세계 금융 허브 지정",body:"가상 세계 금융기관 연합이 {c}을 아시아-태평양 지역 금융 허브로 공식 지정했습니다. 이로 인해 수백 개의 글로벌 금융회사들이 {c}에 지역 본부를 설립할 계획을 발표했습니다.",effect:1.1,type:'pos',emoji:'🏙️'},
-  {title:"{c} 정치 불안으로 경제 신뢰도 하락",body:"가상 세계에서 {c} 내부 정치 갈등이 심화되며 투자자들의 불안감이 커지고 있습니다. 여러 다국적 기업들이 {c} 내 투자 계획을 보류하거나 축소했다는 소식이 전해졌습니다.",effect:-0.7,type:'neg',emoji:'⚠️'},
-  {title:"{c} 대규모 자연재해 — 경제 피해 심각",body:"가상 세계 시뮬레이션에서 {c}에 대규모 자연재해가 발생해 인프라에 막대한 피해가 생겼습니다. 복구에 수년이 걸릴 것으로 예상되며 단기 경제 충격이 불가피한 상황입니다.",effect:-0.9,type:'neg',emoji:'🌊'},
-  {title:"{c} 신용등급 강등 — 재정 건전성 우려",body:"가상 세계 신용평가 기관이 {c}의 국가 신용등급을 한 단계 하향 조정했습니다. 급증하는 국가 부채와 재정 적자가 주요 원인으로 꼽혔으며, 외국 자본의 이탈이 우려됩니다.",effect:-1.0,type:'neg',emoji:'📉'},
-  {title:"{c} 가상 세계 무역 분쟁 휘말려",body:"{c}이 이웃 국가들과의 무역 분쟁에 휘말렸습니다. 관세 전쟁이 본격화되면 수출 산업이 직격탄을 맞을 것으로 우려됩니다. 양측 모두 협상 테이블에 앉겠다는 의지를 밝히고 있습니다.",effect:-0.6,type:'neg',emoji:'🤝'},
-  {title:"{c} 인플레이션 급등, 생활물가 비상",body:"가상 세계 통계청 발표에 따르면 {c}의 소비자물가지수가 급등하며 국민들의 실질 구매력이 빠르게 감소하고 있습니다. 중앙은행이 긴급 대책 회의를 소집했습니다.",effect:-0.75,type:'neg',emoji:'💸'},
-  {title:"{c} 첨단 기업 이전 발표 — 인재 유출 우려",body:"가상 세계의 주요 첨단 기업들이 더 나은 사업 환경을 찾아 {c}을 떠나겠다고 선언했습니다. 이는 {c}의 경쟁력 약화 신호로 받아들여지며 관련 정책 재검토가 시급하다는 목소리가 높아지고 있습니다.",effect:-0.8,type:'neg',emoji:'🏃'},
-  {title:"{c} 가상 세계 경제 성장률 예측 상향",body:"주요 가상 세계 경제 연구소들이 {c}의 올해 GDP 성장률 예측을 일제히 상향 조정했습니다. 탄탄한 내수와 수출 호조가 맞물리며 경제 전반에 긍정적인 모멘텀이 형성되고 있습니다.",effect:0.6,type:'neu',emoji:'📊'},
-  {title:"가상 세계 에너지 재편 — {c} 전략적 위치 확보",body:"가상 세계의 에너지 구조가 화석연료에서 신재생에너지로 급격히 전환되는 가운데, {c}이 핵심 광물 및 에너지 기술에서 전략적 우위를 점했다는 평가를 받고 있습니다.",effect:0.5,type:'neu',emoji:'⚡'},
-  {title:"{c} 가상 세계 인프라 10개년 계획 공개",body:"{c} 정부가 향후 10년간 도로, 항만, 데이터센터 등 핵심 인프라에 대규모 투자를 단행하는 계획을 발표했습니다. 중장기 경쟁력 강화에 기여할 것으로 전망됩니다.",effect:0.55,type:'neu',emoji:'🏗️'},
+  {title:"{c} 신기술 특허 세계 1위 등극",body:"국제 지적재산권 기구 발표에 따르면 {c}이 올해 가장 많은 첨단 기술 특허를 출원한 국가로 선정됐습니다. 이는 {c}의 연구개발 투자가 성과를 내고 있다는 강력한 신호로 해석됩니다.",effect:0.95,type:'pos',emoji:'💡'},
+  {title:"{c} 글로벌 금융 허브 지정",body:"국제 금융기관 연합이 {c}을 아시아-태평양 지역 금융 허브로 공식 지정했습니다. 이로 인해 수백 개의 글로벌 금융회사들이 {c}에 지역 본부를 설립할 계획을 발표했습니다.",effect:1.1,type:'pos',emoji:'🏙️'},
+  {title:"{c} 정치 불안으로 경제 신뢰도 하락",body:"{c} 내부 정치 갈등이 심화되며 투자자들의 불안감이 커지고 있습니다. 여러 다국적 기업들이 {c} 내 투자 계획을 보류하거나 축소했다는 소식이 전해졌습니다.",effect:-0.7,type:'neg',emoji:'⚠️'},
+  {title:"{c} 대규모 자연재해 — 경제 피해 심각",body:"{c}에 대규모 자연재해가 발생해 인프라에 막대한 피해가 생겼습니다. 복구에 수년이 걸릴 것으로 예상되며 단기 경제 충격이 불가피한 상황입니다.",effect:-0.9,type:'neg',emoji:'🌊'},
+  {title:"{c} 신용등급 강등 — 재정 건전성 우려",body:"국제 신용평가 기관이 {c}의 국가 신용등급을 한 단계 하향 조정했습니다. 급증하는 국가 부채와 재정 적자가 주요 원인으로 꼽혔으며, 외국 자본의 이탈이 우려됩니다.",effect:-1.0,type:'neg',emoji:'📉'},
+  {title:"{c} 국제 무역 분쟁 휘말려",body:"{c}이 이웃 국가들과의 무역 분쟁에 휘말렸습니다. 관세 전쟁이 본격화되면 수출 산업이 직격탄을 맞을 것으로 우려됩니다. 양측 모두 협상 테이블에 앉겠다는 의지를 밝히고 있습니다.",effect:-0.6,type:'neg',emoji:'🤝'},
+  {title:"{c} 인플레이션 급등, 생활물가 비상",body:"국가 통계청 발표에 따르면 {c}의 소비자물가지수가 급등하며 국민들의 실질 구매력이 빠르게 감소하고 있습니다. 중앙은행이 긴급 대책 회의를 소집했습니다.",effect:-0.75,type:'neg',emoji:'💸'},
+  {title:"{c} 첨단 기업 이전 발표 — 인재 유출 우려",body:"세계 주요 첨단 기업들이 더 나은 사업 환경을 찾아 {c}을 떠나겠다고 선언했습니다. 이는 {c}의 경쟁력 약화 신호로 받아들여지며 관련 정책 재검토가 시급하다는 목소리가 높아지고 있습니다.",effect:-0.8,type:'neg',emoji:'🏃'},
+  {title:"{c} 경제 성장률 예측 상향",body:"주요 글로벌 경제 연구소들이 {c}의 올해 GDP 성장률 예측을 일제히 상향 조정했습니다. 탄탄한 내수와 수출 호조가 맞물리며 경제 전반에 긍정적인 모멘텀이 형성되고 있습니다.",effect:0.6,type:'neu',emoji:'📊'},
+  {title:"글로벌 에너지 재편 — {c} 전략적 위치 확보",body:"세계 에너지 구조가 화석연료에서 신재생에너지로 급격히 전환되는 가운데, {c}이 핵심 광물 및 에너지 기술에서 전략적 우위를 점했다는 평가를 받고 있습니다.",effect:0.5,type:'neu',emoji:'⚡'},
+  {title:"{c} 국가 인프라 10개년 계획 공개",body:"{c} 정부가 향후 10년간 도로, 항만, 데이터센터 등 핵심 인프라에 대규모 투자를 단행하는 계획을 발표했습니다. 중장기 경쟁력 강화에 기여할 것으로 전망됩니다.",effect:0.55,type:'neu',emoji:'🏗️'},
 ];
 
 // ============================================================
@@ -916,36 +976,44 @@ const VIRTUAL_NEWS_POOL = [
 // ============================================================
 const ACTIONS = {
   economy: [
-    {id:'e1',icon:'💰',title:'금리 인하 정책',cost:2,gdpBoost:1.5,desc:'중앙은행 기준금리를 낮춰 기업 투자와 소비를 촉진합니다.',effects:['GDP +1.5%','성장률 향상'],cooldown:60,terms:['금리','중앙은행']},
-    {id:'e2',icon:'📈',title:'수출 촉진 패키지',cost:3,gdpBoost:2.0,desc:'전략 수출 품목에 대한 보조금과 세금 혜택을 제공합니다.',effects:['GDP +2.0%','무역흑자'],cooldown:90,terms:['무역수지']},
-    {id:'e3',icon:'🏗️',title:'인프라 투자 확대',cost:4,gdpBoost:2.8,desc:'도로, 항만, 데이터센터 등 핵심 인프라를 대규모로 구축합니다.',effects:['GDP +2.8%','장기성장 기반'],cooldown:120,terms:['GDP성장률']},
-    {id:'e4',icon:'🏦',title:'재정 건전화',cost:2,gdpBoost:1.2,desc:'국가 부채를 줄이고 신용등급을 개선합니다.',effects:['신용등급 개선','외국인투자 유치'],cooldown:60,terms:['신용등급']},
-    {id:'e5',icon:'💹',title:'자유무역협정 체결',cost:5,gdpBoost:3.5,desc:'주요 교역국과 FTA를 체결해 무역 장벽을 제거합니다.',effects:['GDP +3.5%','수출 폭증'],cooldown:180,terms:['무역수지','환율']},
-    {id:'e6',icon:'🪙',title:'통화 안정화',cost:2,gdpBoost:1.0,desc:'환율을 안정시켜 수입 물가를 낮추고 인플레이션을 억제합니다.',effects:['물가 안정','화폐가치 유지'],cooldown:60,terms:['환율','인플레이션']},
+    {id:'e1',icon:'💰',title:'금리 인하 정책',cost:2,fundCost:1,gdpBoost:1.5,healthBoost:6,desc:'중앙은행 기준금리를 낮춰 기업 투자와 소비를 촉진합니다.',effects:['GDP +1.5%','경제체력 +6'],cooldown:60,terms:['금리','중앙은행']},
+    {id:'e2',icon:'📈',title:'수출 촉진 패키지',cost:3,fundCost:3,gdpBoost:2.0,healthBoost:8,desc:'전략 수출 품목에 대한 보조금과 세금 혜택을 제공합니다.',effects:['GDP +2.0%','무역흑자'],cooldown:90,terms:['무역수지']},
+    {id:'e3',icon:'🏗️',title:'인프라 투자 확대',cost:4,fundCost:6,gdpBoost:2.8,healthBoost:10,desc:'도로, 항만, 데이터센터 등 핵심 인프라를 대규모로 구축합니다.',effects:['GDP +2.8%','장기성장 기반'],cooldown:120,terms:['GDP성장률']},
+    {id:'e4',icon:'🏦',title:'재정 건전화',cost:2,fundCost:2,gdpBoost:1.0,healthBoost:5,creditBoost:1,desc:'국가 부채를 줄이고 신용등급을 개선합니다.',effects:['신용등급 +1','외국인투자 유치'],cooldown:90,terms:['신용등급']},
+    {id:'e5',icon:'💹',title:'자유무역협정 체결',cost:5,fundCost:8,gdpBoost:3.5,healthBoost:12,desc:'주요 교역국과 FTA를 체결해 무역 장벽을 제거합니다.',effects:['GDP +3.5%','수출 폭증'],cooldown:180,terms:['무역수지','환율']},
+    {id:'e6',icon:'🪙',title:'통화 안정화',cost:2,fundCost:2,gdpBoost:1.0,healthBoost:6,desc:'환율을 안정시켜 수입 물가를 낮추고 인플레이션을 억제합니다.',effects:['물가 안정','경제체력 +6'],cooldown:60,terms:['환율','인플레이션']},
+  ],
+  finance: [
+    {id:'f1',icon:'🪙',title:'국채 발행 (소액)',cost:1,fundCost:0,gdpBoost:0,healthBoost:0,special:'bond_small',desc:'국채를 발행해 국고에 +$10B 자금을 확보합니다. 단, 부채가 늘어납니다.',effects:['국고 +$10B','부채 +$10B'],cooldown:30,terms:['신용등급']},
+    {id:'f2',icon:'💵',title:'국채 발행 (대규모)',cost:2,fundCost:0,gdpBoost:0,healthBoost:0,special:'bond_large',desc:'대규모 국채로 +$30B를 조달합니다. 부채 부담이 커지니 주의하세요.',effects:['국고 +$30B','부채 +$30B'],cooldown:60,terms:['신용등급']},
+    {id:'f3',icon:'✅',title:'부채 상환',cost:2,fundCost:15,gdpBoost:0,healthBoost:4,creditBoost:1,special:'repay',desc:'국고로 부채를 갚아 이자 부담을 줄이고 신용등급을 올립니다.',effects:['부채 -$15B','신용등급 +1'],cooldown:60,terms:['신용등급']},
+    {id:'f4',icon:'🏛️',title:'외국인 투자 유치',cost:3,fundCost:0,gdpBoost:1.5,healthBoost:7,special:'fdi',desc:'해외 자본을 유치해 GDP를 높이고 국고를 채웁니다.',effects:['GDP +1.5%','국고 +$8B'],cooldown:90,terms:[]},
+    {id:'f5',icon:'💸',title:'세금 감면 (경기부양)',cost:2,fundCost:5,gdpBoost:2.2,healthBoost:9,special:'taxcut',desc:'세금을 낮춰 소비와 투자를 자극합니다. 단기 국고는 줄지만 GDP가 오릅니다.',effects:['GDP +2.2%','경제체력 +9'],cooldown:90,terms:['금리']},
+    {id:'f6',icon:'🏆',title:'국부펀드 운용',cost:4,fundCost:20,gdpBoost:0,healthBoost:5,special:'wealthfund',desc:'국고 $20B를 투자해 향후 큰 수익을 노립니다. 운에 따라 결과가 달라집니다.',effects:['투자 수익 (확률)','경제체력 +5'],cooldown:120,terms:['포트폴리오']},
   ],
   tech: [
-    {id:'t1',icon:'🔬',title:'R&D 예산 2배 증액',cost:3,gdpBoost:2.2,desc:'국가 연구개발 예산을 대폭 늘려 기술 혁신을 가속합니다.',effects:['GDP +2.2%','기술 경쟁력 ↑'],cooldown:90,terms:['GDP성장률']},
-    {id:'t2',icon:'🤖',title:'AI 산업 육성 정책',cost:4,gdpBoost:3.0,desc:'인공지능 기업에 세제 혜택과 연구 지원을 집중 제공합니다.',effects:['GDP +3.0%','미래 성장동력'],cooldown:120,terms:[]},
-    {id:'t3',icon:'🛰️',title:'우주 개발 투자',cost:6,gdpBoost:4.5,desc:'국가 우주 개발 프로그램을 통해 기술 패권을 선점합니다.',effects:['GDP +4.5%','국가 위상 ↑↑'],cooldown:240,terms:[]},
-    {id:'t4',icon:'🌐',title:'디지털 전환 가속',cost:3,gdpBoost:2.5,desc:'행정·산업 전반의 디지털화로 생산성을 극대화합니다.',effects:['GDP +2.5%','효율성 향상'],cooldown:90,terms:[]},
-    {id:'t5',icon:'⚡',title:'청정에너지 전환',cost:4,gdpBoost:2.8,desc:'재생에너지 비중을 높여 에너지 자립도를 강화합니다.',effects:['GDP +2.8%','에너지 자립'],cooldown:120,terms:[]},
-    {id:'t6',icon:'💊',title:'바이오테크 클러스터',cost:5,gdpBoost:3.8,desc:'첨단 의료·생명공학 단지를 조성해 고부가가치 산업을 육성합니다.',effects:['GDP +3.8%','고용 창출'],cooldown:150,terms:[]},
+    {id:'t1',icon:'🔬',title:'R&D 예산 2배 증액',cost:3,fundCost:4,gdpBoost:2.2,healthBoost:8,desc:'국가 연구개발 예산을 대폭 늘려 기술 혁신을 가속합니다.',effects:['GDP +2.2%','기술 경쟁력 ↑'],cooldown:90,terms:['GDP성장률']},
+    {id:'t2',icon:'🤖',title:'AI 산업 육성 정책',cost:4,fundCost:6,gdpBoost:3.0,healthBoost:10,desc:'인공지능 기업에 세제 혜택과 연구 지원을 집중 제공합니다.',effects:['GDP +3.0%','미래 성장동력'],cooldown:120,terms:[]},
+    {id:'t3',icon:'🛰️',title:'우주 개발 투자',cost:6,fundCost:12,gdpBoost:4.5,healthBoost:14,desc:'국가 우주 개발 프로그램을 통해 기술 패권을 선점합니다.',effects:['GDP +4.5%','국가 위상 ↑↑'],cooldown:240,terms:[]},
+    {id:'t4',icon:'🌐',title:'디지털 전환 가속',cost:3,fundCost:4,gdpBoost:2.5,healthBoost:8,desc:'행정·산업 전반의 디지털화로 생산성을 극대화합니다.',effects:['GDP +2.5%','효율성 향상'],cooldown:90,terms:[]},
+    {id:'t5',icon:'⚡',title:'청정에너지 전환',cost:4,fundCost:6,gdpBoost:2.8,healthBoost:9,desc:'재생에너지 비중을 높여 에너지 자립도를 강화합니다.',effects:['GDP +2.8%','에너지 자립'],cooldown:120,terms:[]},
+    {id:'t6',icon:'💊',title:'바이오테크 클러스터',cost:5,fundCost:8,gdpBoost:3.8,healthBoost:11,desc:'첨단 의료·생명공학 단지를 조성해 고부가가치 산업을 육성합니다.',effects:['GDP +3.8%','고용 창출'],cooldown:150,terms:[]},
   ],
   diplomacy: [
-    {id:'d1',icon:'🤝',title:'글로벌 정상회담 개최',cost:3,gdpBoost:2.0,desc:'세계 지도자들을 초청해 외교 입지를 강화합니다.',effects:['GDP +2.0%','외교력 ↑'],cooldown:120,terms:[]},
-    {id:'d2',icon:'🕊️',title:'국제 평화 협정',cost:2,gdpBoost:1.5,desc:'이웃 국가들과 평화 협정을 맺어 안보 불안을 해소합니다.',effects:['GDP +1.5%','투자 신뢰도 ↑'],cooldown:90,terms:[]},
-    {id:'d3',icon:'🌍',title:'개발도상국 원조 확대',cost:3,gdpBoost:1.8,desc:'개발도상국 지원을 늘려 국제적 영향력을 확대합니다.',effects:['GDP +1.8%','소프트파워 ↑'],cooldown:120,terms:[]},
-    {id:'d4',icon:'🏛️',title:'UN 안보리 비상임이사국 진출',cost:5,gdpBoost:3.2,desc:'국제 무대 최고 의사결정기구 참여로 국가 위상을 높입니다.',effects:['GDP +3.2%','국가 위상 최고'],cooldown:180,terms:[]},
-    {id:'d5',icon:'📡',title:'글로벌 미디어 전략',cost:2,gdpBoost:1.3,desc:'국제 미디어에 자국 이미지를 적극 홍보합니다.',effects:['GDP +1.3%','관광 유입'],cooldown:60,terms:[]},
-    {id:'d6',icon:'🚢',title:'해양 무역로 개척',cost:4,gdpBoost:2.8,desc:'신규 해상 무역 루트를 개척해 물류 경쟁력을 높입니다.',effects:['GDP +2.8%','물류 허브'],cooldown:150,terms:['무역수지']},
+    {id:'d1',icon:'🤝',title:'글로벌 정상회담 개최',cost:3,fundCost:4,gdpBoost:2.0,healthBoost:8,desc:'세계 지도자들을 초청해 외교 입지를 강화합니다.',effects:['GDP +2.0%','외교력 ↑'],cooldown:120,terms:[]},
+    {id:'d2',icon:'🕊️',title:'국제 평화 협정',cost:2,fundCost:2,gdpBoost:1.5,healthBoost:6,desc:'이웃 국가들과 평화 협정을 맺어 안보 불안을 해소합니다.',effects:['GDP +1.5%','투자 신뢰도 ↑'],cooldown:90,terms:[]},
+    {id:'d3',icon:'🌍',title:'개발도상국 원조 확대',cost:3,fundCost:5,gdpBoost:1.8,healthBoost:7,creditBoost:1,desc:'개발도상국 지원을 늘려 국제적 영향력을 확대합니다.',effects:['GDP +1.8%','신용등급 +1'],cooldown:120,terms:[]},
+    {id:'d4',icon:'🏛️',title:'UN 안보리 진출',cost:5,fundCost:8,gdpBoost:3.2,healthBoost:12,desc:'국제 무대 최고 의사결정기구 참여로 국가 위상을 높입니다.',effects:['GDP +3.2%','국가 위상 최고'],cooldown:180,terms:[]},
+    {id:'d5',icon:'📡',title:'글로벌 미디어 전략',cost:2,fundCost:2,gdpBoost:1.3,healthBoost:5,desc:'국제 미디어에 자국 이미지를 적극 홍보합니다.',effects:['GDP +1.3%','관광 유입'],cooldown:60,terms:[]},
+    {id:'d6',icon:'🚢',title:'해양 무역로 개척',cost:4,fundCost:6,gdpBoost:2.8,healthBoost:9,desc:'신규 해상 무역 루트를 개척해 물류 경쟁력을 높입니다.',effects:['GDP +2.8%','물류 허브'],cooldown:150,terms:['무역수지']},
   ],
   society: [
-    {id:'s1',icon:'🎓',title:'교육 혁신 프로그램',cost:3,gdpBoost:2.3,desc:'미래 인재 육성을 위한 교육 시스템을 전면 개편합니다.',effects:['GDP +2.3%','인재 경쟁력 ↑'],cooldown:90,terms:[]},
-    {id:'s2',icon:'🏥',title:'의료 시스템 강화',cost:3,gdpBoost:2.0,desc:'국민 건강 수준을 높여 생산성과 삶의 질을 동시에 개선합니다.',effects:['GDP +2.0%','국민 만족도 ↑'],cooldown:90,terms:[]},
-    {id:'s3',icon:'🏙️',title:'스마트 시티 건설',cost:5,gdpBoost:3.5,desc:'첨단 도시 인프라로 생활 편의를 높이고 기업 유치를 촉진합니다.',effects:['GDP +3.5%','생활 수준 ↑↑'],cooldown:180,terms:[]},
-    {id:'s4',icon:'🎨',title:'문화 콘텐츠 산업 육성',cost:2,gdpBoost:1.6,desc:'K-컬처처럼 자국 문화를 세계에 수출하는 소프트파워를 강화합니다.',effects:['GDP +1.6%','관광·수출 ↑'],cooldown:60,terms:[]},
-    {id:'s5',icon:'🤲',title:'사회 안전망 구축',cost:2,gdpBoost:1.2,desc:'빈부 격차를 줄이고 사회 통합성을 높여 내수 소비를 촉진합니다.',effects:['GDP +1.2%','사회 안정'],cooldown:60,terms:[]},
-    {id:'s6',icon:'👶',title:'인구 증가 지원 정책',cost:4,gdpBoost:2.5,desc:'출산·이민 친화 정책으로 생산가능인구를 늘립니다.',effects:['GDP +2.5%','장기 성장'],cooldown:150,terms:[]},
+    {id:'s1',icon:'🎓',title:'교육 혁신 프로그램',cost:3,fundCost:4,gdpBoost:2.3,healthBoost:8,desc:'미래 인재 육성을 위한 교육 시스템을 전면 개편합니다.',effects:['GDP +2.3%','인재 경쟁력 ↑'],cooldown:90,terms:[]},
+    {id:'s2',icon:'🏥',title:'의료 시스템 강화',cost:3,fundCost:4,gdpBoost:2.0,healthBoost:9,desc:'국민 건강 수준을 높여 생산성과 삶의 질을 동시에 개선합니다.',effects:['GDP +2.0%','경제체력 +9'],cooldown:90,terms:[]},
+    {id:'s3',icon:'🏙️',title:'스마트 시티 건설',cost:5,fundCost:9,gdpBoost:3.5,healthBoost:11,desc:'첨단 도시 인프라로 생활 편의를 높이고 기업 유치를 촉진합니다.',effects:['GDP +3.5%','생활 수준 ↑↑'],cooldown:180,terms:[]},
+    {id:'s4',icon:'🎨',title:'문화 콘텐츠 산업 육성',cost:2,fundCost:2,gdpBoost:1.6,healthBoost:6,desc:'K-컬처처럼 자국 문화를 세계에 수출하는 소프트파워를 강화합니다.',effects:['GDP +1.6%','관광·수출 ↑'],cooldown:60,terms:[]},
+    {id:'s5',icon:'🤲',title:'사회 안전망 구축',cost:2,fundCost:3,gdpBoost:1.2,healthBoost:7,desc:'빈부 격차를 줄이고 사회 통합성을 높여 내수 소비를 촉진합니다.',effects:['GDP +1.2%','사회 안정'],cooldown:60,terms:[]},
+    {id:'s6',icon:'👶',title:'인구 증가 지원 정책',cost:4,fundCost:6,gdpBoost:2.5,healthBoost:10,desc:'출산·이민 친화 정책으로 생산가능인구를 늘립니다.',effects:['GDP +2.5%','장기 성장'],cooldown:150,terms:[]},
   ],
 };
 
@@ -961,7 +1029,7 @@ let state = {
   mapMode: 'globe',
   badges: [],
   quizLog: {},
-  stats: { actionsUsed: 0, newsRead: 0, quizzesCompleted: 0 },
+  stats: { actionsUsed: 0, newsRead: 0, quizzesCompleted: 0, stockTrades: 0, stockProfit: 0 },
   history: {},    // code -> [{t, gdp}]  (my nation history)
   policyTab: 'economy',
   worldNews: [],  // current news list
@@ -981,42 +1049,129 @@ const WORLD_LOOP_MS = 3000; // 3 seconds per world tick
 const AP_REGEN_MS = 30000; // 30 seconds per AP
 
 let _initDone = false;
+let currentUser = null;
+
 function init() {
   if (_initDone) return;
   _initDone = true;
   // Setup countries
   COUNTRIES_RAW.forEach(c => { countryMap[c.code] = c; });
-  // Init world prices
   COUNTRIES_RAW.forEach(c => { worldPrices[c.code] = {current: c.gdp, prev: c.gdp, change_pct: 0}; });
-  // Load saved state
-  loadState();
-  // Build flag selector (always, regardless of myNation)
+  // Build flag selector (for create screen)
   buildFlagSelector();
   // Name input listener
   const nameInp = document.getElementById('nationNameInput');
-  nameInp.addEventListener('input', checkOnboardReady);
-  nameInp.addEventListener('keydown', e=>{ if(e.key==='Enter') { e.preventDefault(); if(!document.getElementById('onboardStartBtn').disabled) createMyNation(); } });
-  // Show onboarding or start game
-  if (!state.myNation) {
-    const ov = document.getElementById('onboardOverlay');
-    ov.classList.remove('hidden');
-    ov.style.display = 'flex';
-    setTimeout(()=>nameInp.focus(), 300);
-  } else {
-    document.getElementById('onboardOverlay').style.display = 'none';
-    startGame();
+  if (nameInp) {
+    nameInp.addEventListener('input', checkOnboardReady);
+    nameInp.addEventListener('keydown', e=>{ if(e.key==='Enter') { e.preventDefault(); if(!document.getElementById('onboardStartBtn').disabled) createMyNation(); } });
   }
+  // Register auth callback
+  window.onAuthChange = onAuthChange;
+  // Show login overlay; wait for auth state. If Firebase disabled, just show login (guest works).
+  document.getElementById('onboardOverlay').style.display = 'flex';
+  document.getElementById('loginCard').style.display = 'block';
+  document.getElementById('createCard').style.display = 'none';
 }
 
-// Run on DOMContentLoaded (most reliable), also listen for firebase-ready
+// Run on DOMContentLoaded, also listen for firebase-ready
 document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(init, 100); });
 window.addEventListener('firebase-ready', init);
+
+// === AUTH ===
+function signInWithGoogle() {
+  if (!window.FIREBASE_ENABLED || !window.fb) {
+    showToast('warning','로그인 불가','Firebase 미설정 상태입니다. 게스트로 진행합니다.');
+    playAsGuest();
+    return;
+  }
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768;
+  try {
+    if (isMobile && window.fb.signInWithRedirect) {
+      window.fb.signInWithRedirect(window.fb.auth, window.fb.provider);
+    } else {
+      window.fb.signInWithPopup(window.fb.auth, window.fb.provider).catch(e=>{
+        if (e.code && (e.code.includes('popup'))) {
+          window.fb.signInWithRedirect(window.fb.auth, window.fb.provider);
+        } else { showToast('error','로그인 실패', e.message||'다시 시도해주세요.'); }
+      });
+    }
+  } catch(e) { showToast('error','로그인 실패', e.message||'다시 시도해주세요.'); }
+}
+
+async function onAuthChange(user) {
+  if (!user) return;
+  currentUser = user;
+  setSyncStatus('synced');
+  await loadStateFromCloud(user.uid);
+  proceedAfterLogin(user.displayName || '플레이어');
+}
+
+function playAsGuest() {
+  currentUser = null;
+  setSyncStatus('local');
+  loadState(); // localStorage
+  proceedAfterLogin('게스트');
+}
+
+function openAccount() {
+  const mn = state.myNation;
+  const loggedIn = !!currentUser;
+  const stockVal = mn ? getStockValue() : 0;
+  document.getElementById('accountBody').innerHTML = `
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:40px;">${loggedIn?'🔐':'👤'}</div>
+      <div style="font-size:15px;font-weight:700;margin-top:6px;">${loggedIn ? (currentUser.displayName||'플레이어') : '게스트 플레이어'}</div>
+      <div style="font-size:12px;color:var(--txt2);margin-top:2px;">${loggedIn ? (currentUser.email||'') : '이 기기에만 저장됩니다'}</div>
+    </div>
+    ${mn?`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span style="font-size:24px;">${mn.flag}</span>
+        <div><div style="font-size:14px;font-weight:700;">${mn.name}</div><div style="font-size:11px;color:var(--txt2);">Tier ${mn.tier} · 세계 ${getMyRank()}위</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">
+        <div>💰 국고: <strong>${fmtGDP(mn.treasury||0)}</strong></div>
+        <div>📉 부채: <strong>${fmtGDP(mn.debt||0)}</strong></div>
+        <div>📦 주식: <strong>${fmtGDP(stockVal)}</strong></div>
+        <div>⭐ 신용: <strong>${creditLabel(mn.creditRating||5)}</strong></div>
+      </div>
+    </div>`:''}
+    ${loggedIn ? `
+      <div style="font-size:11px;color:var(--green);text-align:center;margin-bottom:12px;">✅ 클라우드 동기화 중 — 모든 기기에서 이어서 플레이</div>
+      <button onclick="doSignOut()" style="width:100%;padding:12px;background:transparent;border:1px solid var(--border2);border-radius:8px;color:var(--txt2);font-family:var(--font-kr);font-size:13px;cursor:pointer;">로그아웃</button>
+    ` : `
+      <div style="font-size:11px;color:var(--amber);text-align:center;margin-bottom:12px;">⚠️ 게스트 모드 — 다른 기기 동기화와 플레이어 랭킹 참여가 제한됩니다</div>
+      <button onclick="signInWithGoogle()" class="google-login-btn"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Google 계정으로 로그인</button>
+    `}
+  `;
+  document.getElementById('accountModal').classList.add('active');
+}
+
+function doSignOut() {
+  if (window.FIREBASE_ENABLED && window.fb) {
+    window.fb.signOut(window.fb.auth).then(()=>{ location.reload(); }).catch(()=>location.reload());
+  } else { location.reload(); }
+}
+
+function proceedAfterLogin(displayName) {
+  if (state.myNation) {
+    // Already has a nation -> start game
+    document.getElementById('onboardOverlay').style.display = 'none';
+    startGame();
+  } else {
+    // Show creation screen
+    document.getElementById('loginCard').style.display = 'none';
+    document.getElementById('createCard').style.display = 'block';
+    document.getElementById('createWelcome').textContent = `🎉 ${displayName}님, 환영합니다! 당신의 국가를 만들어보세요.`;
+    const nameInp = document.getElementById('nationNameInput');
+    setTimeout(()=>nameInp&&nameInp.focus(), 300);
+  }
+}
 
 function buildFlagSelector() {
   const wrap = document.getElementById('flagSelector');
   if (!wrap) return;
-  wrap.innerHTML = ''; // clear any duplicates
-  const flags = ['🌸','⭐','🔥','🌊','🏔️','🌙','☀️','🌿','💎','🦁','🦅','🐉','🌺','❄️','🌴','⚡','🎯','🌈','🏆','🌟','🗡️','🔮','🎋','🦋','🏛️','🎲','🔱','🛡️','🌍','🎯'];
+  wrap.innerHTML = '';
+  const flags = ['🌸','⭐','🔥','🌊','🏔️','🌙','☀️','🌿','💎','🦁','🦅','🐉','🌺','❄️','🌴','⚡','🎯','🌈','🏆','🌟','🗡️','🔮','🎋','🦋','🏛️','🎲','🔱','🛡️','🌍','🎪'];
   flags.forEach((f, idx) => {
     const d = document.createElement('div');
     d.className = 'flag-opt';
@@ -1029,11 +1184,7 @@ function buildFlagSelector() {
       checkOnboardReady();
     });
     wrap.appendChild(d);
-    // Auto-select first
-    if (idx === 0) {
-      d.classList.add('selected');
-      state.pendingFlag = f;
-    }
+    if (idx === 0) { d.classList.add('selected'); state.pendingFlag = f; }
   });
 }
 
@@ -1056,13 +1207,20 @@ function createMyNation() {
     tier: 'D',
     cdMap: {},
     totalBoost: 0,
+    treasury: 50,        // 국고 (자금, billions)
+    debt: 0,             // 국가 부채
+    creditRating: 5,     // 신용등급 (0~10, 5=BBB 시작)
+    stocks: {},          // 보유 주식 {code: shares}
+    activePolicies: {},  // 지속 정책 효과
+    lastDecay: Date.now(),
     createdAt: Date.now(),
   };
   state.history[MY_CODE] = [{t: Date.now(), gdp: INIT_GDP}];
   saveState();
   document.getElementById('onboardOverlay').style.display = 'none';
+
   startGame();
-  showToast('success','🎉 건국 성공!',`${flag} ${name} (이)가 가상 세계에 등장했습니다! GDP 꼴찌에서 세계 1위를 향해 도전하세요!`);
+  showToast('success','🎉 건국 성공!',`${flag} ${name} (이)가 세계 무대에 등장했습니다! GDP 꼴찌에서 세계 1위를 향해 도전하세요!`);
 }
 
 function startGame() {
@@ -1098,16 +1256,60 @@ function worldTick() {
     const next = Math.max(prev * (1 + drift / 100), c.gdp * 0.5);
     worldPrices[c.code] = { current: next, prev, change_pct: (next-prev)/prev*100 };
   });
-  // My nation slow autonomous growth
+
+  // === MY NATION ECONOMY (strategic) ===
   if (state.myNation) {
-    const autoGrow = 0.01 + (state.myNation.totalBoost || 0) * 0.0005;
-    state.myNation.gdp *= (1 + autoGrow / 100);
-    state.myNation.tier = getMyTier();
+    const mn = state.myNation;
+
+    // 1) Health decay over time — 정책을 안 하면 경제 체력이 떨어진다
+    // 매 틱(3초)마다 감소. 약 2~3분 방치하면 위험 수준에 도달.
+    mn.health = Math.max(0, (mn.health||100) - 1.2);
+    mn.lastDecay = now;
+
+    // 2) GDP change driven by health
+    // health 80+: 성장, 50~80: 정체, 50미만: 하락
+    const health = mn.health || 100;
+    let baseRate;
+    if (health >= 80) baseRate = 0.04 + (mn.totalBoost||0)*0.0003;   // 강한 성장
+    else if (health >= 60) baseRate = 0.02;                          // 완만 성장
+    else if (health >= 40) baseRate = -0.005;                        // 정체~소폭 하락
+    else if (health >= 20) baseRate = -0.03;                         // 하락
+    else baseRate = -0.06;                                            // 위기, 급락
+
+    // 3) Debt interest drag — 부채가 많으면 GDP 성장 둔화
+    const debtRatio = mn.gdp > 0 ? (mn.debt||0) / mn.gdp : 0;
+    const debtDrag = debtRatio > 0.6 ? -0.02 : debtRatio > 0.3 ? -0.008 : 0;
+
+    // 4) Random market noise
+    const noise = (seededRand(seed + 777) - 0.5) * 0.02;
+
+    const totalRate = baseRate + debtDrag + noise;
+    mn.gdp = Math.max(0.01, mn.gdp * (1 + totalRate/100));
+
+    // 5) Treasury income — GDP에 비례한 세수 (3초마다 소액)
+    mn.treasury = (mn.treasury||0) + mn.gdp * 0.0008;
+
+    // 6) Debt interest accrual — 부채 이자
+    if (mn.debt > 0) {
+      const rate = (12 - (mn.creditRating||5)) * 0.00002; // 신용 낮을수록 이자 높음
+      mn.debt *= (1 + rate);
+    }
+
+    // 7) Stock portfolio value tracking (passive)
+    // (handled in UI)
+
+    mn.tier = getMyTier();
     if (!state.history[MY_CODE]) state.history[MY_CODE] = [];
-    state.history[MY_CODE].push({t: now, gdp: state.myNation.gdp});
+    state.history[MY_CODE].push({t: now, gdp: mn.gdp});
     if (state.history[MY_CODE].length > 200) state.history[MY_CODE].shift();
+
+    // 8) Random crisis event when health is critically low
+    if (health < 30 && seededRand(seed+999) > 0.97) {
+      triggerCrisisEvent();
+    }
   }
-  // Tick-based news refresh (every ~30 ticks = 1.5 mins)
+
+  // News refresh
   if (seed % 30 === 0) { generateNews(); renderNews(); }
   renderCountryList();
   updateMyNationUI();
@@ -1117,11 +1319,27 @@ function worldTick() {
   scheduleSave();
 }
 
+function triggerCrisisEvent() {
+  if (!state.myNation) return;
+  const mn = state.myNation;
+  const events = [
+    {msg:'경기 침체로 GDP가 급락했습니다!', gdp:-3, health:0},
+    {msg:'재정 위기! 국고가 감소했습니다.', treasury:-5},
+    {msg:'신용등급 강등 위험! 부채 이자가 늘었습니다.', credit:-1},
+  ];
+  const ev = events[Math.floor(seededRand(Date.now())*events.length)];
+  if (ev.gdp) mn.gdp *= (1 + ev.gdp/100);
+  if (ev.treasury) mn.treasury = Math.max(0, mn.treasury + ev.treasury);
+  if (ev.credit) mn.creditRating = Math.max(0, (mn.creditRating||5) + ev.credit);
+  showToast('error','⚠️ 경제 위기 발생!', ev.msg + ' 정책으로 경제 체력을 회복하세요!');
+}
+
 function apRegen() {
   if (!state.myNation) return;
   if (state.myNation.ap < state.myNation.maxAp) {
     state.myNation.ap = Math.min(state.myNation.maxAp, state.myNation.ap + 1);
     updateMyNationUI();
+    renderPolicies();
   }
 }
 
@@ -1389,24 +1607,25 @@ function drawChart() {
 function openView(v) {
   const chartView = document.getElementById('chartView');
   const mapView = document.getElementById('mapView');
+  // On mobile, must switch to center panel first
+  if (window.innerWidth <= 768) mobSwitch('center');
   if (v === 'map') {
     chartView.classList.remove('active');
     mapView.classList.add('active');
-    setTimeout(drawMap, 50);
+    // force layout then draw
+    requestAnimationFrame(()=>{ drawMap(); setTimeout(drawMap, 80); });
   } else {
     mapView.classList.remove('active');
     chartView.classList.add('active');
-    setTimeout(drawChart, 50);
+    requestAnimationFrame(()=>{ setTimeout(drawChart, 50); });
   }
-  // Mobile: show center
-  if (window.innerWidth <= 768) mobSwitch('center');
 }
 
 // ============================================================
 // WORLD MAP (Canvas-based)
 // ============================================================
 let mapCanvas, mapCtx;
-let mapMode = 'flat'; // 'globe' or 'flat'
+let mapMode = 'globe'; // 'globe' or 'flat'
 let mapAnimFrame = null;
 let mapAngle = 0;
 
@@ -1483,6 +1702,7 @@ function drawMap() {
   if (!mapCanvas) return;
   const container = document.getElementById('worldMap');
   const W = container.clientWidth, H = container.clientHeight;
+  if (W < 10 || H < 10) { setTimeout(drawMap, 100); return; } // not laid out yet
   mapCanvas.width = W; mapCanvas.height = H;
   const ctx = mapCtx;
 
@@ -1627,6 +1847,7 @@ function updateMyNationUI() {
   const topGdp = all[0]?.gdp || 1;
   const pct = Math.min(100, (mn.gdp / topGdp) * 100);
   const growth = ((mn.gdp - mn.startGdp)/mn.startGdp*100);
+  const health = mn.health || 100;
 
   // Topbar
   document.getElementById('mnFlag').textContent = mn.flag;
@@ -1634,18 +1855,28 @@ function updateMyNationUI() {
   document.getElementById('mnGDP').textContent = `GDP ${fmtGDP(mn.gdp)}`;
   document.getElementById('mnRank').textContent = `#${rank}`;
 
-  // Right panel
+  // Right panel header
   document.getElementById('mncFlag').textContent = mn.flag;
   document.getElementById('mncName').textContent = mn.name;
   document.getElementById('mncRank').textContent = `세계 ${rank}위 / ${fmtGDP(mn.gdp)}`;
+
+  // Stats grid
   document.getElementById('mnsGDP').textContent = fmtGDP(mn.gdp);
   const grEl = document.getElementById('mnsGrowth');
   grEl.textContent = `${growth>=0?'+':''}${growth.toFixed(2)}%`;
   grEl.style.color = growth>=0?'var(--green)':'var(--red)';
-  document.getElementById('mnsPP').textContent = `${mn.ap} AP`;
-  const health = mn.health || 100;
-  document.getElementById('mnsHealth').textContent = health>=80?'💚 최상':health>=60?'💛 양호':health>=40?'🟠 보통':'❤️ 위기';
+  document.getElementById('mnsTreasury').textContent = fmtGDP(mn.treasury||0);
+  const debtEl = document.getElementById('mnsDebt');
+  debtEl.textContent = fmtGDP(mn.debt||0);
+  debtEl.style.color = (mn.debt||0) > mn.gdp*0.5 ? 'var(--red)' : 'var(--txt2)';
+  document.getElementById('mnsCredit').textContent = creditLabel(mn.creditRating||5);
+  document.getElementById('mnsHealth').textContent = health>=80?'💚 최상':health>=60?'💛 양호':health>=40?'🟠 보통':health>=20?'🔴 주의':'💀 위기';
 
+  // Health bar
+  document.getElementById('healthPct').textContent = `${Math.round(health)}%`;
+  document.getElementById('healthBarFill').style.width = `${health}%`;
+
+  // GDP-vs-top bar
   document.getElementById('gdpPct').textContent = `${pct.toFixed(1)}%`;
   document.getElementById('gdpBarFill').style.width = `${pct}%`;
 
@@ -1658,27 +1889,45 @@ function updateMyNationUI() {
   checkBadges();
 }
 
+function creditLabel(r) {
+  // 0~10 -> credit grade
+  if (r >= 9.5) return 'AAA';
+  if (r >= 8.5) return 'AA';
+  if (r >= 7.5) return 'A';
+  if (r >= 6) return 'BBB';
+  if (r >= 4.5) return 'BB';
+  if (r >= 3) return 'B';
+  if (r >= 1.5) return 'CCC';
+  return 'D';
+}
+
 // ============================================================
 // POLICIES
 // ============================================================
 function renderPolicies() {
   Object.entries(ACTIONS).forEach(([cat, actions])=>{
     const panel = document.getElementById(`pol-${cat}`);
+    if (!panel) return;
     panel.innerHTML = actions.map(a=>{
-      const locked = (state.myNation?.ap || 0) < a.cost;
+      const ap = state.myNation?.ap || 0;
+      const treasury = state.myNation?.treasury || 0;
+      const fundCost = a.fundCost || 0;
+      const noAP = ap < a.cost;
+      const noFund = treasury < fundCost;
       const cd = state.myNation?.cdMap?.[a.id] || 0;
       const cdLeft = Math.max(0, Math.ceil((cd - Date.now())/1000));
-      return `<div class="action-card ${locked||cdLeft>0?'locked':''}" onclick="confirmAction('${cat}','${a.id}')">
+      const locked = noAP || noFund || cdLeft>0;
+      return `<div class="action-card ${locked?'locked':''}" onclick="confirmAction('${cat}','${a.id}')">
         <div class="ac-header">
           <div class="ac-icon">${a.icon}</div>
           <div class="ac-title">${a.title}</div>
-          <div class="ac-cost ${a.cost===0?'empty':''}">⚡${a.cost} AP</div>
+          <div class="ac-cost">⚡${a.cost}${fundCost>0?` · 💰$${fundCost}B`:''}</div>
         </div>
         <div class="ac-desc">${a.desc}</div>
         <div class="ac-effect">
-          ${a.effects.map(e=>`<div class="ac-tag">${e}</div>`).join('')}
+          ${a.effects.map(e=>`<div class="ac-tag ${e.includes('-')||e.includes('부채 +')?'neg':e.includes('국고 +')||e.includes('신용')?'neu':''}">${e}</div>`).join('')}
         </div>
-        ${cdLeft>0?`<div class="ac-cd">⏱ 재사용 대기: ${cdLeft}초</div>`:''}
+        ${cdLeft>0?`<div class="ac-cd">⏱ 재사용 대기: ${cdLeft}초</div>`:noFund?`<div class="ac-cd" style="color:var(--red);">💰 국고 부족 (국채 발행 필요)</div>`:noAP?`<div class="ac-cd" style="color:var(--amber);">⚡ AP 부족</div>`:''}
       </div>`;
     }).join('');
   });
@@ -1701,36 +1950,159 @@ function updatePolicyCooldowns() {
 
 function switchPol(tab) {
   state.policyTab = tab;
-  document.querySelectorAll('.pt-btn').forEach(b=>b.classList.toggle('act', b.textContent.includes({economy:'경제',tech:'기술',diplomacy:'외교',society:'사회'}[tab])));
+  const labels = {economy:'경제',finance:'금융',tech:'기술',diplomacy:'외교',society:'사회'};
+  document.querySelectorAll('.pt-btn').forEach(b=>b.classList.toggle('act', b.textContent.includes(labels[tab])));
   document.querySelectorAll('.policy-panel').forEach(p=>p.classList.remove('act'));
   document.getElementById(`pol-${tab}`)?.classList.add('act');
+}
+
+// ============================================================
+// STOCK MARKET — 다른 나라 GDP에 투자
+// ============================================================
+let stockSortBy = 'gdp';
+function openStockMarket() {
+  if (!state.myNation) return;
+  renderStockMarket();
+  document.getElementById('stockModal').classList.add('active');
+}
+
+function getStockValue() {
+  // 보유 주식의 현재 평가액 (billions)
+  let val = 0;
+  const stocks = state.myNation?.stocks || {};
+  Object.entries(stocks).forEach(([code, h])=>{
+    const price = worldPrices[code]?.current || 0;
+    // 1 share = GDP/1000 단위 가격
+    val += h.shares * (price / 1000);
+  });
+  return val;
+}
+
+function renderStockMarket() {
+  const mn = state.myNation;
+  const stocks = mn.stocks || {};
+  const all = COUNTRIES_RAW.map(c=>({...c, price: worldPrices[c.code].current, chg: worldPrices[c.code].change_pct}))
+    .sort((a,b)=>b.price-a.price);
+  const stockVal = getStockValue();
+
+  // 보유 현황
+  let holdingsHtml = '';
+  const heldCodes = Object.keys(stocks).filter(c=>stocks[c].shares>0);
+  if (heldCodes.length>0) {
+    holdingsHtml = `<div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:var(--cyan);margin-bottom:8px;">📦 보유 주식 (평가액 ${fmtGDP(stockVal)})</div>
+      ${heldCodes.map(code=>{
+        const c = countryMap[code]; const h = stocks[code];
+        const cur = worldPrices[code].current/1000;
+        const profit = (cur - h.avgPrice) * h.shares;
+        const pct = h.avgPrice>0 ? (cur-h.avgPrice)/h.avgPrice*100 : 0;
+        return `<div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg2);border-radius:8px;margin-bottom:5px;">
+          <span style="font-size:16px;">${c.flag}</span>
+          <div style="flex:1;"><div style="font-size:12px;font-weight:600;">${c.name}</div><div style="font-size:10px;color:var(--txt3);">${h.shares}주 · 평단 $${(h.avgPrice).toFixed(3)}B</div></div>
+          <div style="text-align:right;"><div style="font-family:var(--font-mono);font-size:11px;color:${profit>=0?'var(--green)':'var(--red)'};">${profit>=0?'+':''}${fmtGDP(Math.abs(profit))}</div><div style="font-size:10px;color:${pct>=0?'var(--green)':'var(--red)'};">${pct>=0?'+':''}${pct.toFixed(1)}%</div></div>
+          <button onclick="sellStock('${code}')" style="padding:5px 10px;background:var(--red);border:none;border-radius:6px;color:#fff;font-size:11px;cursor:pointer;font-family:var(--font-kr);">매도</button>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  const listHtml = all.slice(0,40).map(c=>{
+    const price = c.price/1000;
+    const chgCls = c.chg>0.01?'var(--green)':c.chg<-0.01?'var(--red)':'var(--txt3)';
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid rgba(30,45,66,0.5);">
+      <span style="font-size:16px;">${c.flag}</span>
+      <div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;">${c.name}</div><div style="font-size:10px;color:var(--txt3);">Tier ${c.tier} · 변동성 ${c.volatility}</div></div>
+      <div style="text-align:right;margin-right:6px;"><div style="font-family:var(--font-mono);font-size:12px;">$${price.toFixed(3)}B</div><div style="font-family:var(--font-mono);font-size:10px;color:${chgCls};">${c.chg>=0?'+':''}${c.chg.toFixed(2)}%</div></div>
+      <button onclick="buyStock('${c.code}')" style="padding:5px 10px;background:var(--green);border:none;border-radius:6px;color:#000;font-size:11px;cursor:pointer;font-family:var(--font-kr);font-weight:600;">매수</button>
+    </div>`;
+  }).join('');
+
+  document.getElementById('stockBody').innerHTML = `
+    <div style="background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:10px;padding:12px;margin-bottom:16px;">
+      <div style="font-size:11px;color:var(--txt2);line-height:1.6;">💡 다른 나라의 경제(GDP)에 투자해 시세 차익을 노리세요. 변동성이 큰 신흥국은 위험하지만 수익 기회도 큽니다. 매수 시 <strong>국고</strong>를 사용하고, 매도 시 평가액이 국고로 들어옵니다.</div>
+      <div style="display:flex;justify-content:space-between;margin-top:10px;font-family:var(--font-mono);font-size:12px;">
+        <span>💰 국고: <strong style="color:var(--green);">${fmtGDP(mn.treasury||0)}</strong></span>
+        <span>📦 주식 평가액: <strong style="color:var(--cyan);">${fmtGDP(stockVal)}</strong></span>
+      </div>
+    </div>
+    ${holdingsHtml}
+    <div style="font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:8px;">🌍 투자 가능 국가 (GDP 순)</div>
+    ${listHtml}`;
+}
+
+function buyStock(code) {
+  const mn = state.myNation;
+  const price = worldPrices[code]?.current/1000; // billions per share
+  if (!price) return;
+  // 매수 단위: 국고의 일부 또는 고정 5주
+  const shares = 5;
+  const cost = shares * price;
+  if ((mn.treasury||0) < cost) { showToast('error','국고 부족',`💰 ${fmtGDP(cost)}가 필요합니다. 국채 발행으로 자금을 마련하세요.`); return; }
+  mn.treasury -= cost;
+  if (!mn.stocks) mn.stocks = {};
+  if (!mn.stocks[code]) mn.stocks[code] = {shares:0, avgPrice:0};
+  const h = mn.stocks[code];
+  h.avgPrice = (h.avgPrice*h.shares + price*shares)/(h.shares+shares);
+  h.shares += shares;
+  state.stats.stockTrades = (state.stats.stockTrades||0)+1;
+  scheduleSave();
+  renderStockMarket();
+  updateMyNationUI();
+  showToast('success','📈 주식 매수',`${countryMap[code].flag} ${countryMap[code].name} ${shares}주 매수 (${fmtGDP(cost)})`);
+  checkBadges();
+}
+
+function sellStock(code) {
+  const mn = state.myNation;
+  const h = mn.stocks?.[code];
+  if (!h || h.shares<=0) return;
+  const price = worldPrices[code].current/1000;
+  const proceeds = h.shares * price;
+  const profit = (price - h.avgPrice) * h.shares;
+  mn.treasury = (mn.treasury||0) + proceeds;
+  delete mn.stocks[code];
+  state.stats.stockTrades = (state.stats.stockTrades||0)+1;
+  if (profit>0) state.stats.stockProfit = (state.stats.stockProfit||0) + profit;
+  scheduleSave();
+  renderStockMarket();
+  updateMyNationUI();
+  showToast(profit>=0?'success':'warning','📉 주식 매도',`${countryMap[code].flag} ${countryMap[code].name} 전량 매도 · 손익 ${profit>=0?'+':''}${fmtGDP(Math.abs(profit))}`);
+  checkBadges();
 }
 
 function confirmAction(cat, id) {
   if (!state.myNation) return;
   const action = ACTIONS[cat]?.find(a=>a.id===id);
   if (!action) return;
-  const cdLeft = Math.max(0, Math.ceil(((state.myNation.cdMap?.[id]||0) - Date.now())/1000));
+  const mn = state.myNation;
+  const cdLeft = Math.max(0, Math.ceil(((mn.cdMap?.[id]||0) - Date.now())/1000));
   if (cdLeft > 0) { showToast('warning','재사용 대기',`${cdLeft}초 후 다시 사용할 수 있습니다.`); return; }
-  if (state.myNation.ap < action.cost) { showToast('error','AP 부족',`⚡${action.cost} AP가 필요합니다. (현재: ${state.myNation.ap} AP)`); return; }
+  if (mn.ap < action.cost) { showToast('error','AP 부족',`⚡${action.cost} AP가 필요합니다. (현재: ${mn.ap} AP)`); return; }
+  const fundCost = action.fundCost || 0;
 
   document.getElementById('actModalTitle').textContent = `${action.icon} ${action.title}`;
   document.getElementById('actModalBody').innerHTML = `
     <div class="acf-icon">${action.icon}</div>
     <div class="acf-title">${action.title}</div>
+    <div style="font-size:12px;color:var(--txt2);text-align:center;margin-bottom:14px;line-height:1.5;">${action.desc}</div>
     <div class="acf-cost-row">
-      <span style="font-size:12px;color:var(--txt2);">소비 AP</span>
-      <span style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--cyan);">⚡${action.cost} AP</span>
+      <span style="font-size:12px;color:var(--txt2);">⚡ 소비 AP</span>
+      <span style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:${mn.ap>=action.cost?'var(--cyan)':'var(--red)'};">${action.cost} AP (보유 ${mn.ap})</span>
     </div>
+    ${fundCost>0?`<div class="acf-cost-row">
+      <span style="font-size:12px;color:var(--txt2);">💰 국고 비용</span>
+      <span style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:${(mn.treasury||0)>=fundCost?'var(--green)':'var(--red)'};">$${fundCost}B (보유 ${fmtGDP(mn.treasury||0)})</span>
+    </div>`:''}
     <div class="acf-effects" style="margin-bottom:14px;">
       <div style="font-size:11px;color:var(--txt2);margin-bottom:8px;">예상 효과:</div>
       ${action.effects.map(e=>`<div class="acf-effect-row"><span>${e}</span><span style="color:var(--green);">✓</span></div>`).join('')}
-      <div class="acf-effect-row"><span>GDP 성장</span><span style="color:var(--green);">+${action.gdpBoost}%</span></div>
+      ${action.gdpBoost>0?`<div class="acf-effect-row"><span>GDP 성장</span><span style="color:var(--green);">+${action.gdpBoost}%</span></div>`:''}
+      ${action.healthBoost>0?`<div class="acf-effect-row"><span>경제 체력 회복</span><span style="color:var(--green);">+${action.healthBoost}</span></div>`:''}
     </div>
     ${action.terms?.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">${action.terms.map(t=>`<span class="nd-term" onclick="openTerm('${t}')">${t}</span>`).join('')}</div>`:''}
     <div class="acf-btns">
       <button class="acf-cancel" onclick="closeModal('actionModal')">취소</button>
-      <button class="acf-confirm" onclick="executeAction('${cat}','${id}')">🚀 정책 실행</button>
+      <button class="acf-confirm" onclick="executeAction('${cat}','${id}')">🚀 실행</button>
     </div>
   `;
   document.getElementById('actionModal').classList.add('active');
@@ -1741,27 +2113,71 @@ function executeAction(cat, id) {
   if (!state.myNation) return;
   const action = ACTIONS[cat]?.find(a=>a.id===id);
   if (!action) return;
-  if (state.myNation.ap < action.cost) { showToast('error','AP 부족','행동 포인트가 부족합니다.'); return; }
+  const mn = state.myNation;
+  if (mn.ap < action.cost) { showToast('error','AP 부족','행동 포인트가 부족합니다.'); return; }
+  const fundCost = action.fundCost || 0;
+  if ((mn.treasury||0) < fundCost) { showToast('error','국고 부족',`💰 $${fundCost}B 국고가 필요합니다. (현재: ${fmtGDP(mn.treasury||0)})\n국채 발행으로 자금을 마련하세요.`); return; }
 
-  state.myNation.ap -= action.cost;
-  state.myNation.gdp *= (1 + action.gdpBoost/100);
-  state.myNation.totalBoost = (state.myNation.totalBoost||0) + action.gdpBoost;
-  if (!state.myNation.cdMap) state.myNation.cdMap = {};
-  state.myNation.cdMap[id] = Date.now() + action.cooldown * 1000;
+  mn.ap -= action.cost;
+  mn.treasury = (mn.treasury||0) - fundCost;
+
+  // === SPECIAL FINANCE ACTIONS ===
+  let specialMsg = '';
+  if (action.special) {
+    switch(action.special) {
+      case 'bond_small':
+        mn.treasury += 10; mn.debt = (mn.debt||0) + 10;
+        mn.creditRating = Math.max(0, (mn.creditRating||5) - 0.3);
+        specialMsg = '국채 발행으로 국고 +$10B (부채도 증가)';
+        break;
+      case 'bond_large':
+        mn.treasury += 30; mn.debt = (mn.debt||0) + 30;
+        mn.creditRating = Math.max(0, (mn.creditRating||5) - 0.8);
+        specialMsg = '대규모 국채로 국고 +$30B (부채 부담 증가)';
+        break;
+      case 'repay':
+        mn.debt = Math.max(0, (mn.debt||0) - 15);
+        specialMsg = '부채 $15B 상환! 이자 부담 감소, 신용등급 상승';
+        break;
+      case 'fdi':
+        mn.treasury += 8;
+        specialMsg = '외국인 투자 유치! 국고 +$8B';
+        break;
+      case 'taxcut':
+        specialMsg = '세금 감면으로 경기 부양!';
+        break;
+      case 'wealthfund': {
+        const roll = Math.random();
+        let profit;
+        if (roll > 0.7) { profit = 35; specialMsg = `🎉 국부펀드 대성공! 국고 +$${profit}B`; }
+        else if (roll > 0.35) { profit = 22; specialMsg = `국부펀드 수익 실현. 국고 +$${profit}B`; }
+        else { profit = 8; specialMsg = `국부펀드 소폭 수익. 국고 +$${profit}B`; }
+        mn.treasury += profit;
+        break;
+      }
+    }
+  }
+
+  mn.gdp *= (1 + action.gdpBoost/100);
+  mn.totalBoost = (mn.totalBoost||0) + action.gdpBoost;
+  if (!mn.cdMap) mn.cdMap = {};
+  mn.cdMap[id] = Date.now() + action.cooldown * 1000;
   state.stats.actionsUsed = (state.stats.actionsUsed||0)+1;
-  // Health
-  state.myNation.health = Math.min(100, (state.myNation.health||100) + 3);
+  // Health recovery
+  mn.health = Math.min(100, (mn.health||100) + (action.healthBoost||8));
+  // Credit rating
+  if (action.creditBoost) mn.creditRating = Math.min(10, (mn.creditRating||5) + action.creditBoost);
   // History
   if (!state.history[MY_CODE]) state.history[MY_CODE] = [];
-  state.history[MY_CODE].push({t: Date.now(), gdp: state.myNation.gdp});
+  state.history[MY_CODE].push({t: Date.now(), gdp: mn.gdp});
 
   updateMyNationUI();
   renderPolicies();
   scheduleSave();
-  showToast('success',`${action.icon} ${action.title}`,`GDP +${action.gdpBoost}% 성장! 현재 ${fmtGDP(state.myNation.gdp)}`);
+  const msg = specialMsg || (action.gdpBoost>0 ? `GDP +${action.gdpBoost}% 성장! 경제 체력도 회복되었습니다.` : '정책이 실행되었습니다.');
+  showToast('success',`${action.icon} ${action.title}`, msg);
   checkBadges();
-  // Add to news
-  addMyNationNews(action);
+  if (action.gdpBoost > 0) addMyNationNews(action);
 }
 
 function addMyNationNews(action) {
@@ -1770,7 +2186,7 @@ function addMyNationNews(action) {
   state.worldNews.unshift({
     flag: mn.flag, country: mn.name, code: MY_CODE,
     title: `✨ ${mn.name}: ${action.title} 정책 발동`,
-    body: `${mn.name}이(가) ${action.title} 정책을 실시하여 GDP가 ${action.gdpBoost}% 성장했습니다. 가상 세계에서 주목받는 신흥 강국으로 부상하고 있습니다.`,
+    body: `${mn.name}이(가) ${action.title} 정책을 실시하여 GDP가 ${action.gdpBoost}% 성장했습니다. 세계에서 주목받는 신흥 강국으로 부상하고 있습니다.`,
     type: 'mine', emoji: action.icon, effect: action.gdpBoost,
   });
   if (state.worldNews.length > 30) state.worldNews.pop();
@@ -1825,7 +2241,7 @@ function renderNews() {
       <div class="news-flag">${n.emoji||n.flag}</div>
       <div class="news-txt">
         <div class="news-title">${n.title}</div>
-        <div class="news-sub">${n.country} · 가상 세계 뉴스</div>
+        <div class="news-sub">${n.country} · 글로벌 경제</div>
       </div>
       <div class="news-tag ${n.type}">${tagLbl}</div>
     </div>`;
@@ -1836,17 +2252,20 @@ function openNews(idx) {
   const n = state.worldNews[idx];
   if (!n) return;
   state.stats.newsRead = (state.stats.newsRead||0)+1;
+  const impactLabel = n.type==='pos' ? `이 뉴스는 ${n.country}의 GDP에 긍정적 영향을 줍니다.` :
+                      n.type==='neg' ? `이 뉴스는 ${n.country}의 GDP에 부정적 영향을 줍니다.` :
+                      n.type==='mine' ? `내 나라의 정책 성과가 세계에 알려지고 있습니다.` :
+                      `이 뉴스는 ${n.country}의 경제에 영향을 줄 수 있습니다.`;
   document.getElementById('newsBody').innerHTML = `
     <div class="news-detail-img">${n.emoji||'📰'}</div>
     <div class="nd-title">${n.title}</div>
     <div class="nd-meta">
       <span>${n.flag} ${n.country}</span>
       <span class="news-tag ${n.type}" style="display:inline;">${n.type==='pos'?'호재':n.type==='neg'?'악재':n.type==='mine'?'내 나라':'중립'}</span>
-      <span style="color:var(--txt3);">🌐 가상 세계 뉴스 (허구의 이벤트)</span>
     </div>
     <div class="nd-body">${n.body}</div>
-    <div style="margin-top:12px;padding:10px;background:rgba(61,142,255,0.05);border:1px solid rgba(61,142,255,0.15);border-radius:8px;font-size:11px;color:var(--txt2);">
-      ⚠️ <strong>안내:</strong> 이 뉴스는 가상 세계 시뮬레이션 게임 내 허구의 이벤트입니다. 실제 현실과 무관합니다.
+    <div style="margin-top:12px;padding:10px;background:${n.type==='neg'?'rgba(255,77,109,0.06)':'rgba(0,229,160,0.06)'};border:1px solid ${n.type==='neg'?'rgba(255,77,109,0.18)':'rgba(0,229,160,0.18)'};border-radius:8px;font-size:11px;color:var(--txt2);">
+      💡 <strong>경제 영향:</strong> ${impactLabel}
     </div>
   `;
   document.getElementById('newsModal').classList.add('active');
@@ -1856,18 +2275,105 @@ function openNews(idx) {
 // ============================================================
 // RANKING
 // ============================================================
+let rankingTab = 'players';
 function openRanking() {
-  const all = getAllSorted();
-  const myRank = getMyRank();
+  document.getElementById('rankingModal').classList.add('active');
+  rankingTab = 'players';
+  renderRanking();
+}
+
+function renderRanking() {
   const mn = state.myNation;
-  const growth = mn ? ((mn.gdp - mn.startGdp)/mn.startGdp*100) : 0;
+  const tabsHtml = `<div style="display:flex;gap:6px;margin-bottom:16px;">
+    <button onclick="switchRankTab('players')" style="flex:1;padding:9px;border-radius:8px;font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:${rankingTab==='players'?'var(--amber)':'transparent'};color:${rankingTab==='players'?'#000':'var(--txt2)'};">🏆 플레이어 랭킹</button>
+    <button onclick="switchRankTab('world')" style="flex:1;padding:9px;border-radius:8px;font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:${rankingTab==='world'?'var(--blue)':'transparent'};color:${rankingTab==='world'?'#000':'var(--txt2)'};">🌍 국가 GDP 랭킹</button>
+  </div>`;
+
+  if (rankingTab === 'players') {
+    document.getElementById('rankingBody').innerHTML = tabsHtml + `<div id="playerRankList"><div style="text-align:center;padding:30px;color:var(--txt2);font-size:13px;">🔄 플레이어 랭킹을 불러오는 중...</div></div>`;
+    loadPlayerRanking();
+  } else {
+    renderWorldRanking(tabsHtml);
+  }
+}
+
+function switchRankTab(tab) { rankingTab = tab; renderRanking(); }
+
+async function loadPlayerRanking() {
+  const mn = state.myNation;
+  const myGrowth = mn ? ((mn.gdp-mn.startGdp)/mn.startGdp*100) : 0;
+  let players = [];
+
+  // Fetch from Firestore if available
+  if (window.FIREBASE_ENABLED && window.fb) {
+    try {
+      const q = window.fb.query(
+        window.fb.collection(window.fb.db, 'nationrise_players'),
+        window.fb.orderBy('gdp', 'desc'),
+        window.fb.limit(100)
+      );
+      const snap = await window.fb.getDocs(q);
+      snap.forEach(doc=>{ const d = doc.data(); players.push({...d, uid: doc.id}); });
+    } catch(e) { console.error('랭킹 로드 실패', e); }
+  }
+
+  // Ensure my nation is in the list (if logged in or local)
+  const myUid = currentUser ? currentUser.uid : ('local_'+(mn?.createdAt||0));
+  if (mn) {
+    const existing = players.find(p=>p.uid===myUid);
+    if (existing) { existing.gdp = mn.gdp; existing.isMe = true; }
+    else players.push({uid:myUid, name:mn.name, flag:mn.flag, gdp:mn.gdp, tier:mn.tier, isMe:true, owner:(currentUser?.displayName||'나')});
+  }
+  players.sort((a,b)=>b.gdp-a.gdp);
+
+  const myRank = players.findIndex(p=>p.isMe)+1;
   let html = '';
   if (mn) {
     html += `<div style="background:rgba(255,181,71,0.06);border:1px solid rgba(255,181,71,0.25);border-radius:10px;padding:14px;margin-bottom:16px;text-align:center;">
-      <div style="font-size:11px;color:var(--txt2);margin-bottom:4px;">내 나라 순위</div>
-      <div style="font-family:var(--font-title);font-size:26px;font-weight:900;color:var(--amber);">${myRank}위 <span style="font-size:14px;color:var(--txt2);">/ ${all.length}개국</span></div>
+      <div style="font-size:11px;color:var(--txt2);margin-bottom:4px;">내 플레이어 순위</div>
+      <div style="font-family:var(--font-title);font-size:26px;font-weight:900;color:var(--amber);">${myRank>0?myRank:'-'}위 <span style="font-size:14px;color:var(--txt2);">/ ${players.length}명</span></div>
       <div style="font-size:13px;font-weight:600;margin-top:4px;">${mn.flag} ${mn.name} · ${fmtGDP(mn.gdp)}</div>
-      <div style="font-family:var(--font-mono);font-size:12px;color:${growth>=0?'var(--green)':'var(--red)'};margin-top:4px;">${growth>=0?'+':''}${growth.toFixed(2)}% 성장</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:${myGrowth>=0?'var(--green)':'var(--red)'};margin-top:4px;">${myGrowth>=0?'+':''}${myGrowth.toFixed(1)}% 성장</div>
+    </div>`;
+  }
+
+  if (players.length === 0) {
+    html += `<div style="text-align:center;padding:30px;color:var(--txt2);font-size:13px;">아직 등록된 플레이어가 없습니다.<br>당신이 첫 번째 도전자입니다! 🎉</div>`;
+  } else {
+    html += players.slice(0,100).map((p,i)=>{
+      const rank = i+1;
+      const rankCls = rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
+      const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+      return `<div class="rank-row ${p.isMe?'mine-rank':''}">
+        <div class="rank-num ${rankCls}">${medal}</div>
+        <div class="rank-flag">${p.flag||'🏳️'}</div>
+        <div style="min-width:0;flex:1;">
+          <div class="rank-name">${p.isMe?'✨ ':''}${p.name||'무명국'}</div>
+          <div class="rank-country">${p.owner?('👤 '+p.owner):'플레이어'} · Tier ${p.tier||'D'}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="rank-gdp">${fmtGDP(p.gdp||0)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  html += `<div style="font-size:11px;color:var(--txt3);margin-top:14px;text-align:center;line-height:1.6;">🏆 전 세계 플레이어들이 만든 나라의 GDP 랭킹입니다.<br>${window.FIREBASE_ENABLED && currentUser ? 'Google 로그인 상태 — 실시간 동기화 중' : '※ 게스트 모드: 다른 플레이어와 비교하려면 Google 로그인하세요.'}</div>`;
+
+  const listEl = document.getElementById('playerRankList');
+  if (listEl) listEl.innerHTML = html;
+}
+
+function renderWorldRanking(tabsHtml) {
+  const all = getAllSorted();
+  const mn = state.myNation;
+  const myRank = getMyRank();
+  let html = tabsHtml;
+  if (mn) {
+    html += `<div style="background:rgba(61,142,255,0.06);border:1px solid rgba(61,142,255,0.25);border-radius:10px;padding:12px;margin-bottom:14px;text-align:center;">
+      <div style="font-size:11px;color:var(--txt2);">내 나라의 세계 국가 순위</div>
+      <div style="font-family:var(--font-title);font-size:22px;font-weight:900;color:var(--blue);margin-top:2px;">${myRank}위 <span style="font-size:13px;color:var(--txt2);">/ ${all.length}개국</span></div>
+      <div style="font-size:12px;margin-top:2px;">${mn.flag} ${mn.name} · ${fmtGDP(mn.gdp)}</div>
     </div>`;
   }
   html += all.slice(0,80).map((c,i)=>{
@@ -1880,19 +2386,18 @@ function openRanking() {
     return `<div class="rank-row ${isMe?'mine-rank':''}" ${clickAttr}>
       <div class="rank-num ${rankCls}">${medal}</div>
       <div class="rank-flag">${c.flag}</div>
-      <div>
+      <div style="min-width:0;flex:1;">
         <div class="rank-name">${isMe?`✨ ${c.name}`:c.name}</div>
         <div class="rank-country">${isMe?'내 나라':'Tier '+c.tier}</div>
       </div>
-      <div style="margin-left:auto;text-align:right;">
+      <div style="text-align:right;">
         <div class="rank-gdp">${fmtGDP(c.gdp)}</div>
         <div class="rank-growth" style="color:${chg>=0?'var(--green)':'var(--red)'};">${chg>=0?'+':''}${chg.toFixed(2)}%</div>
       </div>
     </div>`;
   }).join('');
-  html += `<div style="font-size:11px;color:var(--txt3);margin-top:14px;text-align:center;line-height:1.5;">🌐 가상 세계 GDP 기반 랭킹 · 내 나라의 GDP를 높여 세계 1위를 달성하세요!</div>`;
+  html += `<div style="font-size:11px;color:var(--txt3);margin-top:14px;text-align:center;">🌍 실제 국가들과 내 나라의 GDP를 비교합니다. 세계 1위에 도전하세요!</div>`;
   document.getElementById('rankingBody').innerHTML = html;
-  document.getElementById('rankingModal').classList.add('active');
 }
 
 // ============================================================
@@ -1969,6 +2474,10 @@ const BADGE_DEFS = [
   {id:'quiz_1',icon:'📝',name:'공부 시작',desc:'퀴즈 첫 응시',check:s=>Object.keys(s.quizLog||{}).length>=1},
   {id:'quiz_3',icon:'🎓',name:'경제 학도',desc:'퀴즈 3일 연속',check:s=>Object.keys(s.quizLog||{}).length>=3},
   {id:'news_reader',icon:'📰',name:'뉴스 애독가',desc:'뉴스 10회 열람',check:s=>(s.stats?.newsRead||0)>=10},
+  {id:'first_stock',icon:'📊',name:'첫 투자',desc:'주식을 처음 매수했습니다',check:s=>(s.stats?.stockTrades||0)>=1},
+  {id:'stock_master',icon:'💹',name:'투자의 귀재',desc:'주식 거래 20회',check:s=>(s.stats?.stockTrades||0)>=20},
+  {id:'debt_free',icon:'✅',name:'무차입 경영',desc:'부채 없이 GDP $50B 달성',check:s=>s.myNation&&(s.myNation.debt||0)<0.1&&s.myNation.gdp>=50},
+  {id:'aaa',icon:'🌟',name:'AAA 신용국',desc:'신용등급 AAA 달성',check:s=>(s.myNation?.creditRating||0)>=9.5},
   {id:'tier_c',icon:'🌟',name:'신흥국',desc:'내 나라 Tier C 달성',check:s=>['C','B','A','S'].includes(s.myNation?.tier)},
   {id:'tier_b',icon:'⭐',name:'중견국',desc:'내 나라 Tier B 달성',check:s=>['B','A','S'].includes(s.myNation?.tier)},
   {id:'tier_a',icon:'🌠',name:'선진국',desc:'내 나라 Tier A 달성',check:s=>['A','S'].includes(s.myNation?.tier)},
@@ -2056,9 +2565,21 @@ function mobSwitch(p) {
 // ============================================================
 // SAVE / LOAD
 // ============================================================
+function setSyncStatus(status) {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncTxt');
+  if (!dot || !txt) return;
+  dot.className = 'sync-dot' + (status==='synced'?'':status==='busy'?' busy':status==='local'?' off':'');
+  txt.textContent = status==='synced' ? '클라우드 동기화' : status==='busy' ? '저장 중...' : '로컬 저장';
+}
+
 function scheduleSave() {
   clearTimeout(state.saveTimeout);
   state.saveTimeout = setTimeout(saveState, 2000);
+}
+
+function getMyUid() {
+  return currentUser ? currentUser.uid : ('local_' + (state.myNation?.createdAt||0));
 }
 
 async function saveState() {
@@ -2070,30 +2591,77 @@ async function saveState() {
     stats: state.stats,
     savedAt: Date.now(),
   };
-  try { localStorage.setItem('nationrise_v2', JSON.stringify(data)); } catch(e){}
-  if (window.FIREBASE_ENABLED && window.fb && state.myNation) {
-    const uid = state.myNation.name + '_' + (state.myNation.createdAt||'');
+  // Local backup (per-uid key + legacy key)
+  try {
+    localStorage.setItem('nationrise_v2_' + getMyUid(), JSON.stringify(data));
+    localStorage.setItem('nationrise_v2', JSON.stringify(data));
+  } catch(e){}
+
+  // Cloud sync (logged-in users)
+  if (window.FIREBASE_ENABLED && window.fb && currentUser && state.myNation) {
+    setSyncStatus('busy');
     try {
-      await window.fb.setDoc(window.fb.doc(window.fb.db,'nationrise_players',uid), {
-        name: state.myNation.name, flag: state.myNation.flag,
-        gdp: state.myNation.gdp, startGdp: state.myNation.startGdp,
-        tier: state.myNation.tier, rank: getMyRank(),
-        actionsUsed: state.stats?.actionsUsed||0, savedAt: Date.now(),
+      // Full save doc (private progress)
+      await window.fb.setDoc(window.fb.doc(window.fb.db,'nationrise_saves', currentUser.uid), data);
+      // Public ranking doc (leaderboard)
+      await window.fb.setDoc(window.fb.doc(window.fb.db,'nationrise_players', currentUser.uid), {
+        uid: currentUser.uid,
+        owner: currentUser.displayName || '플레이어',
+        name: state.myNation.name,
+        flag: state.myNation.flag,
+        gdp: state.myNation.gdp,
+        startGdp: state.myNation.startGdp,
+        tier: state.myNation.tier,
+        actionsUsed: state.stats?.actionsUsed||0,
+        savedAt: Date.now(),
       });
-    } catch(e){}
+      setSyncStatus('synced');
+    } catch(e){ console.error('클라우드 저장 실패', e); setSyncStatus('local'); }
   }
 }
 
-function loadState() {
+async function loadStateFromCloud(uid) {
+  // Try cloud first
+  if (window.FIREBASE_ENABLED && window.fb) {
+    try {
+      const snap = await window.fb.getDoc(window.fb.doc(window.fb.db,'nationrise_saves', uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        applyLoadedData(data);
+        return true;
+      }
+    } catch(e){ console.error('클라우드 로드 실패', e); }
+  }
+  // Fallback to local
+  loadState(uid);
+  return false;
+}
+
+function applyLoadedData(data) {
+  if (!data) return;
+  if (data.myNation) state.myNation = data.myNation;
+  if (data.history) state.history = data.history;
+  if (data.badges) state.badges = data.badges;
+  if (data.quizLog) state.quizLog = data.quizLog;
+  if (data.stats) state.stats = data.stats;
+  // Backfill new fields for older saves
+  if (state.myNation) {
+    const mn = state.myNation;
+    if (mn.treasury === undefined) mn.treasury = 50;
+    if (mn.debt === undefined) mn.debt = 0;
+    if (mn.creditRating === undefined) mn.creditRating = 5;
+    if (mn.stocks === undefined) mn.stocks = {};
+    if (mn.lastDecay === undefined) mn.lastDecay = Date.now();
+  }
+}
+
+function loadState(uid) {
   try {
-    const raw = localStorage.getItem('nationrise_v2');
+    const key = uid ? ('nationrise_v2_' + uid) : 'nationrise_v2';
+    let raw = localStorage.getItem(key);
+    if (!raw && uid) raw = localStorage.getItem('nationrise_v2'); // fallback
     if (!raw) return;
-    const data = JSON.parse(raw);
-    if (data.myNation) state.myNation = data.myNation;
-    if (data.history) state.history = data.history;
-    if (data.badges) state.badges = data.badges;
-    if (data.quizLog) state.quizLog = data.quizLog;
-    if (data.stats) state.stats = data.stats;
+    applyLoadedData(JSON.parse(raw));
   } catch(e){}
 }
 </script>

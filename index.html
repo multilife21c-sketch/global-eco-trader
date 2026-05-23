@@ -216,6 +216,11 @@
   .news-flag { font-size: 12px; }
   .news-country-code { font-weight: 700; }
   .news-impact { margin-left: auto; padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+  .news-breaking { padding: 1px 6px; border-radius: 3px; font-weight: 700; font-size: 9px; }
+  .news-breaking.up { background: rgba(16,185,129,0.2); color: var(--accent-green); }
+  .news-breaking.down { background: rgba(239,68,68,0.2); color: var(--accent-red); }
+  .news-item.breaking { border-left-width: 4px; }
+  .news-item.breaking .news-impact { margin-left: 6px; }
   .news-impact.positive { background: rgba(16,185,129,0.15); color: var(--accent-green); }
   .news-impact.negative { background: rgba(239,68,68,0.15); color: var(--accent-red); }
   .news-impact.neutral { background: rgba(156,163,175,0.15); color: var(--text-secondary); }
@@ -746,7 +751,7 @@
     const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
     const { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } =
       await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
-    const { getFirestore, doc, getDoc, setDoc } =
+    const { getFirestore, doc, getDoc, setDoc, collection, getDocs } =
       await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
 
     const app = initializeApp(firebaseConfig);
@@ -754,7 +759,7 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    window.fb = { auth, db, provider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, doc, getDoc, setDoc };
+    window.fb = { auth, db, provider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, doc, getDoc, setDoc, collection, getDocs };
 
     // 리다이렉트 로그인 결과 처리 (모바일)
     getRedirectResult(auth).catch(e => console.error('redirect result error', e));
@@ -1128,10 +1133,13 @@ function renderNews() {
   list.innerHTML = news.map((n, idx) => {
     const t = new Date(n.time);
     const timeStr = t.toLocaleString('ko-KR', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-    return `<div class="news-item ${n.category}" onclick="openNewsDetail(${idx})">
+    const breakingBadge = n.is_breaking ?
+      `<span class="news-breaking ${n.change_pct>=0?'up':'down'}">${n.change_pct>=0?'🚀 급등':'🚨 급락'} ${n.change_pct>=0?'+':''}${n.change_pct}%</span>` : '';
+    return `<div class="news-item ${n.category} ${n.is_breaking?'breaking':''}" onclick="openNewsDetail(${idx})">
       <div class="news-header">
         <span class="news-flag">${n.flag}</span>
         <span class="news-country-code">${n.code}</span>
+        ${breakingBadge}
         <span class="news-impact ${n.category}">${n.category==='positive'?'+ 호재':n.category==='negative'?'− 악재':'중립'}</span>
       </div>
       <div class="news-title">${n.title}</div>
@@ -1401,88 +1409,100 @@ function getMyReturn() {
 }
 
 // ============================================================
-// === 봇 트레이더 (게스트 모드 랭킹용) ===
+// === RANKING (실제 사용자만) ===
 // ============================================================
-const BOT_NAMES = [
-  '워런 김','이코노미스트','글로벌헌터','매크로마스터','신중한곰','불꽃황소',
-  '데이터분석가','월스트리트박','펀드매니저K','리스크테이커','가치투자자','퀀트여우',
-  '경제반장','트레이더민','지수추종자','역발상투자','버블헌터','안전제일'
-];
-// 봇 수익률은 시간 기반으로 결정론적 생성 (날짜별로 천천히 변동)
-function getBotTraders() {
-  const dayKey = new Date().toISOString().slice(0,10);
-  const hourKey = new Date().getUTCHours();
-  return BOT_NAMES.map((name, i) => {
-    const r = hashStr(name + dayKey + '_base');
-    const rh = hashStr(name + dayKey + hourKey + '_h');
-    // -25% ~ +45% 범위, 시간마다 약간 변동
-    const base = (r - 0.35) * 70;
-    const hourly = (rh - 0.5) * 6;
-    const ret = base + hourly;
-    const trades = Math.floor(hashStr(name+dayKey+'_t') * 80) + 5;
-    return { name, return: ret, trades, isBot: true };
-  });
-}
-
-// ============================================================
-// === RANKING ===
-// ============================================================
-let rankScope = 'global';
+let rankingCache = null;
 function openRanking() {
   document.getElementById('rankingModal').classList.add('active');
   renderRanking();
+  loadRankings();  // Firestore에서 실제 사용자 랭킹 비동기 로드
 }
+
+// Firestore의 rankings 컬렉션에서 모든 사용자 불러오기
+async function loadRankings() {
+  if (!window.FIREBASE_ENABLED || !window.fb || !window.fb.getDocs) {
+    rankingCache = null;
+    renderRanking();
+    return;
+  }
+  try {
+    const snap = await window.fb.getDocs(window.fb.collection(window.fb.db, 'rankings'));
+    const users = [];
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      users.push({
+        uid: docSnap.id,
+        name: d.name || '익명',
+        return: typeof d.return === 'number' ? d.return : 0,
+        trades: d.trades || 0,
+      });
+    });
+    rankingCache = users;
+  } catch(e) {
+    console.error('랭킹 로드 실패', e);
+    rankingCache = null;
+  }
+  renderRanking();
+}
+
 function renderRanking() {
   const body = document.getElementById('rankingBody');
   const myReturn = getMyReturn();
-  const myName = (currentUser && currentUser.displayName) ? currentUser.displayName : (state.nickname || '나 (게스트)');
-  const myEntry = { name: myName, return: myReturn, trades: state.stats.totalTrades, isMe: true };
+  const myUid = (currentUser && currentUser.uid) ? currentUser.uid : null;
+  const myName = (currentUser && currentUser.displayName) ? currentUser.displayName : '나';
 
-  let entries;
-  let scopeNote = '';
-  if (rankScope === 'global') {
-    // 봇 + 나 (Firebase 연동 시 실제 사용자로 대체 예정)
-    entries = [...getBotTraders(), myEntry];
-    scopeNote = window.FIREBASE_ENABLED ?
-      '전 세계 플레이어 + AI 트레이더와 경쟁 중' :
-      '※ Firebase 설정 전이라 AI 트레이더와 경쟁합니다. 설정하면 실제 전 세계 랭킹으로 전환됩니다.';
-  } else if (rankScope === 'friends') {
-    entries = [myEntry, ...getBotTraders().slice(0, 5).map(b => ({...b, name: '친구: '+b.name}))];
-    scopeNote = '※ 친구 기능은 Firebase 설정 후 친구를 추가하면 활성화됩니다.';
-  } else {
-    entries = [myEntry, ...getBotTraders().slice(0, 9).map(b => ({...b, name: '같은학교: '+b.name}))];
-    scopeNote = '※ 학교 랭킹은 같은 학교 코드를 입력한 학생들끼리 경쟁합니다.';
+  // 실제 사용자 목록 구성
+  let entries = [];
+  if (rankingCache && rankingCache.length > 0) {
+    entries = rankingCache.map(u => ({
+      name: u.name, return: u.return, trades: u.trades,
+      isMe: myUid && u.uid === myUid,
+    }));
+    // 내가 아직 랭킹에 없으면 추가
+    if (myUid && !entries.some(e => e.isMe)) {
+      entries.push({ name: myName, return: myReturn, trades: state.stats.totalTrades, isMe: true });
+    }
+  } else if (currentUser) {
+    // 로그인했지만 랭킹 데이터 로딩 전/혼자인 경우
+    entries = [{ name: myName, return: myReturn, trades: state.stats.totalTrades, isMe: true }];
+  }
+
+  // 로그인 안 한 경우 안내
+  if (!currentUser) {
+    body.innerHTML = `
+      <div style="text-align:center;padding:40px 20px;">
+        <div style="font-size:40px;margin-bottom:14px;">🏆</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:10px;">랭킹은 로그인 후 이용할 수 있어요</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">구글 로그인을 하면 실제 플레이어들과<br>수익률 순위를 겨룰 수 있습니다.</div>
+      </div>`;
+    return;
   }
 
   entries.sort((a,b) => b.return - a.return);
   const myRank = entries.findIndex(e => e.isMe) + 1;
+  const loadingNote = (window.FIREBASE_ENABLED && rankingCache === null) ?
+    '랭킹을 불러오는 중...' : `총 ${entries.length}명의 플레이어가 경쟁 중입니다.`;
 
   body.innerHTML = `
-    <div class="rank-tabs">
-      <button class="rank-tab ${rankScope==='global'?'active':''}" onclick="setRankScope('global')">🌍 전체</button>
-      <button class="rank-tab ${rankScope==='school'?'active':''}" onclick="setRankScope('school')">🏫 학교</button>
-      <button class="rank-tab ${rankScope==='friends'?'active':''}" onclick="setRankScope('friends')">👥 친구</button>
-    </div>
     <div style="background:rgba(59,130,246,0.08);border:1px solid var(--accent-blue);border-radius:8px;padding:12px 14px;margin-bottom:16px;text-align:center;">
       <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;">내 순위</div>
-      <div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--accent-blue);">${myRank}위 <span style="font-size:13px;color:var(--text-secondary);">/ ${entries.length}명</span></div>
+      <div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--accent-blue);">${myRank>0?myRank+'위':'-'} <span style="font-size:13px;color:var(--text-secondary);">/ ${entries.length}명</span></div>
       <div style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:${myReturn>=0?'var(--accent-green)':'var(--accent-red)'};margin-top:4px;">수익률 ${myReturn>=0?'+':''}${myReturn.toFixed(2)}%</div>
     </div>
-    ${entries.slice(0, 20).map((e, i) => {
+    ${entries.slice(0, 50).map((e, i) => {
       const rank = i+1;
       const rankCls = rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
       const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
       return `<div class="rank-row ${e.isMe?'me':''}">
         <div class="rank-num ${rankCls}">${medal}</div>
-        <div class="rank-name">${e.name}${e.isBot?'<span class="rank-bot-tag">AI</span>':''}${e.isMe?'<span class="rank-bot-tag" style="background:var(--accent-blue);color:white;">ME</span>':''}</div>
+        <div class="rank-name">${e.name}${e.isMe?'<span class="rank-bot-tag" style="background:var(--accent-blue);color:white;">ME</span>':''}</div>
         <div class="rank-trades">${e.trades}회</div>
         <div class="rank-return" style="color:${e.return>=0?'var(--accent-green)':'var(--accent-red)'};">${e.return>=0?'+':''}${e.return.toFixed(2)}%</div>
       </div>`;
     }).join('')}
-    <div style="font-size:11px;color:var(--text-muted);margin-top:14px;text-align:center;line-height:1.5;">${scopeNote}</div>
+    <div style="font-size:11px;color:var(--text-muted);margin-top:14px;text-align:center;line-height:1.5;">${loadingNote}</div>
   `;
 }
-function setRankScope(scope) { rankScope = scope; renderRanking(); }
 
 // ============================================================
 // === QUIZ ===
@@ -1741,6 +1761,13 @@ async function saveState() {
     setSyncStatus('syncing');
     try {
       await window.fb.setDoc(window.fb.doc(window.fb.db,'users',currentUser.uid), data);
+      // 공개 랭킹 데이터 (수익률만 공개)
+      await window.fb.setDoc(window.fb.doc(window.fb.db,'rankings',currentUser.uid), {
+        name: currentUser.displayName || '익명',
+        return: getMyReturn(),
+        trades: state.stats.totalTrades,
+        updatedAt: Date.now()
+      });
       setSyncStatus('synced');
     } catch(e){ console.error('Firestore 저장 실패',e); setSyncStatus('offline'); }
   }
@@ -1850,9 +1877,6 @@ function startGame() {
   document.querySelectorAll('.modal-backdrop').forEach(bd => {
     bd.addEventListener('click', e => { if (e.target === bd) bd.classList.remove('active'); });
   });
-
-  // 급등락 속보 팝업 가동 (게임 진입 후 1.5초 뒤)
-  setTimeout(queueBreakingNews, 1500);
 }
 
 // 초기 로드

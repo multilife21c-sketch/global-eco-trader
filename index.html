@@ -274,41 +274,6 @@
   .toast-title { font-weight: 600; margin-bottom: 2px; font-family: var(--font-display); font-size: 12px; }
   .toast-msg { color: var(--text-secondary); font-size: 11px; }
 
-  /* BREAKING NEWS POPUP (급등락 속보) */
-  .breaking-overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
-    z-index: 4000; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); pointer-events: none; }
-  .breaking-overlay.active { display: flex; }
-  .breaking-card { width: 420px; max-width: 88vw; border-radius: 16px; padding: 28px 32px; text-align: center;
-    box-shadow: 0 20px 70px rgba(0,0,0,0.6); animation: breaking-in 0.4s cubic-bezier(0.34,1.56,0.64,1);
-    border: 2px solid; }
-  .breaking-card.down { background: linear-gradient(160deg, #2a0a0a 0%, #4a1010 100%); border-color: var(--accent-red); }
-  .breaking-card.up { background: linear-gradient(160deg, #052e1a 0%, #0a4a2e 100%); border-color: var(--accent-green); }
-  @keyframes breaking-in { 0% { transform: scale(0.7) translateY(30px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
-  .breaking-card.closing { animation: breaking-out 0.35s ease-in forwards; }
-  @keyframes breaking-out { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.85) translateY(-20px); opacity: 0; } }
-  .breaking-label { display: inline-block; font-family: var(--font-display); font-size: 13px; font-weight: 700;
-    letter-spacing: 1px; padding: 4px 14px; border-radius: 20px; margin-bottom: 14px; animation: breaking-blink 0.8s infinite; }
-  .breaking-card.down .breaking-label { background: var(--accent-red); color: white; }
-  .breaking-card.up .breaking-label { background: var(--accent-green); color: #0a0e1a; }
-  @keyframes breaking-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
-  .breaking-flag { font-size: 56px; line-height: 1; margin-bottom: 8px; }
-  .breaking-country { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-  .breaking-change { font-family: var(--font-mono); font-size: 38px; font-weight: 700; margin-bottom: 12px; }
-  .breaking-card.down .breaking-change { color: #ff6b6b; }
-  .breaking-card.up .breaking-change { color: #4ade80; }
-  .breaking-title { font-size: 14px; color: rgba(255,255,255,0.9); line-height: 1.5; margin-bottom: 18px; }
-  .breaking-bar { height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; }
-  .breaking-bar-fill { height: 100%; width: 100%; transform-origin: left; }
-  .breaking-card.down .breaking-bar-fill { background: var(--accent-red); }
-  .breaking-card.up .breaking-bar-fill { background: var(--accent-green); }
-  .breaking-bar-fill.run { animation: breaking-countdown 3s linear forwards; }
-  @keyframes breaking-countdown { 0% { transform: scaleX(1); } 100% { transform: scaleX(0); } }
-  @media (max-width: 768px) {
-    .breaking-card { padding: 24px; }
-    .breaking-flag { font-size: 44px; }
-    .breaking-change { font-size: 30px; }
-  }
-
   /* RANKING */
   .rank-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
   .rank-tab { flex: 1; padding: 9px; background: var(--bg-tertiary); border: 1px solid var(--border-default);
@@ -718,18 +683,6 @@
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
-
-<!-- Breaking News Popup (급등락 속보) -->
-<div class="breaking-overlay" id="breakingOverlay">
-  <div class="breaking-card" id="breakingCard">
-    <div class="breaking-label" id="breakingLabel">🚨 속보</div>
-    <div class="breaking-flag" id="breakingFlag">🏳️</div>
-    <div class="breaking-country" id="breakingCountry">국가</div>
-    <div class="breaking-change" id="breakingChange">0%</div>
-    <div class="breaking-title" id="breakingTitle">제목</div>
-    <div class="breaking-bar"><div class="breaking-bar-fill" id="breakingBarFill"></div></div>
-  </div>
-</div>
 
 <!-- ============ FIREBASE CONFIG ============ -->
 <script type="module">
@@ -1214,60 +1167,6 @@ function showTerm(termKey) {
     <div style="font-size:12px;color:var(--accent-green);font-style:italic;padding:10px;background:var(--bg-tertiary);border-radius:6px;">예) ${g.example}</div>
   `;
   document.getElementById('termModal').classList.add('active');
-}
-
-// ============================================================
-// === BREAKING NEWS (급등락 속보 팝업) ===
-// ============================================================
-let breakingQueue = [];
-let breakingActive = false;
-let shownBreakingIds = new Set();  // 중복 표시 방지 (세션 내)
-
-function queueBreakingNews() {
-  const news = (SEED_DATA && SEED_DATA.news) ? SEED_DATA.news : [];
-  // 5% 이상 급등락 뉴스만 추출 (아직 안 보여준 것)
-  news.forEach((n, idx) => {
-    const key = (SEED_DATA.hour_seed || '') + '_' + n.code + '_' + idx;
-    if (n.is_breaking && !shownBreakingIds.has(key)) {
-      shownBreakingIds.add(key);
-      breakingQueue.push(n);
-    }
-  });
-  if (!breakingActive) processBreakingQueue();
-}
-
-function processBreakingQueue() {
-  if (breakingQueue.length === 0) { breakingActive = false; return; }
-  breakingActive = true;
-  const n = breakingQueue.shift();
-  const isUp = n.change_pct >= 0;
-  const overlay = document.getElementById('breakingOverlay');
-  const card = document.getElementById('breakingCard');
-  const barFill = document.getElementById('breakingBarFill');
-
-  card.className = 'breaking-card ' + (isUp ? 'up' : 'down');
-  document.getElementById('breakingLabel').textContent = isUp ? '🚀 급등 속보' : '🚨 급락 속보';
-  document.getElementById('breakingFlag').textContent = n.flag;
-  document.getElementById('breakingCountry').textContent = `${n.name} (${n.code})`;
-  document.getElementById('breakingChange').textContent = `${isUp?'+':''}${n.change_pct}%`;
-  document.getElementById('breakingTitle').textContent = n.title;
-
-  overlay.classList.add('active');
-  // 카운트다운 바 애니메이션 재시작
-  barFill.classList.remove('run');
-  void barFill.offsetWidth; // reflow
-  barFill.classList.add('run');
-
-  // 3초 후 닫고 다음 처리
-  setTimeout(() => {
-    card.classList.add('closing');
-    setTimeout(() => {
-      overlay.classList.remove('active');
-      card.classList.remove('closing');
-      // 다음 속보 (약간 텀)
-      setTimeout(processBreakingQueue, 400);
-    }, 350);
-  }, 3000);
 }
 
 // ============================================================

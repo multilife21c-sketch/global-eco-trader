@@ -63,7 +63,8 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   font-weight:700; letter-spacing:1.5px; cursor:pointer; transition:opacity .2s; }
 .onboard-start:hover { opacity:0.9; }
 .onboard-start:disabled { opacity:0.4; cursor:not-allowed; }
-.flag-selector { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-top:10px; max-height:160px; overflow-y:auto; }
+.flag-selector { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-top:10px; max-height:156px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border2) transparent; background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:8px; }
+.flag-selector::-webkit-scrollbar{width:4px;} .flag-selector::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 .flag-opt { padding:8px 4px; border:2px solid var(--border); border-radius:8px; background:var(--bg2);
   cursor:pointer; font-size:20px; text-align:center; transition:all .15s; }
 .flag-opt:hover { border-color:var(--blue); }
@@ -979,50 +980,67 @@ const INIT_GDP = 0.05; // start at near bottom (billions)
 const WORLD_LOOP_MS = 3000; // 3 seconds per world tick
 const AP_REGEN_MS = 30000; // 30 seconds per AP
 
-window.addEventListener('firebase-ready', init);
-setTimeout(()=>{ if(!state.myNation) init(); }, 2000);
-
+let _initDone = false;
 function init() {
-  // Build flag selector
-  buildFlagSelector();
+  if (_initDone) return;
+  _initDone = true;
   // Setup countries
   COUNTRIES_RAW.forEach(c => { countryMap[c.code] = c; });
   // Init world prices
   COUNTRIES_RAW.forEach(c => { worldPrices[c.code] = {current: c.gdp, prev: c.gdp, change_pct: 0}; });
   // Load saved state
   loadState();
-  // Show onboarding if no nation
+  // Build flag selector (always, regardless of myNation)
+  buildFlagSelector();
+  // Name input listener
+  const nameInp = document.getElementById('nationNameInput');
+  nameInp.addEventListener('input', checkOnboardReady);
+  nameInp.addEventListener('keydown', e=>{ if(e.key==='Enter') { e.preventDefault(); if(!document.getElementById('onboardStartBtn').disabled) createMyNation(); } });
+  // Show onboarding or start game
   if (!state.myNation) {
-    document.getElementById('onboardOverlay').classList.remove('hidden');
-    document.getElementById('onboardOverlay').style.display = 'flex';
+    const ov = document.getElementById('onboardOverlay');
+    ov.classList.remove('hidden');
+    ov.style.display = 'flex';
+    setTimeout(()=>nameInp.focus(), 300);
   } else {
+    document.getElementById('onboardOverlay').style.display = 'none';
     startGame();
   }
-  // Name input listener
-  document.getElementById('nationNameInput').addEventListener('input', checkOnboardReady);
 }
+
+// Run on DOMContentLoaded (most reliable), also listen for firebase-ready
+document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(init, 100); });
+window.addEventListener('firebase-ready', init);
 
 function buildFlagSelector() {
   const wrap = document.getElementById('flagSelector');
-  const flags = ['🌸','⭐','🔥','🌊','🏔️','🌙','☀️','🌿','💎','🦁','🦅','🐉','🌺','❄️','🌴','⚡','🎯','🌈','🏆','🌟','🗡️','🔮','🎋','🦋','🏛️','🎪','🌙','🎲','🔱','🛡️'];
-  flags.forEach(f => {
+  if (!wrap) return;
+  wrap.innerHTML = ''; // clear any duplicates
+  const flags = ['🌸','⭐','🔥','🌊','🏔️','🌙','☀️','🌿','💎','🦁','🦅','🐉','🌺','❄️','🌴','⚡','🎯','🌈','🏆','🌟','🗡️','🔮','🎋','🦋','🏛️','🎲','🔱','🛡️','🌍','🎯'];
+  flags.forEach((f, idx) => {
     const d = document.createElement('div');
-    d.className = 'flag-opt'; d.textContent = f;
-    d.onclick = () => {
+    d.className = 'flag-opt';
+    d.textContent = f;
+    d.title = f;
+    d.addEventListener('click', () => {
       document.querySelectorAll('.flag-opt').forEach(x=>x.classList.remove('selected'));
       d.classList.add('selected');
       state.pendingFlag = f;
       checkOnboardReady();
-    };
+    });
     wrap.appendChild(d);
+    // Auto-select first
+    if (idx === 0) {
+      d.classList.add('selected');
+      state.pendingFlag = f;
+    }
   });
-  // default select first
-  wrap.firstChild.click();
 }
 
 function checkOnboardReady() {
-  const name = document.getElementById('nationNameInput').value.trim();
-  document.getElementById('onboardStartBtn').disabled = name.length < 1;
+  const name = document.getElementById('nationNameInput')?.value.trim() || '';
+  const btn = document.getElementById('onboardStartBtn');
+  if (btn) btn.disabled = name.length < 1;
 }
 
 function createMyNation() {

@@ -1876,7 +1876,8 @@ function openRanking() {
     const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
     const isMe = c.isMe;
     const chg = isMe ? ((mn.gdp-mn.startGdp)/mn.startGdp*100) : (c.change_pct||0);
-    return `<div class="rank-row ${isMe?'mine-rank':''}" onclick="${isMe?'':``selectCountry('${c.code}');closeModal('rankingModal')``}">
+    const clickAttr = isMe ? '' : `onclick="selectCountry('${c.code}');closeModal('rankingModal')"`;
+    return `<div class="rank-row ${isMe?'mine-rank':''}" ${clickAttr}>
       <div class="rank-num ${rankCls}">${medal}</div>
       <div class="rank-flag">${c.flag}</div>
       <div>

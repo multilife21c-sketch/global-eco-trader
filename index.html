@@ -1098,10 +1098,19 @@ function signInWithGoogle() {
   } catch(e) { showToast('error','로그인 실패', e.message||'다시 시도해주세요.'); }
 }
 
+function resetGameState() {
+  state.myNation = null;
+  state.history = {};
+  state.badges = [];
+  state.quizLog = {};
+  state.stats = { actionsUsed: 0, newsRead: 0, quizzesCompleted: 0, stockTrades: 0, stockProfit: 0 };
+}
+
 async function onAuthChange(user) {
   if (!user) return;
   currentUser = user;
   setSyncStatus('synced');
+  resetGameState();           // clear any prior (guest/other-account) data first
   await loadStateFromCloud(user.uid);
   proceedAfterLogin(user.displayName || '플레이어');
 }
@@ -1109,7 +1118,8 @@ async function onAuthChange(user) {
 function playAsGuest() {
   currentUser = null;
   setSyncStatus('local');
-  loadState(); // localStorage
+  resetGameState();           // start clean, then load guest-only data
+  loadState();
   proceedAfterLogin('게스트');
 }
 
@@ -1223,7 +1233,15 @@ function createMyNation() {
   showToast('success','🎉 건국 성공!',`${flag} ${name} (이)가 세계 무대에 등장했습니다! GDP 꼴찌에서 세계 1위를 향해 도전하세요!`);
 }
 
+let _gameStarted = false;
 function startGame() {
+  if (_gameStarted) {
+    // Re-entry (e.g. account already loaded): just refresh UI
+    document.getElementById('onboardOverlay').style.display = 'none';
+    renderCountryList(); renderPolicies(); updateMyNationUI(); renderTickerTape();
+    return;
+  }
+  _gameStarted = true;
   renderCountryList();
   renderPolicies();
   updateMyNationUI();
@@ -2591,10 +2609,10 @@ async function saveState() {
     stats: state.stats,
     savedAt: Date.now(),
   };
-  // Local backup (per-uid key + legacy key)
+  // Local backup — keyed per account (guest vs each logged-in uid), never a shared key
   try {
-    localStorage.setItem('nationrise_v2_' + getMyUid(), JSON.stringify(data));
-    localStorage.setItem('nationrise_v2', JSON.stringify(data));
+    const key = currentUser ? ('nationrise_v2_' + currentUser.uid) : 'nationrise_v2_guest';
+    localStorage.setItem(key, JSON.stringify(data));
   } catch(e){}
 
   // Cloud sync (logged-in users)
@@ -2630,10 +2648,18 @@ async function loadStateFromCloud(uid) {
         applyLoadedData(data);
         return true;
       }
+      // No cloud save for this account: check ONLY this user's local key (no shared fallback)
+      const localRaw = localStorage.getItem('nationrise_v2_' + uid);
+      if (localRaw) { applyLoadedData(JSON.parse(localRaw)); return true; }
+      // Genuinely new account -> leave state.myNation = null so onboarding shows
+      return false;
     } catch(e){ console.error('클라우드 로드 실패', e); }
   }
-  // Fallback to local
-  loadState(uid);
+  // Firebase unavailable: per-user local only, no shared fallback
+  try {
+    const localRaw = localStorage.getItem('nationrise_v2_' + uid);
+    if (localRaw) applyLoadedData(JSON.parse(localRaw));
+  } catch(e){}
   return false;
 }
 
@@ -2655,11 +2681,10 @@ function applyLoadedData(data) {
   }
 }
 
-function loadState(uid) {
+// Guest-only local load (uses shared key)
+function loadState() {
   try {
-    const key = uid ? ('nationrise_v2_' + uid) : 'nationrise_v2';
-    let raw = localStorage.getItem(key);
-    if (!raw && uid) raw = localStorage.getItem('nationrise_v2'); // fallback
+    const raw = localStorage.getItem('nationrise_v2_guest');
     if (!raw) return;
     applyLoadedData(JSON.parse(raw));
   } catch(e){}

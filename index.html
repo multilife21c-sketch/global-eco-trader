@@ -471,6 +471,8 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   <div class="live-badge"><div class="pulse"></div>VIRTUAL WORLD</div>
   <div class="topbar-nav">
     <button class="nav-btn" onclick="openView('map')">🗺️ <span>세계지도</span></button>
+    <button class="nav-btn" onclick="openMissions()" style="position:relative;">📋 <span>미션</span><span data-mission-badge style="display:none;position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:8px;align-items:center;justify-content:center;font-family:var(--font-mono);"></span></button>
+    <button class="nav-btn" onclick="openDiplomacy()">🤝 <span>외교</span></button>
     <button class="nav-btn" onclick="openRanking()">🏆 <span>랭킹</span></button>
     <button class="nav-btn" onclick="openQuiz()">🎓 <span>퀴즈</span></button>
     <button class="nav-btn" onclick="openBadges()">🎖️ <span>배지</span></button>
@@ -661,6 +663,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   <button class="mob-btn act" data-p="left" onclick="mobSwitch('left')"><span>🌍</span><small>순위</small></button>
   <button class="mob-btn" data-p="center" onclick="mobSwitch('center')"><span>📊</span><small>차트</small></button>
   <button class="mob-btn" data-p="right" onclick="mobSwitch('right')"><span>🏛️</span><small>경영</small></button>
+  <button class="mob-btn" onclick="openMissions()" style="position:relative;"><span>📋</span><small>미션</small><span data-mission-badge style="display:none;position:absolute;top:2px;right:14px;min-width:15px;height:15px;padding:0 3px;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:8px;align-items:center;justify-content:center;font-family:var(--font-mono);"></span></button>
   <button class="mob-btn" onclick="openRanking()"><span>🏆</span><small>랭킹</small></button>
 </div>
 
@@ -730,6 +733,54 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   <div class="modal">
     <div class="mh"><div class="mh-title">📊 글로벌 주식시장</div><button class="mh-close" onclick="closeModal('stockModal')">×</button></div>
     <div class="mb" id="stockBody"></div>
+  </div>
+</div>
+
+<!-- Missions -->
+<div class="modal-bd" id="missionModal">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">📋 일일 미션</div><button class="mh-close" onclick="closeModal('missionModal')">×</button></div>
+    <div class="mb" id="missionBody"></div>
+  </div>
+</div>
+
+<!-- Diplomacy -->
+<div class="modal-bd" id="diploModal">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">🤝 외교 · 동맹</div><button class="mh-close" onclick="closeModal('diploModal')">×</button></div>
+    <div class="mb" id="diploBody"></div>
+  </div>
+</div>
+
+<!-- Daily Check-in -->
+<div class="modal-bd" id="checkinModal">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mh-title">📅 출석 보상</div><button class="mh-close" onclick="closeModal('checkinModal')">×</button></div>
+    <div class="mb" id="checkinBody"></div>
+  </div>
+</div>
+
+<!-- Crisis Choice -->
+<div class="modal-bd" id="crisisModal">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mh-title" id="crisisTitle">⚠️ 긴급 상황</div></div>
+    <div class="mb" id="crisisBody"></div>
+  </div>
+</div>
+
+<!-- Scenario Challenges -->
+<div class="modal-bd" id="scenarioModal">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">⚔️ 시나리오 챌린지</div><button class="mh-close" onclick="closeModal('scenarioModal')">×</button></div>
+    <div class="mb" id="scenarioBody"></div>
+  </div>
+</div>
+
+<!-- Season Info -->
+<div class="modal-bd" id="seasonModal">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mh-title">🗓️ 시즌 정보</div><button class="mh-close" onclick="closeModal('seasonModal')">×</button></div>
+    <div class="mb" id="seasonBody"></div>
   </div>
 </div>
 
@@ -1034,6 +1085,16 @@ let state = {
   policyTab: 'economy',
   worldNews: [],  // current news list
   saveTimeout: null,
+  // ===== 신규 기능 상태 =====
+  missions: null,        // {date, list:[{id,...,done,claimed}]}
+  checkin: null,         // {lastDate, streak, claimedToday}
+  alliances: [],         // [code, code, ...] 동맹 맺은 국가 코드
+  lastCrisis: 0,         // 마지막 위기 선택 이벤트 시각
+  challenges: {},        // {challengeId: {claimed:true}}
+  tradeDeals: [],        // [code,...] 무역협정 체결국
+  rival: null,           // {code, name, flag, gdp} AI 라이벌
+  season: null,          // {id, startGdp, claimed}
+  missionTab: 'daily',   // 미션 모달 탭
 };
 
 // World GDP prices (live drift)
@@ -1104,6 +1165,15 @@ function resetGameState() {
   state.badges = [];
   state.quizLog = {};
   state.stats = { actionsUsed: 0, newsRead: 0, quizzesCompleted: 0, stockTrades: 0, stockProfit: 0 };
+  state.missions = null;
+  state.checkin = null;
+  state.alliances = [];
+  state.lastCrisis = 0;
+  state.challenges = {};
+  state.tradeDeals = [];
+  state.rival = null;
+  state.season = null;
+  state.missionTab = 'daily';
 }
 
 async function onAuthChange(user) {
@@ -1127,24 +1197,87 @@ function openAccount() {
   const mn = state.myNation;
   const loggedIn = !!currentUser;
   const stockVal = mn ? getStockValue() : 0;
+  const st = state.stats || {};
+  const c = state.checkin || {streak:0};
+  const growth = mn ? ((mn.gdp-mn.startGdp)/Math.max(mn.startGdp,0.0001)*100) : 0;
+  const playDays = mn?.createdAt ? Math.max(1, Math.floor((Date.now()-mn.createdAt)/86400000)+1) : 0;
+  const createdStr = mn?.createdAt ? new Date(mn.createdAt).toLocaleDateString('ko-KR') : '—';
+  const profitColor = (st.stockProfit||0)>=0 ? 'var(--green)' : 'var(--red)';
+
   document.getElementById('accountBody').innerHTML = `
     <div style="text-align:center;margin-bottom:16px;">
       <div style="font-size:40px;">${loggedIn?'🔐':'👤'}</div>
       <div style="font-size:15px;font-weight:700;margin-top:6px;">${loggedIn ? (currentUser.displayName||'플레이어') : '게스트 플레이어'}</div>
       <div style="font-size:12px;color:var(--txt2);margin-top:2px;">${loggedIn ? (currentUser.email||'') : '이 기기에만 저장됩니다'}</div>
+      <div style="font-size:10px;color:var(--txt3);margin-top:6px;">🔒 위 정보는 나만 볼 수 있으며 랭킹에는 공개되지 않습니다</div>
     </div>
-    ${mn?`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-        <span style="font-size:24px;">${mn.flag}</span>
-        <div><div style="font-size:14px;font-weight:700;">${mn.name}</div><div style="font-size:11px;color:var(--txt2);">Tier ${mn.tier} · 세계 ${getMyRank()}위</div></div>
+
+    ${mn?`
+    <!-- 국가 요약 카드 -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <span style="font-size:28px;">${mn.flag}</span>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:700;">${mn.name}</div>
+          <div style="font-size:11px;color:var(--txt2);">Tier ${mn.tier} · 세계 ${getMyRank()}위 · 건국 ${createdStr}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:${growth>=0?'var(--green)':'var(--red)'};">${growth>=0?'+':''}${growth.toFixed(1)}%</div>
+          <div style="font-size:9px;color:var(--txt3);">총 성장률</div>
+        </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">
         <div>💰 국고: <strong>${fmtGDP(mn.treasury||0)}</strong></div>
         <div>📉 부채: <strong>${fmtGDP(mn.debt||0)}</strong></div>
-        <div>📦 주식: <strong>${fmtGDP(stockVal)}</strong></div>
+        <div>📦 주식자산: <strong>${fmtGDP(stockVal)}</strong></div>
         <div>⭐ 신용: <strong>${creditLabel(mn.creditRating||5)}</strong></div>
       </div>
+    </div>
+
+    <!-- 바로가기 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+      <button onclick="closeModal('accountModal');openSeason()" style="padding:11px;border-radius:9px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">🗓️ 시즌 정보</button>
+      <button onclick="closeModal('accountModal');openCheckin()" style="padding:11px;border-radius:9px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">📅 출석 보상</button>
+    </div>
+
+    <!-- 성장 그래프 -->
+    <div style="margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--txt2);font-weight:700;margin-bottom:8px;">📈 GDP 성장 추이</div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;">
+        ${renderGrowthChart()}
+      </div>
+    </div>
+
+    <!-- 누적 통계 대시보드 -->
+    <div style="margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--txt2);font-weight:700;margin-bottom:8px;">📊 누적 기록</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+        ${profileStat('🏛️', st.actionsUsed||0, '정책 실행')}
+        ${profileStat('📈', st.stockTrades||0, '주식 거래')}
+        ${profileStat('🎖️', state.badges.length, '배지')}
+        ${profileStat('🤝', state.alliances?.length||0, '동맹')}
+        ${profileStat('💱', state.tradeDeals?.length||0, '무역협정')}
+        ${profileStat('📋', st.missionsClaimed||0, '미션 완료')}
+        ${profileStat('📅', c?c.streak||0:0, '연속 출석')}
+        ${profileStat('🛡️', st.crisisResolved||0, '위기 극복')}
+        ${profileStat('📆', playDays, '플레이 일수')}
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--txt2);">💹 주식 누적 손익</span>
+        <span style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:${profitColor};">${(st.stockProfit||0)>=0?'+':''}${fmtGDP(Math.abs(st.stockProfit||0))}</span>
+      </div>
+    </div>
+
+    <!-- 랭킹 별칭 설정 -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:11px;color:var(--txt2);font-weight:700;margin-bottom:4px;">🏷️ 랭킹 표시 별칭 (선택)</div>
+      <div style="font-size:10px;color:var(--txt3);margin-bottom:8px;line-height:1.5;">랭킹에는 구글 닉네임 대신 이 별칭이 표시됩니다. 비워두면 국가 이름이 표시됩니다.</div>
+      <div style="display:flex;gap:6px;">
+        <input id="aliasInput" maxlength="16" value="${(mn.alias||'').replace(/"/g,'&quot;')}" placeholder="${mn.name}" style="flex:1;padding:9px 10px;background:var(--bg3,#0a0f1a);border:1px solid var(--border2);border-radius:8px;color:var(--txt);font-family:var(--font-kr);font-size:12px;outline:none;">
+        <button onclick="saveAlias()" style="padding:9px 14px;background:var(--amber);border:none;border-radius:8px;color:#000;font-family:var(--font-kr);font-size:12px;font-weight:700;cursor:pointer;">저장</button>
+      </div>
     </div>`:''}
+
     ${loggedIn ? `
       <div style="font-size:11px;color:var(--green);text-align:center;margin-bottom:12px;">✅ 클라우드 동기화 중 — 모든 기기에서 이어서 플레이</div>
       <button onclick="doSignOut()" style="width:100%;padding:12px;background:transparent;border:1px solid var(--border2);border-radius:8px;color:var(--txt2);font-family:var(--font-kr);font-size:13px;cursor:pointer;">로그아웃</button>
@@ -1154,6 +1287,59 @@ function openAccount() {
     `}
   `;
   document.getElementById('accountModal').classList.add('active');
+}
+
+function profileStat(icon, val, label) {
+  return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 4px;text-align:center;">
+    <div style="font-size:16px;">${icon}</div>
+    <div style="font-family:var(--font-mono);font-size:16px;font-weight:700;color:var(--amber);margin-top:2px;">${val}</div>
+    <div style="font-size:9px;color:var(--txt3);margin-top:1px;">${label}</div>
+  </div>`;
+}
+
+function renderGrowthChart() {
+  const hist = (state.history && state.history[MY_CODE]) || [];
+  if (hist.length < 2) {
+    return `<div style="text-align:center;padding:20px;color:var(--txt3);font-size:11px;">아직 데이터가 부족합니다.<br>국가를 운영하면 성장 그래프가 그려집니다.</div>`;
+  }
+  // 최근 80개 포인트만 사용
+  const pts = hist.slice(-80);
+  const W = 280, H = 90, pad = 4;
+  const gdps = pts.map(p=>p.gdp);
+  const min = Math.min(...gdps), max = Math.max(...gdps);
+  const range = (max-min) || 1;
+  const stepX = (W - pad*2) / (pts.length-1);
+  const coords = pts.map((p,i)=>{
+    const x = pad + i*stepX;
+    const y = H - pad - ((p.gdp-min)/range)*(H-pad*2);
+    return [x,y];
+  });
+  const line = coords.map((c,i)=>`${i===0?'M':'L'}${c[0].toFixed(1)},${c[1].toFixed(1)}`).join(' ');
+  const area = `${line} L${coords[coords.length-1][0].toFixed(1)},${H-pad} L${coords[0][0].toFixed(1)},${H-pad} Z`;
+  const up = gdps[gdps.length-1] >= gdps[0];
+  const col = up ? 'var(--green)' : 'var(--red)';
+  const colHex = up ? '#00e5a0' : '#ff4757';
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" style="display:block;">
+    <defs><linearGradient id="gchart" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${colHex}" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="${colHex}" stop-opacity="0"/>
+    </linearGradient></defs>
+    <path d="${area}" fill="url(#gchart)"/>
+    <path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="${coords[coords.length-1][0].toFixed(1)}" cy="${coords[coords.length-1][1].toFixed(1)}" r="3" fill="${col}"/>
+  </svg>
+  <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--txt3);font-family:var(--font-mono);margin-top:4px;">
+    <span>최저 ${fmtGDPShort(min)}</span>
+    <span>최고 ${fmtGDPShort(max)}</span>
+  </div>`;
+}
+
+function saveAlias() {
+  if (!state.myNation) return;
+  const v = (document.getElementById('aliasInput')?.value || '').trim().slice(0,16);
+  state.myNation.alias = v;
+  saveState();
+  showToast('success','🏷️ 별칭 저장', v ? `랭킹에 "${v}"(으)로 표시됩니다.` : '별칭을 비웠습니다. 국가 이름이 표시됩니다.');
 }
 
 function doSignOut() {
@@ -1259,6 +1445,12 @@ function startGame() {
   });
   // Map canvas
   initMapCanvas();
+  // 신규 기능 초기화
+  ensureMissions();
+  ensureRival();
+  ensureSeason();
+  updateMissionBadge();
+  checkDailyLogin();   // 출석 보상 자동 체크
 }
 
 // ============================================================
@@ -1301,11 +1493,14 @@ function worldTick() {
     // 4) Random market noise
     const noise = (seededRand(seed + 777) - 0.5) * 0.02;
 
-    const totalRate = baseRate + debtDrag + noise;
+    // 4.5) 동맹 성장 보너스 — 동맹국 수에 비례
+    const allyBonus = (state.alliances?.length||0) * 0.003; // 동맹 1국당 +0.003%/틱
+
+    const totalRate = baseRate + debtDrag + noise + allyBonus;
     mn.gdp = Math.max(0.01, mn.gdp * (1 + totalRate/100));
 
     // 5) Treasury income — GDP에 비례한 세수 (3초마다 소액)
-    mn.treasury = (mn.treasury||0) + mn.gdp * 0.0008;
+    mn.treasury = (mn.treasury||0) + mn.gdp * 0.0008 + tradeBonus();
 
     // 6) Debt interest accrual — 부채 이자
     if (mn.debt > 0) {
@@ -1325,6 +1520,23 @@ function worldTick() {
     if (health < 30 && seededRand(seed+999) > 0.97) {
       triggerCrisisEvent();
     }
+
+    // 9) 위기 대응 선택 이벤트 (확률 기반, 모달이 안 떠 있을 때만)
+    if (!document.getElementById('crisisModal').classList.contains('active')) {
+      maybeTriggerCrisisChoice();
+    }
+
+    // 10) 성장 미션 진행도 갱신
+    bumpMission('growth', 0);
+
+    // 11) AI 라이벌 성장
+    rivalTick();
+
+    // 12) 챌린지 달성 알림 배지 갱신
+    updateMissionBadge();
+
+    // 13) 시즌 자동 정산/갱신
+    ensureSeason();
   }
 
   // News refresh
@@ -2063,6 +2275,7 @@ function buyStock(code) {
   h.avgPrice = (h.avgPrice*h.shares + price*shares)/(h.shares+shares);
   h.shares += shares;
   state.stats.stockTrades = (state.stats.stockTrades||0)+1;
+  bumpMission('trades', 1);
   scheduleSave();
   renderStockMarket();
   updateMyNationUI();
@@ -2080,7 +2293,8 @@ function sellStock(code) {
   mn.treasury = (mn.treasury||0) + proceeds;
   delete mn.stocks[code];
   state.stats.stockTrades = (state.stats.stockTrades||0)+1;
-  if (profit>0) state.stats.stockProfit = (state.stats.stockProfit||0) + profit;
+  bumpMission('trades', 1);
+  state.stats.stockProfit = (state.stats.stockProfit||0) + profit;
   scheduleSave();
   renderStockMarket();
   updateMyNationUI();
@@ -2181,6 +2395,7 @@ function executeAction(cat, id) {
   if (!mn.cdMap) mn.cdMap = {};
   mn.cdMap[id] = Date.now() + action.cooldown * 1000;
   state.stats.actionsUsed = (state.stats.actionsUsed||0)+1;
+  bumpMission('actions', 1);
   // Health recovery
   mn.health = Math.min(100, (mn.health||100) + (action.healthBoost||8));
   // Credit rating
@@ -2270,6 +2485,7 @@ function openNews(idx) {
   const n = state.worldNews[idx];
   if (!n) return;
   state.stats.newsRead = (state.stats.newsRead||0)+1;
+  bumpMission('news', 1);
   const impactLabel = n.type==='pos' ? `이 뉴스는 ${n.country}의 GDP에 긍정적 영향을 줍니다.` :
                       n.type==='neg' ? `이 뉴스는 ${n.country}의 GDP에 부정적 영향을 줍니다.` :
                       n.type==='mine' ? `내 나라의 정책 성과가 세계에 알려지고 있습니다.` :
@@ -2340,7 +2556,7 @@ async function loadPlayerRanking() {
   if (mn) {
     const existing = players.find(p=>p.uid===myUid);
     if (existing) { existing.gdp = mn.gdp; existing.isMe = true; }
-    else players.push({uid:myUid, name:mn.name, flag:mn.flag, gdp:mn.gdp, tier:mn.tier, isMe:true, owner:(currentUser?.displayName||'나')});
+    else players.push({uid:myUid, name:mn.name, flag:mn.flag, gdp:mn.gdp, tier:mn.tier, isMe:true});
   }
   players.sort((a,b)=>b.gdp-a.gdp);
 
@@ -2362,12 +2578,15 @@ async function loadPlayerRanking() {
       const rank = i+1;
       const rankCls = rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
       const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+      // 개인정보 보호: 구글 닉네임(owner)은 랭킹에 절대 노출하지 않음.
+      // 표시 우선순위: 본인이 정한 별칭(alias) > 국가 이름. 구글 계정 정보는 사용하지 않음.
+      const publicLabel = p.alias || p.name || '무명국';
       return `<div class="rank-row ${p.isMe?'mine-rank':''}">
         <div class="rank-num ${rankCls}">${medal}</div>
         <div class="rank-flag">${p.flag||'🏳️'}</div>
         <div style="min-width:0;flex:1;">
-          <div class="rank-name">${p.isMe?'✨ ':''}${p.name||'무명국'}</div>
-          <div class="rank-country">${p.owner?('👤 '+p.owner):'플레이어'} · Tier ${p.tier||'D'}</div>
+          <div class="rank-name">${p.isMe?'✨ ':''}${publicLabel}</div>
+          <div class="rank-country">Tier ${p.tier||'D'}${p.isMe?' · 내 나라':''}</div>
         </div>
         <div style="text-align:right;">
           <div class="rank-gdp">${fmtGDP(p.gdp||0)}</div>
@@ -2465,12 +2684,691 @@ function finishQuiz() {
   if(state.myNation) state.myNation.ap=Math.min(state.myNation.maxAp, state.myNation.ap+apReward);
   state.quizLog[today]={completed:true,score:quizState.score,total:quizState.qs.length};
   state.stats.quizzesCompleted=(state.stats.quizzesCompleted||0)+1;
+  bumpMission('quiz', 1);
   scheduleSave(); updateMyNationUI(); checkBadges();
   document.getElementById('quizBody').innerHTML=`<div style="text-align:center;padding:30px 20px;">
     <div style="font-size:40px;margin-bottom:12px;">${quizState.score>=4?'🏆':quizState.score>=2?'👍':'📚'}</div>
     <div style="font-size:18px;font-weight:700;margin-bottom:8px;">${quizState.score} / ${quizState.qs.length} 정답</div>
     <div style="font-size:14px;color:var(--cyan);font-weight:600;margin-bottom:16px;">⚡ AP +${apReward} 보상!</div>
     <div style="font-size:12px;color:var(--txt3);">매일 퀴즈로 AP를 획득하고 내 나라를 성장시키세요!</div></div>`;
+}
+
+// ============================================================
+// DAILY MISSIONS (일일 미션)
+// ============================================================
+const MISSION_POOL = [
+  {id:'m_action3', icon:'🏛️', title:'정책 3회 실행', desc:'오늘 정책 카드를 3번 실행하세요', target:3, type:'actions', reward:{ap:5, fund:5}},
+  {id:'m_action5', icon:'📋', title:'정책 5회 실행', desc:'오늘 정책 카드를 5번 실행하세요', target:5, type:'actions', reward:{ap:8, fund:8}},
+  {id:'m_stock2', icon:'📈', title:'주식 2회 거래', desc:'글로벌 주식을 2번 거래하세요', target:2, type:'trades', reward:{ap:4, fund:6}},
+  {id:'m_quiz', icon:'🎓', title:'퀴즈 완료', desc:'오늘의 경제 퀴즈를 완료하세요', target:1, type:'quiz', reward:{ap:6, fund:4}},
+  {id:'m_news2', icon:'📰', title:'뉴스 2건 열람', desc:'세계 뉴스를 2건 읽으세요', target:2, type:'news', reward:{ap:3, fund:3}},
+  {id:'m_growth', icon:'🚀', title:'GDP 5% 성장', desc:'오늘 하루 GDP를 5% 키우세요', target:5, type:'growth', reward:{ap:7, fund:10}},
+];
+
+function todayKey() { return new Date().toISOString().slice(0,10); }
+
+function ensureMissions() {
+  const today = todayKey();
+  if (!state.missions || state.missions.date !== today) {
+    // 매일 3개 랜덤 선정 (날짜 시드 기반으로 고정)
+    const seed = hashStr(today + (state.myNation?.createdAt||0));
+    const pool = [...MISSION_POOL];
+    const picked = [];
+    let s = seed;
+    for (let i=0;i<3 && pool.length;i++){
+      s = (s*9301+49297)%233280;
+      const idx = Math.floor((s/233280)*pool.length);
+      picked.push({...pool[idx], progress:0, claimed:false, baseGdp: state.myNation?.gdp||0});
+      pool.splice(idx,1);
+    }
+    state.missions = { date: today, list: picked };
+    scheduleSave();
+  }
+  return state.missions;
+}
+
+function bumpMission(type, amount=1) {
+  if (!state.myNation) return;
+  ensureMissions();
+  let changed = false;
+  state.missions.list.forEach(m=>{
+    if (m.type===type && !m.claimed) {
+      if (type==='growth') {
+        const g = ((state.myNation.gdp - m.baseGdp)/Math.max(m.baseGdp,0.0001))*100;
+        m.progress = Math.max(0, g);
+      } else {
+        m.progress = Math.min(m.target, m.progress + amount);
+      }
+      changed = true;
+    }
+  });
+  if (changed) { updateMissionBadge(); scheduleSave(); }
+}
+
+function claimMission(id) {
+  const m = state.missions?.list.find(x=>x.id===id);
+  if (!m || m.claimed || m.progress < m.target) return;
+  m.claimed = true;
+  state.stats.missionsClaimed = (state.stats.missionsClaimed||0)+1;
+  const mn = state.myNation;
+  if (mn) {
+    mn.ap = Math.min(mn.maxAp, (mn.ap||0) + (m.reward.ap||0));
+    mn.treasury = (mn.treasury||0) + (m.reward.fund||0);
+  }
+  showToast('success','🎁 미션 보상 획득', `${m.title} 완료! ⚡AP +${m.reward.ap} · 💰 +$${m.reward.fund}B`);
+  updateMyNationUI();
+  updateMissionBadge();
+  checkBadges();
+  renderMissions();
+  scheduleSave();
+}
+
+function openMissions() {
+  if (!state.myNation) { showToast('warning','📋 미션','먼저 국가를 건국하세요.'); return; }
+  ensureMissions();
+  bumpMission('growth', 0);
+  renderMissionModal();
+  document.getElementById('missionModal').classList.add('active');
+}
+
+function switchMissionTab(tab) { state.missionTab = tab; renderMissionModal(); }
+
+function renderMissionModal() {
+  const tab = state.missionTab || 'daily';
+  const tabsHtml = `<div style="display:flex;gap:6px;margin-bottom:16px;">
+    <button onclick="switchMissionTab('daily')" style="flex:1;padding:9px;border-radius:8px;font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:${tab==='daily'?'var(--amber)':'transparent'};color:${tab==='daily'?'#000':'var(--txt2)'};">📋 일일 미션</button>
+    <button onclick="switchMissionTab('challenge')" style="flex:1;padding:9px;border-radius:8px;font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:${tab==='challenge'?'var(--cyan)':'transparent'};color:${tab==='challenge'?'#000':'var(--txt2)'};">⚔️ 시나리오 챌린지</button>
+  </div>`;
+  document.getElementById('missionBody').innerHTML = tabsHtml + `<div id="missionInner"></div>`;
+  if (tab === 'daily') renderMissions();
+  else renderChallenges();
+}
+
+function renderMissions() {
+  const ms = ensureMissions();
+  const allDone = ms.list.every(m=>m.claimed);
+  let html = `<div style="text-align:center;margin-bottom:16px;">
+    <div style="font-size:12px;color:var(--txt2);">오늘의 미션 · ${ms.date}</div>
+    <div style="font-family:var(--font-title);font-size:22px;font-weight:900;color:var(--amber);">${ms.list.filter(m=>m.claimed).length} / ${ms.list.length} 완료</div>
+    <div style="font-size:10px;color:var(--txt3);margin-top:2px;">미션은 매일 자정에 새로 갱신됩니다</div>
+  </div>`;
+
+  html += ms.list.map(m=>{
+    const pct = Math.min(100, (m.progress/m.target)*100);
+    const ready = m.progress>=m.target && !m.claimed;
+    const prog = m.type==='growth' ? `${m.progress.toFixed(1)}% / ${m.target}%` : `${Math.floor(m.progress)} / ${m.target}`;
+    return `<div style="background:var(--bg2);border:1px solid ${m.claimed?'var(--green)':ready?'var(--amber)':'var(--border)'};border-radius:10px;padding:13px;margin-bottom:10px;${m.claimed?'opacity:0.6;':''}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span style="font-size:22px;">${m.icon}</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;">${m.title} ${m.claimed?'✅':''}</div>
+          <div style="font-size:11px;color:var(--txt2);">${m.desc}</div>
+        </div>
+      </div>
+      <div style="background:var(--bg3,#0a0f1a);border-radius:6px;height:8px;overflow:hidden;margin-bottom:8px;">
+        <div style="height:100%;width:${pct}%;background:${m.claimed?'var(--green)':'linear-gradient(90deg,var(--amber),var(--cyan))'};transition:width 0.4s;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--txt3);font-family:var(--font-mono);">${prog} · 보상 ⚡${m.reward.ap} 💰$${m.reward.fund}B</span>
+        <button onclick="claimMission('${m.id}')" ${ready?'':'disabled'} style="padding:6px 14px;border-radius:7px;font-family:var(--font-kr);font-size:11px;font-weight:700;cursor:${ready?'pointer':'not-allowed'};border:none;background:${ready?'var(--amber)':'var(--border)'};color:${ready?'#000':'var(--txt3)'};">${m.claimed?'완료됨':ready?'보상 받기':'진행 중'}</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  if (allDone) html += `<div style="text-align:center;padding:14px;color:var(--green);font-size:12px;">🎉 오늘의 모든 미션을 완료했습니다! 내일 또 도전하세요.</div>`;
+  const inner = document.getElementById('missionInner');
+  if (inner) inner.innerHTML = html;
+}
+
+function updateMissionBadge() {
+  const ms = state.missions;
+  if (!ms) return;
+  const ready = ms.list.filter(m=>m.progress>=m.target && !m.claimed).length;
+  const challReady = CHALLENGE_DEFS.filter(c=>!state.challenges?.[c.id]?.claimed && c.check(state)).length;
+  const total = ready + challReady;
+  document.querySelectorAll('[data-mission-badge]').forEach(el=>{
+    el.textContent = total>0 ? total : '';
+    el.style.display = total>0 ? 'flex' : 'none';
+  });
+}
+
+// ============================================================
+// SCENARIO CHALLENGES (시나리오 챌린지 — 장기 목표)
+// ============================================================
+const CHALLENGE_DEFS = [
+  {id:'c_speedrun', icon:'⚡', title:'스피드런: GDP $10B', desc:'건국 후 30분 안에 GDP $10B 달성', reward:{ap:20, fund:30},
+    check:s=>s.myNation && s.myNation.gdp>=10 && (Date.now()-(s.myNation.createdAt||0))<=1800000},
+  {id:'c_debtfree', icon:'✅', title:'무차입 강국', desc:'부채 0 상태로 GDP $100B 달성', reward:{ap:25, fund:40},
+    check:s=>s.myNation && (s.myNation.debt||0)<0.1 && s.myNation.gdp>=100},
+  {id:'c_diplomat', icon:'🌐', title:'외교의 달인', desc:'동맹 5개국 + 무역협정 3건 동시 보유', reward:{ap:20, fund:35},
+    check:s=>(s.alliances?.length||0)>=5 && (s.tradeDeals?.length||0)>=3},
+  {id:'c_investor', icon:'💹', title:'월스트리트의 늑대', desc:'주식 누적 손익 +$50B 달성', reward:{ap:18, fund:30},
+    check:s=>(s.stats?.stockProfit||0)>=50},
+  {id:'c_aaa', icon:'🌟', title:'완벽한 신용', desc:'신용등급 AAA + GDP $500B 달성', reward:{ap:22, fund:40},
+    check:s=>s.myNation && (s.myNation.creditRating||0)>=9.5 && s.myNation.gdp>=500},
+  {id:'c_rival', icon:'⚔️', title:'라이벌 격파', desc:'AI 라이벌을 GDP로 추월', reward:{ap:30, fund:50},
+    check:s=>s.rival && s.myNation && s.myNation.gdp > s.rival.gdp},
+  {id:'c_top10', icon:'🥈', title:'세계 10강', desc:'세계 국가 순위 10위 이내 진입', reward:{ap:35, fund:60},
+    check:s=>getMyRank()<=10},
+  {id:'c_top1', icon:'👑', title:'세계 정복', desc:'세계 GDP 1위 달성 — 최종 보스', reward:{ap:50, fund:100},
+    check:s=>getMyRank()===1},
+];
+
+function renderChallenges() {
+  if (!state.challenges) state.challenges = {};
+  const done = CHALLENGE_DEFS.filter(c=>state.challenges[c.id]?.claimed).length;
+  let html = `<div style="text-align:center;margin-bottom:16px;">
+    <div style="font-size:12px;color:var(--txt2);">시나리오 챌린지 · 장기 목표</div>
+    <div style="font-family:var(--font-title);font-size:22px;font-weight:900;color:var(--cyan);">${done} / ${CHALLENGE_DEFS.length} 달성</div>
+    <div style="font-size:10px;color:var(--txt3);margin-top:2px;">큰 목표일수록 보상이 큽니다. 일회성 보상입니다.</div>
+  </div>`;
+
+  html += CHALLENGE_DEFS.map(c=>{
+    const claimed = state.challenges[c.id]?.claimed;
+    const ready = !claimed && c.check(state);
+    return `<div style="background:var(--bg2);border:1px solid ${claimed?'var(--green)':ready?'var(--cyan)':'var(--border)'};border-radius:10px;padding:13px;margin-bottom:10px;${claimed?'opacity:0.6;':''}">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:24px;">${c.icon}</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;">${c.title} ${claimed?'✅':''}</div>
+          <div style="font-size:11px;color:var(--txt2);">${c.desc}</div>
+          <div style="font-size:10px;color:var(--txt3);font-family:var(--font-mono);margin-top:3px;">보상 ⚡${c.reward.ap} · 💰$${c.reward.fund}B</div>
+        </div>
+        <button onclick="claimChallenge('${c.id}')" ${ready?'':'disabled'} style="padding:7px 14px;border-radius:7px;font-family:var(--font-kr);font-size:11px;font-weight:700;cursor:${ready?'pointer':'not-allowed'};border:none;background:${ready?'var(--cyan)':claimed?'var(--green)':'var(--border)'};color:${(ready||claimed)?'#000':'var(--txt3)'};white-space:nowrap;">${claimed?'완료':ready?'보상 받기':'미달성'}</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const inner = document.getElementById('missionInner');
+  if (inner) inner.innerHTML = html;
+}
+
+function claimChallenge(id) {
+  const c = CHALLENGE_DEFS.find(x=>x.id===id);
+  if (!c || state.challenges[id]?.claimed || !c.check(state)) return;
+  state.challenges[id] = { claimed:true, at:Date.now() };
+  const mn = state.myNation;
+  if (mn) {
+    mn.ap = Math.min(mn.maxAp, (mn.ap||0)+c.reward.ap);
+    mn.treasury = (mn.treasury||0)+c.reward.fund;
+  }
+  showToast('success','🏆 챌린지 달성!', `"${c.title}" 클리어! ⚡AP +${c.reward.ap} · 💰 +$${c.reward.fund}B`);
+  updateMyNationUI();
+  updateMissionBadge();
+  renderChallenges();
+  scheduleSave();
+}
+
+// ============================================================
+// DAILY CHECK-IN (출석 보상)
+// ============================================================
+const CHECKIN_REWARDS = [
+  {ap:3, fund:2}, {ap:4, fund:3}, {ap:5, fund:5}, {ap:6, fund:7},
+  {ap:8, fund:10}, {ap:10, fund:15}, {ap:15, fund:25}, // 7일차 잭팟
+];
+
+function checkDailyLogin() {
+  if (!state.myNation) return;
+  const today = todayKey();
+  if (!state.checkin) state.checkin = { lastDate:null, streak:0, claimedToday:false };
+  const c = state.checkin;
+  if (c.lastDate === today) { c.claimedToday = true; return; }
+  // 어제였으면 streak 유지+1, 아니면 리셋
+  const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  c.streak = (c.lastDate === yesterday) ? (c.streak||0) : 0;
+  c.claimedToday = false;
+  // 출석 모달 자동 표시
+  setTimeout(()=>{ if (!state.checkin.claimedToday) openCheckin(); }, 1200);
+}
+
+function openCheckin() {
+  if (!state.myNation) return;
+  if (!state.checkin) state.checkin = { lastDate:null, streak:0, claimedToday:false };
+  renderCheckin();
+  document.getElementById('checkinModal').classList.add('active');
+}
+
+function renderCheckin() {
+  const c = state.checkin;
+  const today = todayKey();
+  const alreadyClaimed = c.lastDate === today;
+  const dayIdx = Math.min((c.streak||0), 6); // 다음에 받을 보상 단계
+  let html = `<div style="text-align:center;margin-bottom:14px;">
+    <div style="font-size:34px;">📅</div>
+    <div style="font-size:14px;font-weight:700;margin-top:4px;">연속 출석 ${c.streak||0}일</div>
+    <div style="font-size:11px;color:var(--txt2);margin-top:2px;">매일 접속하면 보상이 커집니다 (7일 잭팟!)</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:16px;">`;
+  for (let i=0;i<7;i++){
+    const r = CHECKIN_REWARDS[i];
+    const passed = i < (alreadyClaimed ? c.streak : c.streak);
+    const isToday = i === dayIdx && !alreadyClaimed;
+    html += `<div style="background:${isToday?'rgba(255,181,71,0.15)':passed?'rgba(0,229,160,0.08)':'var(--bg2)'};border:1px solid ${isToday?'var(--amber)':passed?'var(--green)':'var(--border)'};border-radius:8px;padding:8px 2px;text-align:center;">
+      <div style="font-size:9px;color:var(--txt3);">${i+1}일${i===6?'🎁':''}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--cyan);margin-top:3px;">⚡${r.ap}</div>
+      <div style="font-size:9px;color:var(--txt2);">$${r.fund}B</div>
+    </div>`;
+  }
+  html += `</div>`;
+  if (alreadyClaimed) {
+    html += `<div style="text-align:center;padding:12px;color:var(--green);font-size:12px;">✅ 오늘 출석 보상을 받았습니다. 내일 또 만나요!</div>`;
+  } else {
+    const r = CHECKIN_REWARDS[dayIdx];
+    html += `<button onclick="claimCheckin()" style="width:100%;padding:13px;background:linear-gradient(90deg,var(--amber),#ffd700);border:none;border-radius:10px;color:#000;font-family:var(--font-kr);font-size:14px;font-weight:800;cursor:pointer;">🎁 오늘 출석 보상 받기 (⚡${r.ap} · 💰$${r.fund}B)</button>`;
+  }
+  document.getElementById('checkinBody').innerHTML = html;
+}
+
+function claimCheckin() {
+  const c = state.checkin;
+  const today = todayKey();
+  if (c.lastDate === today) return;
+  const dayIdx = Math.min((c.streak||0), 6);
+  const r = CHECKIN_REWARDS[dayIdx];
+  const mn = state.myNation;
+  if (mn) {
+    mn.ap = Math.min(mn.maxAp, (mn.ap||0) + r.ap);
+    mn.treasury = (mn.treasury||0) + r.fund;
+  }
+  c.streak = (c.streak||0) + 1;
+  c.lastDate = today;
+  c.claimedToday = true;
+  showToast('success','📅 출석 완료!', `연속 ${c.streak}일 · ⚡AP +${r.ap} · 💰 +$${r.fund}B 획득!`);
+  updateMyNationUI();
+  renderCheckin();
+  scheduleSave();
+}
+
+// ============================================================
+// DIPLOMACY (외교 · 동맹)
+// ============================================================
+function getDiploCandidates() {
+  // 내 GDP 주변의 국가들 중 일부를 동맹 후보로 제시
+  const all = getAllSorted().filter(c=>!c.isMe);
+  const myRank = getMyRank();
+  // 내 순위 위아래로 후보 추출
+  const start = Math.max(0, myRank-6);
+  return all.slice(start, start+10);
+}
+
+function openDiplomacy() {
+  if (!state.myNation) { showToast('warning','🤝 외교','먼저 국가를 건국하세요.'); return; }
+  renderDiplomacy();
+  document.getElementById('diploModal').classList.add('active');
+}
+
+function allianceBonus() {
+  // 동맹 수 × 0.3% 성장 보너스 (월드틱에서 사용)
+  return (state.alliances?.length||0) * 0.3;
+}
+
+function renderDiplomacy() {
+  const mn = state.myNation;
+  const allies = state.alliances || [];
+  const deals = state.tradeDeals || [];
+  const candidates = getDiploCandidates();
+  const maxAllies = 5;
+  const maxDeals = 5;
+
+  let html = rivalStatusHtml();
+
+  html += `<div style="background:rgba(61,142,255,0.06);border:1px solid rgba(61,142,255,0.25);border-radius:10px;padding:13px;margin-bottom:14px;text-align:center;">
+    <div style="display:flex;justify-content:space-around;">
+      <div><div style="font-size:10px;color:var(--txt2);">🤝 동맹</div><div style="font-family:var(--font-title);font-size:18px;font-weight:900;color:var(--blue);">${allies.length}/${maxAllies}</div><div style="font-size:9px;color:var(--green);">+${allianceBonus().toFixed(1)}%/틱</div></div>
+      <div><div style="font-size:10px;color:var(--txt2);">💱 무역협정</div><div style="font-family:var(--font-title);font-size:18px;font-weight:900;color:var(--amber);">${deals.length}/${maxDeals}</div><div style="font-size:9px;color:var(--green);">국고 +${tradeBonus().toFixed(2)}/틱</div></div>
+    </div>
+  </div>`;
+
+  // 동맹 섹션
+  if (allies.length) {
+    html += `<div style="font-size:11px;color:var(--txt2);font-weight:700;margin-bottom:8px;">🤝 동맹국 (성장 보너스)</div>`;
+    html += allies.map(code=>{
+      const c = countryMap[code];
+      if (!c) return '';
+      return `<div style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--green);border-radius:9px;padding:9px 12px;margin-bottom:7px;">
+        <span style="font-size:18px;">${c.flag}</span>
+        <div style="flex:1;"><div style="font-size:12px;font-weight:600;">${c.name}</div><div style="font-size:10px;color:var(--txt3);">동맹 · 성장 +0.3%/틱</div></div>
+        <button onclick="breakAlliance('${code}')" style="padding:5px 11px;border-radius:7px;border:1px solid var(--red);background:transparent;color:var(--red);font-family:var(--font-kr);font-size:11px;cursor:pointer;">파기</button>
+      </div>`;
+    }).join('');
+  }
+
+  // 무역협정 섹션
+  if (deals.length) {
+    html += `<div style="font-size:11px;color:var(--txt2);font-weight:700;margin:12px 0 8px;">💱 무역협정 (국고 수입)</div>`;
+    html += deals.map(code=>{
+      const c = countryMap[code];
+      if (!c) return '';
+      return `<div style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--amber);border-radius:9px;padding:9px 12px;margin-bottom:7px;">
+        <span style="font-size:18px;">${c.flag}</span>
+        <div style="flex:1;"><div style="font-size:12px;font-weight:600;">${c.name}</div><div style="font-size:10px;color:var(--txt3);">무역협정 · 국고 수입 ↑</div></div>
+        <button onclick="breakTradeDeal('${code}')" style="padding:5px 11px;border-radius:7px;border:1px solid var(--red);background:transparent;color:var(--red);font-family:var(--font-kr);font-size:11px;cursor:pointer;">파기</button>
+      </div>`;
+    }).join('');
+  }
+
+  // 후보국 — 동맹/무역 둘 다 제안 가능
+  html += `<div style="font-size:11px;color:var(--txt2);font-weight:700;margin:14px 0 8px;">🌐 외교 후보국</div>`;
+  const available = candidates.filter(c=>!allies.includes(c.code) || !deals.includes(c.code));
+  if (!available.length) {
+    html += `<div style="text-align:center;padding:16px;color:var(--txt3);font-size:12px;">현재 제안 가능한 후보국이 없습니다.</div>`;
+  } else {
+    html += available.slice(0,8).map(c=>{
+      const hasAlly = allies.includes(c.code);
+      const hasDeal = deals.includes(c.code);
+      const canAlly = !hasAlly && (mn.treasury||0)>=5 && (mn.ap||0)>=2 && allies.length<maxAllies;
+      const canDeal = !hasDeal && (mn.treasury||0)>=8 && (mn.ap||0)>=2 && deals.length<maxDeals;
+      return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <span style="font-size:18px;">${c.flag}</span>
+          <div style="flex:1;"><div style="font-size:12px;font-weight:600;">${c.name}</div><div style="font-size:10px;color:var(--txt3);">Tier ${c.tier} · ${fmtGDPShort(c.gdp)}</div></div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="formAlliance('${c.code}')" ${canAlly?'':'disabled'} style="flex:1;padding:6px;border-radius:7px;border:none;background:${canAlly?'var(--blue)':'var(--border)'};color:${canAlly?'#000':'var(--txt3)'};font-family:var(--font-kr);font-size:10px;font-weight:700;cursor:${canAlly?'pointer':'not-allowed'};">${hasAlly?'동맹 중':'🤝 동맹 ($5B·2AP)'}</button>
+          <button onclick="formTradeDeal('${c.code}')" ${canDeal?'':'disabled'} style="flex:1;padding:6px;border-radius:7px;border:none;background:${canDeal?'var(--amber)':'var(--border)'};color:${canDeal?'#000':'var(--txt3)'};font-family:var(--font-kr);font-size:10px;font-weight:700;cursor:${canDeal?'pointer':'not-allowed'};">${hasDeal?'협정 중':'💱 무역 ($8B·2AP)'}</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  html += `<div style="font-size:10px;color:var(--txt3);margin-top:12px;text-align:center;line-height:1.6;">🤝 동맹 = 매 틱 GDP 성장 보너스 · 💱 무역협정 = 매 틱 국고 수입 증가<br>외교가 많을수록 강해지지만 자금과 AP가 듭니다.</div>`;
+  document.getElementById('diploBody').innerHTML = html;
+}
+
+function tradeBonus() {
+  // 무역협정 수에 비례한 국고 수입 보너스(틱당)
+  return (state.tradeDeals?.length||0) * 0.15;
+}
+
+function formTradeDeal(code) {
+  const mn = state.myNation;
+  if (!mn) return;
+  if ((state.tradeDeals?.length||0) >= 5) { showToast('warning','💱 무역','무역협정은 최대 5건까지 가능합니다.'); return; }
+  if ((mn.treasury||0) < 8 || (mn.ap||0) < 2) { showToast('warning','💱 무역','자금($8B) 또는 AP(2)가 부족합니다.'); return; }
+  mn.treasury -= 8;
+  mn.ap -= 2;
+  if (!state.tradeDeals) state.tradeDeals = [];
+  state.tradeDeals.push(code);
+  const c = countryMap[code];
+  showToast('success','💱 무역협정 체결', `${c.flag} ${c.name}와(과) 무역협정 체결! 국고 수입이 늘어납니다.`);
+  updateMyNationUI();
+  renderDiplomacy();
+  scheduleSave();
+}
+
+function breakTradeDeal(code) {
+  state.tradeDeals = (state.tradeDeals||[]).filter(x=>x!==code);
+  const c = countryMap[code];
+  showToast('warning','💱 협정 파기', `${c?.flag||''} ${c?.name||'국가'}와의 무역협정을 파기했습니다.`);
+  renderDiplomacy();
+  scheduleSave();
+}
+
+function formAlliance(code) {
+  const mn = state.myNation;
+  if (!mn) return;
+  if ((state.alliances?.length||0) >= 5) { showToast('warning','🤝 외교','동맹은 최대 5개국까지 가능합니다.'); return; }
+  if ((mn.treasury||0) < 5 || (mn.ap||0) < 2) { showToast('warning','🤝 외교','자금($5B) 또는 AP(2)가 부족합니다.'); return; }
+  mn.treasury -= 5;
+  mn.ap -= 2;
+  if (!state.alliances) state.alliances = [];
+  state.alliances.push(code);
+  const c = countryMap[code];
+  showToast('success','🤝 동맹 체결', `${c.flag} ${c.name}와(과) 동맹을 맺었습니다! 성장 보너스 +0.3%/틱`);
+  updateMyNationUI();
+  renderDiplomacy();
+  scheduleSave();
+}
+
+function breakAlliance(code) {
+  state.alliances = (state.alliances||[]).filter(x=>x!==code);
+  const c = countryMap[code];
+  showToast('warning','🤝 동맹 파기', `${c?.flag||''} ${c?.name||'국가'}와의 동맹을 파기했습니다.`);
+  renderDiplomacy();
+  scheduleSave();
+}
+
+// ============================================================
+// CRISIS CHOICE EVENTS (위기 대응 선택지)
+// ============================================================
+const CRISIS_EVENTS = [
+  {
+    title:'🌊 대규모 자연재해 발생',
+    desc:'강력한 태풍이 국토를 강타했습니다. 어떻게 대응하시겠습니까?',
+    choices:[
+      {label:'💰 국고 투입 긴급 복구 ($15B)', cost:{fund:15}, effect:{gdp:1.5, health:8}, result:'신속한 복구로 피해를 최소화하고 국민 신뢰를 얻었습니다.'},
+      {label:'🤝 국제 원조 요청 (무료)', cost:{}, effect:{gdp:-1.0, health:-3, credit:-0.5}, result:'원조는 받았지만 대응이 늦어 단기 경제 충격이 있었습니다.'},
+      {label:'⏳ 자체 복구 (시간 소요)', cost:{ap:3}, effect:{gdp:0.3, health:2}, result:'느리지만 자립적으로 복구하며 재정을 아꼈습니다.'},
+    ]
+  },
+  {
+    title:'📉 글로벌 금융위기 전염',
+    desc:'세계 금융시장이 흔들리며 자본 유출 압력이 커지고 있습니다.',
+    choices:[
+      {label:'🏦 금리 인상으로 자본 방어', cost:{ap:2}, effect:{gdp:-0.5, health:4, credit:0.5}, result:'자본 유출은 막았지만 단기 성장이 둔화됐습니다.'},
+      {label:'💵 경기부양 자금 살포 ($20B)', cost:{fund:20}, effect:{gdp:2.5, health:6}, result:'과감한 부양책으로 위기를 기회로 바꿨습니다!'},
+      {label:'🛡️ 외환보유고 방어 (신용 소모)', cost:{credit:1}, effect:{gdp:0.5, health:3}, result:'외환을 풀어 환율을 지켰지만 신용등급이 하락했습니다.'},
+    ]
+  },
+  {
+    title:'⚡ 에너지 공급 위기',
+    desc:'에너지 가격이 폭등하며 산업 전반이 타격을 받고 있습니다.',
+    choices:[
+      {label:'☀️ 신재생에너지 긴급 투자 ($12B)', cost:{fund:12}, effect:{gdp:2.0, health:7}, result:'위기를 신재생 전환의 기회로 삼아 미래 경쟁력을 확보했습니다!'},
+      {label:'🛢️ 화석연료 비축 확대 ($8B)', cost:{fund:8}, effect:{gdp:0.8, health:3}, result:'단기적으로 공급을 안정시켰습니다.'},
+      {label:'🔌 에너지 배급제 시행', cost:{ap:2}, effect:{gdp:-0.8, health:-2}, result:'소비를 강제로 줄였지만 국민 불만이 커졌습니다.'},
+    ]
+  },
+  {
+    title:'🦠 전염병 확산 비상',
+    desc:'신종 전염병이 빠르게 퍼지고 있습니다. 방역 전략을 선택하세요.',
+    choices:[
+      {label:'🏥 대규모 방역·의료 투자 ($18B)', cost:{fund:18}, effect:{gdp:1.2, health:10, credit:0.5}, result:'선제적 대응으로 빠르게 안정을 되찾았습니다.'},
+      {label:'⚖️ 부분 봉쇄·경제 병행', cost:{ap:3}, effect:{gdp:0.2, health:4}, result:'경제와 방역의 균형을 잡았습니다.'},
+      {label:'🚫 전면 봉쇄', cost:{}, effect:{gdp:-2.0, health:6}, result:'감염은 막았지만 경제가 크게 위축됐습니다.'},
+    ]
+  },
+];
+
+function maybeTriggerCrisisChoice() {
+  if (!state.myNation) return;
+  // 너무 자주 뜨지 않도록: 마지막 위기로부터 최소 90초 + 약 3% 확률
+  const now = Date.now();
+  if (now - (state.lastCrisis||0) < 90000) return;
+  if (Math.random() > 0.03) return;
+  state.lastCrisis = now;
+  const ev = CRISIS_EVENTS[Math.floor(Math.random()*CRISIS_EVENTS.length)];
+  openCrisis(ev);
+}
+
+let _activeCrisis = null;
+function openCrisis(ev) {
+  _activeCrisis = ev;
+  const mn = state.myNation;
+  document.getElementById('crisisTitle').textContent = ev.title;
+  let html = `<div style="font-size:12px;color:var(--txt2);line-height:1.6;margin-bottom:16px;">${ev.desc}</div>`;
+  html += ev.choices.map((ch,i)=>{
+    const c = ch.cost||{};
+    const afford = (!c.fund || (mn.treasury||0)>=c.fund) && (!c.ap || (mn.ap||0)>=c.ap) && (!c.credit || (mn.creditRating||0)>=c.credit);
+    let costStr = [];
+    if (c.fund) costStr.push(`💰$${c.fund}B`);
+    if (c.ap) costStr.push(`⚡${c.ap}`);
+    if (c.credit) costStr.push(`⭐신용-${c.credit}`);
+    return `<button onclick="resolveCrisis(${i})" ${afford?'':'disabled'} style="display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:10px;border-radius:10px;border:1px solid ${afford?'var(--border2)':'var(--border)'};background:${afford?'var(--bg2)':'rgba(255,255,255,0.02)'};color:${afford?'var(--txt)':'var(--txt3)'};font-family:var(--font-kr);font-size:13px;font-weight:600;cursor:${afford?'pointer':'not-allowed'};">
+      <div>${ch.label}</div>
+      ${costStr.length?`<div style="font-size:10px;color:var(--txt3);margin-top:3px;font-family:var(--font-mono);">비용: ${costStr.join(' · ')}</div>`:'<div style="font-size:10px;color:var(--green);margin-top:3px;">비용 없음</div>'}
+    </button>`;
+  }).join('');
+  html += `<div style="font-size:10px;color:var(--txt3);text-align:center;margin-top:6px;">⚠️ 선택에 따라 GDP·경제체력·신용등급이 달라집니다.</div>`;
+  document.getElementById('crisisBody').innerHTML = html;
+  document.getElementById('crisisModal').classList.add('active');
+}
+
+function resolveCrisis(idx) {
+  const ev = _activeCrisis;
+  if (!ev) return;
+  const ch = ev.choices[idx];
+  const mn = state.myNation;
+  const c = ch.cost||{}, e = ch.effect||{};
+  // 비용 차감
+  if (c.fund) mn.treasury = (mn.treasury||0) - c.fund;
+  if (c.ap) mn.ap = (mn.ap||0) - c.ap;
+  if (c.credit) mn.creditRating = Math.max(0,(mn.creditRating||5) - c.credit);
+  // 효과 적용
+  if (e.gdp) mn.gdp = Math.max(0.01, mn.gdp * (1 + e.gdp/100));
+  if (e.health) mn.health = Math.max(0, Math.min(100, (mn.health||100) + e.health));
+  if (e.credit) mn.creditRating = Math.max(0, Math.min(10,(mn.creditRating||5) + e.credit));
+  closeModal('crisisModal');
+  state.stats.crisisResolved = (state.stats.crisisResolved||0)+1;
+  showToast(e.gdp>=0?'success':'warning', ev.title.replace(/^[^ ]+ /,''), ch.result);
+  recordHistory();
+  updateMyNationUI();
+  checkBadges();
+  scheduleSave();
+  _activeCrisis = null;
+}
+
+function recordHistory() {
+  // 내 나라 GDP 히스토리에 현재 값 기록 (차트용)
+  if (!state.myNation) return;
+  if (!state.history[MY_CODE]) state.history[MY_CODE] = [];
+  state.history[MY_CODE].push({t: Date.now(), gdp: state.myNation.gdp});
+  if (state.history[MY_CODE].length > 500) state.history[MY_CODE].shift();
+}
+
+// ============================================================
+// AI RIVAL (AI 라이벌 경쟁국)
+// ============================================================
+const RIVAL_NAMES = [
+  {name:'아틀란 제국', flag:'🦅'}, {name:'노바 연방', flag:'🐉'}, {name:'테라 공화국', flag:'🌐'},
+  {name:'오리온 왕국', flag:'⚔️'}, {name:'제니스 합중국', flag:'🛡️'}, {name:'엘도라 국', flag:'💎'},
+  {name:'발할라 동맹', flag:'🔥'}, {name:'세레스 공국', flag:'🌙'},
+];
+
+function ensureRival() {
+  if (state.rival || !state.myNation) return;
+  // 플레이어보다 약간 앞선 라이벌을 배정
+  const pick = RIVAL_NAMES[Math.floor(Math.random()*RIVAL_NAMES.length)];
+  state.rival = {
+    name: pick.name,
+    flag: pick.flag,
+    gdp: Math.max(1, state.myNation.gdp * 1.3 + 2), // 처음엔 약간 앞섬
+    growthBias: 0.035 + Math.random()*0.02,          // 라이벌 성장률
+  };
+  scheduleSave();
+}
+
+function rivalTick() {
+  if (!state.rival || !state.myNation) return;
+  const r = state.rival;
+  // 라이벌은 꾸준히 성장하되, 플레이어가 앞서면 추격 가속(고무줄 AI)
+  const behind = state.myNation.gdp > r.gdp;
+  const catchup = behind ? 1.6 : 1.0;
+  const noise = (Math.random()-0.45) * 0.03;
+  r.gdp = Math.max(0.5, r.gdp * (1 + (r.growthBias*catchup + noise)/100));
+}
+
+function rivalStatusHtml() {
+  if (!state.rival || !state.myNation) return '';
+  const r = state.rival;
+  const me = state.myNation.gdp;
+  const lead = me - r.gdp;
+  const ahead = lead >= 0;
+  const ratio = Math.min(100, Math.max(0, (me/(me+r.gdp))*100));
+  return `<div style="background:linear-gradient(135deg,rgba(255,71,87,0.06),rgba(61,142,255,0.06));border:1px solid var(--border2);border-radius:10px;padding:13px;margin-bottom:14px;">
+    <div style="font-size:11px;color:var(--txt2);font-weight:700;margin-bottom:8px;">⚔️ 라이벌 대결</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:6px;">
+      <span style="font-weight:700;color:var(--green);">✨ ${state.myNation.flag} 나</span>
+      <span style="font-weight:700;color:var(--red);">${r.flag} ${r.name}</span>
+    </div>
+    <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--bg3,#0a0f1a);margin-bottom:6px;">
+      <div style="width:${ratio}%;background:var(--green);transition:width 0.5s;"></div>
+      <div style="flex:1;background:var(--red);"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;font-family:var(--font-mono);color:var(--txt2);">
+      <span>${fmtGDP(me)}</span>
+      <span>${fmtGDP(r.gdp)}</span>
+    </div>
+    <div style="text-align:center;font-size:11px;margin-top:6px;color:${ahead?'var(--green)':'var(--red)'};font-weight:700;">
+      ${ahead?`🔥 라이벌을 ${fmtGDP(Math.abs(lead))} 앞서는 중!`:`💢 라이벌에게 ${fmtGDP(Math.abs(lead))} 뒤처짐 — 추격하세요!`}
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// SEASON SYSTEM (시즌제 — 14일 주기 경쟁)
+// ============================================================
+const SEASON_DAYS = 14;
+const SEASON_EPOCH = Date.UTC(2026, 0, 1); // 시즌 기준일
+
+function currentSeasonId() {
+  const days = Math.floor((Date.now() - SEASON_EPOCH) / 86400000);
+  return Math.floor(days / SEASON_DAYS) + 1;
+}
+
+function seasonEndsAt() {
+  const id = currentSeasonId();
+  return SEASON_EPOCH + id * SEASON_DAYS * 86400000;
+}
+
+function seasonDaysLeft() {
+  return Math.max(0, Math.ceil((seasonEndsAt() - Date.now()) / 86400000));
+}
+
+function ensureSeason() {
+  if (!state.myNation) return;
+  const id = currentSeasonId();
+  if (!state.season || state.season.id !== id) {
+    // 이전 시즌 정산
+    if (state.season && !state.season.settled) {
+      const growth = ((state.myNation.gdp - state.season.startGdp)/Math.max(state.season.startGdp,0.0001))*100;
+      // 시즌 보상: 성장률 구간별
+      let reward = {ap:5, fund:5, tier:'🥉'};
+      if (growth >= 500) reward = {ap:40, fund:80, tier:'🏆 챔피언'};
+      else if (growth >= 200) reward = {ap:25, fund:50, tier:'🥇 골드'};
+      else if (growth >= 50) reward = {ap:15, fund:25, tier:'🥈 실버'};
+      const mn = state.myNation;
+      mn.ap = Math.min(mn.maxAp, (mn.ap||0)+reward.ap);
+      mn.treasury = (mn.treasury||0)+reward.fund;
+      showToast('success','🗓️ 시즌 종료 보상', `시즌 성장률 ${growth.toFixed(0)}% · ${reward.tier} · ⚡${reward.ap} 💰$${reward.fund}B 획득!`);
+    }
+    // 새 시즌 시작
+    state.season = { id, startGdp: state.myNation.gdp, startedAt: Date.now(), settled:false };
+    scheduleSave();
+  }
+}
+
+function openSeason() {
+  if (!state.myNation) { showToast('warning','🗓️ 시즌','먼저 국가를 건국하세요.'); return; }
+  ensureSeason();
+  const s = state.season;
+  const growth = ((state.myNation.gdp - s.startGdp)/Math.max(s.startGdp,0.0001))*100;
+  const daysLeft = seasonDaysLeft();
+  const tiers = [
+    {min:500, label:'🏆 챔피언', r:'⚡40 · 💰$80B'},
+    {min:200, label:'🥇 골드', r:'⚡25 · 💰$50B'},
+    {min:50,  label:'🥈 실버', r:'⚡15 · 💰$25B'},
+    {min:0,   label:'🥉 브론즈', r:'⚡5 · 💰$5B'},
+  ];
+  const myTier = tiers.find(t=>growth>=t.min) || tiers[tiers.length-1];
+  let html = `<div style="text-align:center;margin-bottom:16px;">
+    <div style="font-size:34px;">🗓️</div>
+    <div style="font-family:var(--font-title);font-size:20px;font-weight:900;color:var(--amber);margin-top:4px;">시즌 ${s.id}</div>
+    <div style="font-size:11px;color:var(--txt2);margin-top:2px;">종료까지 ${daysLeft}일 남음</div>
+  </div>
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;text-align:center;">
+    <div style="font-size:11px;color:var(--txt2);">이번 시즌 성장률</div>
+    <div style="font-family:var(--font-mono);font-size:26px;font-weight:900;color:${growth>=0?'var(--green)':'var(--red)'};margin:4px 0;">${growth>=0?'+':''}${growth.toFixed(1)}%</div>
+    <div style="font-size:12px;font-weight:700;color:var(--amber);">현재 등급: ${myTier.label}</div>
+    <div style="font-size:10px;color:var(--txt3);">예상 보상: ${myTier.r}</div>
+  </div>
+  <div style="font-size:11px;color:var(--txt2);font-weight:700;margin-bottom:8px;">🏅 등급 기준 (시즌 성장률)</div>`;
+  html += tiers.map(t=>`<div style="display:flex;justify-content:space-between;align-items:center;background:${growth>=t.min?'rgba(255,181,71,0.08)':'var(--bg2)'};border:1px solid ${growth>=t.min?'var(--amber)':'var(--border)'};border-radius:8px;padding:9px 12px;margin-bottom:6px;font-size:12px;">
+    <span style="font-weight:700;">${t.label}</span>
+    <span style="font-size:10px;color:var(--txt2);">${t.min>0?`+${t.min}% 이상`:'기본'} · ${t.r}</span>
+  </div>`).join('');
+  html += `<div style="font-size:10px;color:var(--txt3);margin-top:12px;text-align:center;line-height:1.6;">🗓️ 매 ${SEASON_DAYS}일마다 시즌이 갱신됩니다. 시즌 종료 시 성장률에 따라 보상을 받고 새 시즌이 시작됩니다.</div>`;
+  document.getElementById('seasonBody').innerHTML = html;
+  document.getElementById('seasonModal').classList.add('active');
 }
 
 // ============================================================
@@ -2500,6 +3398,14 @@ const BADGE_DEFS = [
   {id:'tier_b',icon:'⭐',name:'중견국',desc:'내 나라 Tier B 달성',check:s=>['B','A','S'].includes(s.myNation?.tier)},
   {id:'tier_a',icon:'🌠',name:'선진국',desc:'내 나라 Tier A 달성',check:s=>['A','S'].includes(s.myNation?.tier)},
   {id:'tier_s',icon:'💫',name:'초강대국',desc:'내 나라 Tier S 달성!',check:s=>s.myNation?.tier==='S'},
+  {id:'first_ally',icon:'🤝',name:'첫 동맹',desc:'첫 동맹을 맺었습니다',check:s=>(s.alliances?.length||0)>=1},
+  {id:'ally_master',icon:'🌐',name:'외교의 거장',desc:'동맹 5개국 달성',check:s=>(s.alliances?.length||0)>=5},
+  {id:'first_trade',icon:'💱',name:'무역 입문',desc:'첫 무역협정 체결',check:s=>(s.tradeDeals?.length||0)>=1},
+  {id:'trade_hub',icon:'🚢',name:'무역 허브',desc:'무역협정 5건 달성',check:s=>(s.tradeDeals?.length||0)>=5},
+  {id:'mission_5',icon:'📋',name:'미션 수행원',desc:'일일 미션 누적 5회 완료',check:s=>(s.stats?.missionsClaimed||0)>=5},
+  {id:'checkin_7',icon:'📅',name:'개근상',desc:'7일 연속 출석 달성',check:s=>(s.checkin?.streak||0)>=7},
+  {id:'beat_rival',icon:'⚔️',name:'라이벌 격파',desc:'AI 라이벌을 추월',check:s=>s.rival&&s.myNation&&s.myNation.gdp>s.rival.gdp},
+  {id:'crisis_master',icon:'🛡️',name:'위기 관리자',desc:'위기 상황을 3회 극복',check:s=>(s.stats?.crisisResolved||0)>=3},
 ];
 
 function checkBadges() {
@@ -2607,6 +3513,13 @@ async function saveState() {
     badges: state.badges,
     quizLog: state.quizLog,
     stats: state.stats,
+    missions: state.missions,
+    checkin: state.checkin,
+    alliances: state.alliances,
+    challenges: state.challenges,
+    tradeDeals: state.tradeDeals,
+    rival: state.rival,
+    season: state.season,
     savedAt: Date.now(),
   };
   // Local backup — keyed per account (guest vs each logged-in uid), never a shared key
@@ -2621,10 +3534,11 @@ async function saveState() {
     try {
       // Full save doc (private progress)
       await window.fb.setDoc(window.fb.doc(window.fb.db,'nationrise_saves', currentUser.uid), data);
-      // Public ranking doc (leaderboard)
-      await window.fb.setDoc(window.fb.doc(window.fb.db,'nationrise_players', currentUser.uid), {
+      // Public ranking doc (leaderboard) — 개인정보 비저장 원칙
+      // 구글 닉네임/이메일은 절대 공개 컬렉션에 저장하지 않는다.
+      // 공개되는 값은 국가명/국기/GDP 등 게임 데이터와, 본인이 직접 정한 랭킹 별칭(alias)뿐이다.
+      const publicDoc = {
         uid: currentUser.uid,
-        owner: currentUser.displayName || '플레이어',
         name: state.myNation.name,
         flag: state.myNation.flag,
         gdp: state.myNation.gdp,
@@ -2632,7 +3546,12 @@ async function saveState() {
         tier: state.myNation.tier,
         actionsUsed: state.stats?.actionsUsed||0,
         savedAt: Date.now(),
-      });
+      };
+      // 사용자가 랭킹 표시용 별칭을 직접 설정한 경우에만 포함(구글 닉네임과 무관)
+      if (state.myNation.alias && state.myNation.alias.trim()) {
+        publicDoc.alias = state.myNation.alias.trim().slice(0,16);
+      }
+      await window.fb.setDoc(window.fb.doc(window.fb.db,'nationrise_players', currentUser.uid), publicDoc);
       setSyncStatus('synced');
     } catch(e){ console.error('클라우드 저장 실패', e); setSyncStatus('local'); }
   }
@@ -2670,6 +3589,13 @@ function applyLoadedData(data) {
   if (data.badges) state.badges = data.badges;
   if (data.quizLog) state.quizLog = data.quizLog;
   if (data.stats) state.stats = data.stats;
+  if (data.missions) state.missions = data.missions;
+  if (data.checkin) state.checkin = data.checkin;
+  if (data.alliances) state.alliances = data.alliances;
+  if (data.challenges) state.challenges = data.challenges;
+  if (data.tradeDeals) state.tradeDeals = data.tradeDeals;
+  if (data.rival) state.rival = data.rival;
+  if (data.season) state.season = data.season;
   // Backfill new fields for older saves
   if (state.myNation) {
     const mn = state.myNation;
@@ -2678,7 +3604,11 @@ function applyLoadedData(data) {
     if (mn.creditRating === undefined) mn.creditRating = 5;
     if (mn.stocks === undefined) mn.stocks = {};
     if (mn.lastDecay === undefined) mn.lastDecay = Date.now();
+    if (mn.alias === undefined) mn.alias = '';
   }
+  if (!state.alliances) state.alliances = [];
+  if (!state.challenges) state.challenges = {};
+  if (!state.tradeDeals) state.tradeDeals = [];
 }
 
 // Guest-only local load (uses shared key)

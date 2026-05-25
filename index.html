@@ -400,9 +400,29 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
 .sync-dot.off { background:var(--red); }
 .sync-dot.busy { background:var(--amber); animation:pulse 1s infinite; }
 
+/* ===== 주식 거래 수량 UI ===== */
+.trade-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.qty-stepper { display:flex; align-items:center; border:1px solid var(--border2); border-radius:8px; overflow:hidden; background:var(--bg2); }
+.qty-stepper button { width:32px; height:32px; border:none; background:var(--bg3); color:var(--txt); font-size:18px; font-weight:700; cursor:pointer; line-height:1; -webkit-tap-highlight-color:transparent; }
+.qty-stepper button:active { background:var(--border2); }
+.qty-stepper input { width:52px; height:32px; border:none; background:transparent; color:var(--txt); text-align:center; font-family:var(--font-mono); font-size:13px; -moz-appearance:textfield; }
+.qty-stepper input::-webkit-outer-spin-button, .qty-stepper input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+.qty-quick { height:32px; padding:0 10px; border:1px solid var(--border2); border-radius:8px; background:var(--bg2); color:var(--txt2); font-size:11px; font-weight:600; cursor:pointer; font-family:var(--font-kr); -webkit-tap-highlight-color:transparent; }
+.qty-quick:active { background:var(--bg3); }
+.trade-buy, .trade-sell { height:32px; padding:0 14px; border:none; border-radius:8px; color:#000; font-size:12px; font-weight:700; cursor:pointer; font-family:var(--font-kr); -webkit-tap-highlight-color:transparent; }
+.trade-buy { background:var(--green); }
+.trade-sell { background:var(--red); color:#fff; }
+.trade-buy:active, .trade-sell:active { opacity:0.8; }
+.buy-cost { white-space:nowrap; }
+/* 클릭 가능한 부채(설명 팝업) */
+.mns-val.clickable { cursor:pointer; text-decoration:underline dotted; text-underline-offset:3px; }
+.mns-val.clickable::after { content:' ⓘ'; font-size:9px; opacity:0.7; }
+
 @media(max-width:768px) {
   .topbar-nav .nav-btn span { display:none; }
-  .topbar-nav .nav-btn { padding:6px 8px; }
+  .topbar-nav .nav-btn { padding:6px 8px; flex-shrink:0; }
+  .topbar-nav { overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .topbar-nav::-webkit-scrollbar { display:none; }
   .live-badge { display:none; }
   .top-clock { display:none; }
   .main { display:block; height:calc(100vh - 84px); height:calc(100dvh - 84px); position:relative; }
@@ -413,6 +433,24 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   .badge-grid { grid-template-columns:repeat(3,1fr); }
   .mnc-stats { grid-template-columns:1fr 1fr; }
   .chart-stats { grid-template-columns:repeat(3,1fr); }
+
+  /* 모달을 하단 시트 스타일로 — 큰 화면 손가락 접근성 ↑ */
+  .modal-bd { align-items:flex-end; }
+  .modal, .modal-sm { width:100%; max-width:100%; max-height:92vh;
+    max-height:92dvh; border-radius:18px 18px 0 0; border-bottom:none; }
+  .mb { padding:16px 16px calc(16px + env(safe-area-inset-bottom)); }
+  .mh { padding:14px 16px; }
+  /* iOS 입력 자동 줌 방지: 입력 폰트 16px 이상 */
+  .qty-stepper input, .onboard-input, input[type="text"], input[type="number"] { font-size:16px; }
+  /* 거래 행: 좁은 화면에서 줄바꿈 허용, 비용표시는 한 줄 차지 */
+  .trade-row { gap:5px; }
+  .buy-cost { flex-basis:100%; order:5; text-align:left; margin-top:2px; }
+  /* 슬라이더 터치 영역 확대 */
+  input[type="range"] { height:28px; }
+}
+/* 가로 모드/아주 작은 높이 대응 */
+@media(max-height:520px) {
+  .modal, .modal-sm { max-height:96vh; max-height:96dvh; }
 }
 </style>
 </head>
@@ -473,6 +511,8 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
     <button class="nav-btn" onclick="openView('map')">🗺️ <span>세계지도</span></button>
     <button class="nav-btn" onclick="openMissions()" style="position:relative;">📋 <span>미션</span><span data-mission-badge style="display:none;position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:8px;align-items:center;justify-content:center;font-family:var(--font-mono);"></span></button>
     <button class="nav-btn" onclick="openDiplomacy()">🤝 <span>외교</span></button>
+    <button class="nav-btn" onclick="openCentralBank()">🏦 <span>중앙은행</span></button>
+    <button class="nav-btn" onclick="openBuildings()">🏗️ <span>건설</span></button>
     <button class="nav-btn" onclick="openRanking()">🏆 <span>랭킹</span></button>
     <button class="nav-btn" onclick="openQuiz()">🎓 <span>퀴즈</span></button>
     <button class="nav-btn" onclick="openBadges()">🎖️ <span>배지</span></button>
@@ -611,7 +651,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
         <div class="mns"><div class="mns-lbl">GDP 총액</div><div class="mns-val" style="color:var(--amber);" id="mnsGDP">$0</div></div>
         <div class="mns"><div class="mns-lbl">성장률</div><div class="mns-val" id="mnsGrowth" style="color:var(--green);">+0.00%</div></div>
         <div class="mns"><div class="mns-lbl">💰 국고</div><div class="mns-val" style="color:var(--green);" id="mnsTreasury">$0</div></div>
-        <div class="mns"><div class="mns-lbl">📉 국가부채</div><div class="mns-val" style="color:var(--red);" id="mnsDebt">$0</div></div>
+        <div class="mns"><div class="mns-lbl">📉 국가부채</div><div class="mns-val clickable" style="color:var(--red);" id="mnsDebt" onclick="openDebtInfo()" title="국가부채 설명 보기">$0</div></div>
         <div class="mns"><div class="mns-lbl">⭐ 신용등급</div><div class="mns-val" style="color:var(--cyan);" id="mnsCredit">BBB</div></div>
         <div class="mns"><div class="mns-lbl">❤️ 경제 체력</div><div class="mns-val" id="mnsHealth">💚 양호</div></div>
       </div>
@@ -781,6 +821,30 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   <div class="modal modal-sm">
     <div class="mh"><div class="mh-title">🗓️ 시즌 정보</div><button class="mh-close" onclick="closeModal('seasonModal')">×</button></div>
     <div class="mb" id="seasonBody"></div>
+  </div>
+</div>
+
+<!-- Central Bank (중앙은행 · 금리) -->
+<div class="modal-bd" id="centralBankModal">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mh-title">🏦 중앙은행</div><button class="mh-close" onclick="closeModal('centralBankModal')">×</button></div>
+    <div class="mb" id="centralBankBody"></div>
+  </div>
+</div>
+
+<!-- Debt Info (국가부채 설명) -->
+<div class="modal-bd" id="debtInfoModal">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mh-title">💰 국가부채 설명</div><button class="mh-close" onclick="closeModal('debtInfoModal')">×</button></div>
+    <div class="mb" id="debtInfoBody"></div>
+  </div>
+</div>
+
+<!-- National Buildings (국가 건설 트리) -->
+<div class="modal-bd" id="buildingModal">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">🏗️ 국가 건설</div><button class="mh-close" onclick="closeModal('buildingModal')">×</button></div>
+    <div class="mb" id="buildingBody"></div>
   </div>
 </div>
 
@@ -997,6 +1061,206 @@ const QUIZ_DATA = [
   {q:"이 게임에서 내 나라 GDP를 높이는 주요 수단은?",options:["다른 나라 주식 매수","정책 및 기술 투자","랭킹 구매","시간만 기다리기"],answer:1,explain:"정책 실행, 기술 투자, 외교 활동 등 다양한 행동으로 GDP를 성장시킬 수 있습니다."},
   {q:"수익률 +20%의 의미는?",options:["원금의 20% 손실","원금 대비 20% 이익","20번 거래","20개국 보유"],answer:1,explain:"수익률은 원금 대비 벌어들인 비율로, +20%는 원금의 20% 이익입니다."},
   {q:"환율이 오르면(자국 화폐 약세) 유리한 쪽은?",options:["수입 기업","수출 기업","둘 다 불리","관계 없음"],answer:1,explain:"자국 화폐가 싸지면 수출품 가격 경쟁력이 올라 수출 기업에 유리합니다."},
+  {q:"'수요'가 늘고 '공급'이 그대로면 가격은?",options:["내려간다","올라간다","변화 없다","0이 된다"],answer:1,explain:"수요가 공급보다 많아지면 가격이 오릅니다."},
+  {q:"'공급'이 늘고 수요가 그대로면 가격은?",options:["올라간다","내려간다","두 배가 된다","변화 없다"],answer:1,explain:"공급이 수요보다 많아지면 가격이 내려갑니다."},
+  {q:"물건이나 서비스를 만들어 파는 활동을 무엇이라 할까요?",options:["소비","생산","저축","기부"],answer:1,explain:"재화·서비스를 만들어내는 활동을 생산이라고 합니다."},
+  {q:"돈을 쓰지 않고 모아두는 것을 무엇이라 할까요?",options:["투자","저축","소비","대출"],answer:1,explain:"벌어들인 돈을 쓰지 않고 모아두는 것이 저축입니다."},
+  {q:"미래의 더 큰 이익을 위해 돈을 넣는 것을?",options:["저축","투자","낭비","세금"],answer:1,explain:"이익을 기대하고 자금을 투입하는 것이 투자입니다."},
+  {q:"'희소성'이란 무엇일까요?",options:["물건이 무한하다","원하는 것에 비해 자원이 부족함","돈이 많음","가격이 0"],answer:1,explain:"원하는 것에 비해 자원이 한정된 상태가 희소성이며, 경제학의 출발점입니다."},
+  {q:"무언가를 선택할 때 포기하는 다른 것의 가치를?",options:["매몰비용","기회비용","고정비용","한계비용"],answer:1,explain:"선택으로 포기한 대안의 가치를 기회비용이라 합니다."},
+  {q:"이미 써버려 되돌릴 수 없는 비용은?",options:["기회비용","매몰비용","변동비용","한계비용"],answer:1,explain:"회수 불가능한 과거의 비용을 매몰비용이라 하며, 의사결정 시 무시해야 합니다."},
+  {q:"시장에서 가격이 결정되는 기본 원리는?",options:["정부 지정","수요와 공급","제비뽑기","생산자 마음대로"],answer:1,explain:"시장 가격은 수요와 공급이 만나는 지점에서 결정됩니다."},
+  {q:"'독점'이란?",options:["여러 기업이 경쟁","한 기업이 시장을 지배","소비자가 없음","가격이 무료"],answer:1,explain:"한 기업이 시장을 지배하는 상태를 독점이라 합니다."},
+  {q:"돈의 세 가지 주요 기능이 아닌 것은?",options:["교환의 매개","가치 저장","가치 척도","날씨 예측"],answer:3,explain:"돈은 교환·가치저장·가치척도의 기능을 하지만 날씨를 예측하지는 않습니다."},
+  {q:"은행에 돈을 맡기면 받는 대가는?",options:["벌금","이자","세금","수수료만"],answer:1,explain:"예금에 대해 은행이 지급하는 대가가 이자입니다."},
+  {q:"돈을 빌리면 갚을 때 추가로 내는 것은?",options:["이자","배당","보너스","환급"],answer:0,explain:"빌린 돈(원금)에 더해 내는 비용이 이자입니다."},
+  {q:"'복리'란 무엇일까요?",options:["원금에만 이자","이자에 다시 이자가 붙음","이자가 없음","원금이 줄어듦"],answer:1,explain:"이자에 또 이자가 붙어 눈덩이처럼 불어나는 것이 복리입니다."},
+  {q:"물가가 너무 빠르게 오르는 현상을 막기 위해 중앙은행은?",options:["금리 인하","금리 인상","돈을 더 찍음","아무것도 안 함"],answer:1,explain:"금리를 올리면 소비·투자가 줄어 물가 상승이 억제됩니다."},
+  {q:"'예금'과 반대로 은행에서 돈을 빌리는 것은?",options:["대출","적금","투자","송금"],answer:0,explain:"은행에서 자금을 빌리는 것이 대출입니다."},
+  {q:"주식을 사면 그 회사의 무엇이 되나요?",options:["직원","주주(부분 소유자)","사장","고객"],answer:1,explain:"주식을 보유하면 회사의 일부를 소유한 주주가 됩니다."},
+  {q:"회사가 이익을 주주에게 나눠주는 것을?",options:["배당","이자","세금","벌금"],answer:0,explain:"기업 이익의 일부를 주주에게 분배하는 것이 배당입니다."},
+  {q:"'채권'이란 기본적으로 무엇일까요?",options:["회사 소유권","돈을 빌려줬다는 증서","공짜 돈","주식의 일종"],answer:1,explain:"채권은 정부·기업에 돈을 빌려주고 받는 차용 증서입니다."},
+  {q:"국가가 돈이 필요할 때 발행하는 채권은?",options:["회사채","국채","주식","수표"],answer:1,explain:"국가가 자금 조달을 위해 발행하는 채권이 국채입니다."},
+  {q:"이 게임에서 '국고'는 주로 어디에 쓰일까요?",options:["주식 매수·건설·정책","랭킹 조작","광고 시청","아무 데도"],answer:0,explain:"국고는 주식 투자, 시설 건설, 정책 실행 등에 사용됩니다."},
+  {q:"이 게임에서 국채를 발행하면 무엇이 늘어날까요?",options:["국고와 부채 둘 다","GDP만","신용등급","인구"],answer:0,explain:"국채 발행은 국고를 늘리지만 동시에 부채도 증가시킵니다."},
+  {q:"이 게임에서 부채가 너무 많으면 생기는 일은?",options:["GDP 성장 둔화","무한 성장","게임 종료","보너스 지급"],answer:0,explain:"부채 비율이 높으면 이자 부담과 성장 둔화 패널티가 발생합니다."},
+  {q:"이 게임에서 경제 지식 레벨을 올리는 방법은?",options:["퀴즈 풀기","돈 쓰기","기다리기","로그아웃"],answer:0,explain:"퀴즈 정답을 쌓으면 경제 지식 경험치가 올라 레벨업합니다."},
+  {q:"이 게임에서 금리를 내리면 일어나는 일은?",options:["성장↑ 물가↑","성장↓ 물가↓","아무 변화 없음","게임 종료"],answer:0,explain:"금리 인하는 성장을 가속하지만 인플레이션도 함께 올립니다."},
+  {q:"이 게임에서 인플레이션이 너무 높으면?",options:["경제 체력·신용 패널티","보너스 지급","GDP 폭등","변화 없음"],answer:0,explain:"초인플레이션은 경제 체력 감소와 신용등급 강등을 부릅니다."},
+  {q:"이 게임의 건설 트리에서 가장 먼저 짓는 시설은?",options:["우주센터","산업단지","반도체단지","공항"],answer:1,explain:"건설 트리는 산업단지부터 시작해 단계적으로 확장됩니다."},
+  {q:"이 게임에서 동맹을 맺으면 얻는 이점은?",options:["성장 보너스","페널티","부채 증가","신용 하락"],answer:0,explain:"동맹국 수에 비례해 GDP 성장 보너스를 받습니다."},
+  {q:"이 게임에서 AP(행동포인트)는 어떻게 회복되나요?",options:["시간이 지나면 자동 충전","돈으로만 구매","회복 불가","퀴즈로만"],answer:0,explain:"AP는 일정 시간마다 자동으로 충전되며 퀴즈로도 얻을 수 있습니다."},
+  {q:"이 게임에서 다른 나라 주식에 투자하는 이유는?",options:["시세 차익","의무 사항","랭킹 하락","AP 소모"],answer:0,explain:"다른 나라 경제에 투자해 시세 차익(수익)을 노릴 수 있습니다."},
+  {q:"나라끼리 물건을 사고파는 것을?",options:["무역","저축","대출","상속"],answer:0,explain:"국가 간 재화·서비스 거래를 무역이라 합니다."},
+  {q:"수입품에 매기는 세금을 무엇이라 할까요?",options:["관세","소득세","재산세","부가세"],answer:0,explain:"수입 물품에 부과하는 세금이 관세입니다."},
+  {q:"관세를 높이면 일반적으로 수입품 가격은?",options:["내려간다","올라간다","변화 없다","무료가 된다"],answer:1,explain:"관세가 오르면 수입품 가격이 올라 국내 산업을 보호하는 효과가 있습니다."},
+  {q:"여러 나라가 자유롭게 무역하도록 관세를 없애는 협정은?",options:["자유무역협정(FTA)","전쟁 선포","금리 협정","환율 고정"],answer:0,explain:"관세 장벽을 낮추는 국가 간 약속이 자유무역협정(FTA)입니다."},
+  {q:"한 나라 화폐를 다른 나라 화폐로 바꾸는 비율은?",options:["금리","환율","물가","세율"],answer:1,explain:"서로 다른 화폐의 교환 비율이 환율입니다."},
+  {q:"달러처럼 국제 거래에 널리 쓰이는 화폐를?",options:["기축통화","가상화폐","지역화폐","상품권"],answer:0,explain:"국제 거래·결제에 기준이 되는 화폐를 기축통화라 합니다."},
+  {q:"국가가 비상시를 대비해 보유한 외국 돈을?",options:["외환보유액","세금","벌금","기부금"],answer:0,explain:"위기에 대비해 보유하는 외국 통화·자산이 외환보유액입니다."},
+  {q:"원자재(석유·곡물 등)를 외국에서 사오는 것은?",options:["수출","수입","생산","저축"],answer:1,explain:"외국에서 물품을 사들이는 것이 수입입니다."},
+  {q:"자국 상품을 외국에 파는 것은?",options:["수입","수출","소비","대출"],answer:1,explain:"자국 상품을 외국에 판매하는 것이 수출입니다."},
+  {q:"세계화(글로벌화)의 특징이 아닌 것은?",options:["국가 간 교류 증가","상품·자본의 자유 이동","완전한 고립","문화 교류"],answer:2,explain:"세계화는 교류와 이동의 확대이며, 고립과는 반대 개념입니다."},
+  {q:"정부가 국민에게서 걷는 돈을?",options:["세금","이자","배당","수수료"],answer:0,explain:"정부가 공공 서비스를 위해 걷는 돈이 세금입니다."},
+  {q:"정부 지출이 수입(세금)보다 많을 때를?",options:["재정 흑자","재정 적자","무역 흑자","균형"],answer:1,explain:"정부가 버는 것보다 많이 쓰면 재정 적자라고 합니다."},
+  {q:"정부가 도로·항만을 짓는 데 쓰는 투자는?",options:["사회기반시설(인프라) 투자","주식 투자","개인 소비","해외 송금"],answer:0,explain:"도로·항만·통신 등 기반시설에 대한 투자가 인프라 투자입니다."},
+  {q:"경기가 나쁠 때 정부가 돈을 더 풀어 경기를 살리는 정책은?",options:["긴축정책","확장(부양)정책","금리 인상","세금 인상"],answer:1,explain:"지출을 늘려 경기를 살리는 것이 확장(경기부양) 재정정책입니다."},
+  {q:"물가가 너무 오를 때 정부가 지출을 줄이는 정책은?",options:["긴축정책","부양정책","무대응","감세"],answer:0,explain:"지출을 줄여 과열을 식히는 것이 긴축정책입니다."},
+  {q:"복지·국방 등에 쓰려고 미리 짜는 정부의 돈 계획은?",options:["예산","적금","대출","배당"],answer:0,explain:"정부가 수입·지출을 미리 계획한 것이 예산입니다."},
+  {q:"국가가 갚아야 할 빚의 총합을?",options:["국가부채","외환보유액","GDP","무역흑자"],answer:0,explain:"정부가 진 빚의 총액이 국가부채입니다."},
+  {q:"세금을 많이 걷으면 정부 수입은?",options:["줄어든다","늘어난다","변화 없다","0이 된다"],answer:1,explain:"세율·세원이 늘면 정부의 세수입이 증가합니다."},
+  {q:"'누진세'란 무엇일까요?",options:["모두 같은 세율","소득이 많을수록 높은 세율","세금이 없음","무작위 세율"],answer:1,explain:"소득이 클수록 더 높은 세율을 적용하는 것이 누진세입니다."},
+  {q:"정부가 특정 산업을 돕기 위해 주는 지원금은?",options:["보조금","벌금","관세","이자"],answer:0,explain:"산업·기업을 지원하기 위한 정부 지급금이 보조금입니다."},
+  {q:"기업의 가장 기본적인 목표는 보통?",options:["이윤 추구","손해 보기","문 닫기","세금 내기"],answer:0,explain:"기업은 일반적으로 이윤(이익) 극대화를 목표로 합니다."},
+  {q:"물건을 만드는 데 드는 돈을?",options:["비용","이익","매출","배당"],answer:0,explain:"생산·판매에 들어가는 돈이 비용(원가)입니다."},
+  {q:"판매로 벌어들인 총 금액을?",options:["비용","매출","부채","세금"],answer:1,explain:"상품 판매로 들어온 총금액이 매출(수익)입니다."},
+  {q:"매출에서 비용을 뺀 것은?",options:["이익","부채","세금","매출"],answer:0,explain:"매출에서 비용을 뺀 것이 이익(순익)입니다."},
+  {q:"생산량을 늘릴수록 평균 비용이 줄어드는 효과를?",options:["규모의 경제","희소성","인플레이션","디플레이션"],answer:0,explain:"대량 생산으로 단위당 비용이 낮아지는 것이 규모의 경제입니다."},
+  {q:"새로운 기술·아이디어로 가치를 만드는 것을?",options:["혁신","모방","저축","낭비"],answer:0,explain:"새로운 방식으로 가치를 창출하는 것이 혁신입니다."},
+  {q:"창업하여 새 사업에 도전하는 사람을?",options:["기업가","공무원","소비자","주주"],answer:0,explain:"위험을 감수하고 사업을 일으키는 사람이 기업가입니다."},
+  {q:"회사가 처음 주식을 증시에 공개하는 것을?",options:["상장(IPO)","파산","합병","청산"],answer:0,explain:"기업이 증시에 처음 주식을 공개하는 것을 상장(IPO)이라 합니다."},
+  {q:"두 회사가 하나로 합쳐지는 것을?",options:["합병","분할","상장","폐업"],answer:0,explain:"여러 기업이 하나로 결합하는 것이 합병입니다."},
+  {q:"연구개발을 줄여서 영어로 R&D라고도 하는 활동은?",options:["연구개발","광고","청소","회계"],answer:0,explain:"신기술·신제품을 위한 연구개발 활동이 R&D입니다."},
+  {q:"주식 가격이 전반적으로 오르는 시장을?",options:["강세장(불마켓)","약세장(베어마켓)","휴장","폐장"],answer:0,explain:"가격이 오르는 활황 시장을 강세장(bull market)이라 합니다."},
+  {q:"주식 가격이 전반적으로 내리는 시장을?",options:["강세장","약세장(베어마켓)","흑자","호황"],answer:1,explain:"가격이 내리는 침체 시장을 약세장(bear market)이라 합니다."},
+  {q:"위험을 줄이려고 여러 자산에 나눠 담는 전략은?",options:["분산투자","몰빵","단타","공매도"],answer:0,explain:"여러 자산에 나눠 위험을 줄이는 것이 분산투자입니다."},
+  {q:"'고위험 고수익'의 의미는?",options:["위험이 클수록 기대수익도 큼","위험이 없음","항상 손해","항상 이익"],answer:0,explain:"일반적으로 위험이 클수록 기대 수익도 커집니다."},
+  {q:"장기간 보유하며 기다리는 투자 방식은?",options:["장기투자","단타매매","공매도","도박"],answer:0,explain:"오래 보유하며 가치 상승을 기다리는 것이 장기투자입니다."},
+  {q:"시장 전체의 흐름을 보여주는 대표 지수는?",options:["주가지수","환율","금리","물가지수"],answer:0,explain:"여러 종목을 묶어 시장 흐름을 보여주는 것이 주가지수입니다."},
+  {q:"'버블(거품)'이란?",options:["적정 가격","실제 가치보다 과도하게 부푼 가격","가격 폭락","무료"],answer:1,explain:"실제 가치보다 가격이 비정상적으로 부풀어 오른 상태가 버블입니다."},
+  {q:"자산 가격이 급격히 무너지는 것을?",options:["폭락(크래시)","상장","배당","흑자"],answer:0,explain:"가격이 급격히 붕괴하는 것을 폭락(크래시)이라 합니다."},
+  {q:"투자에서 '원금'이란?",options:["처음 투자한 돈","번 이익","낸 세금","빌린 이자"],answer:0,explain:"처음 투자에 넣은 돈이 원금입니다."},
+  {q:"손실을 줄이려 미리 정해둔 가격에 파는 것을?",options:["손절매","추가매수","배당","상장"],answer:0,explain:"손실 확대를 막기 위해 정한 선에서 파는 것이 손절매입니다."},
+  {q:"일할 의사가 있는데 일자리가 없는 사람의 비율은?",options:["실업률","물가지수","금리","환율"],answer:0,explain:"경제활동인구 중 실업자 비율이 실업률입니다."},
+  {q:"경제가 성장과 침체를 반복하는 흐름을?",options:["경기변동(경기순환)","인플레이션","환율","무역"],answer:0,explain:"호황과 불황이 반복되는 흐름을 경기변동이라 합니다."},
+  {q:"경기가 매우 나빠 생산·소비가 크게 줄어든 상태를?",options:["불황(침체)","호황","흑자","성장"],answer:0,explain:"경제 활동이 크게 위축된 상태가 불황(경기침체)입니다."},
+  {q:"물가가 지속적으로 '하락'하는 현상은?",options:["인플레이션","디플레이션","스태그플레이션","호황"],answer:1,explain:"물가가 계속 떨어지는 현상이 디플레이션입니다."},
+  {q:"경기 침체인데 물가까지 오르는 최악의 상황은?",options:["스태그플레이션","디플레이션","호황","흑자"],answer:0,explain:"불황과 물가상승이 동시에 오는 것이 스태그플레이션입니다."},
+  {q:"국민 한 사람당 평균 소득을 보는 지표는?",options:["1인당 GDP","총 인구","국토 면적","환율"],answer:0,explain:"GDP를 인구로 나눈 것이 1인당 GDP로, 생활 수준을 가늠합니다."},
+  {q:"소비자가 사는 물건 가격을 종합한 지수는?",options:["소비자물가지수(CPI)","주가지수","환율","금리"],answer:0,explain:"소비자가 구입하는 상품·서비스 가격을 종합한 것이 CPI입니다."},
+  {q:"경제가 건강하게 커지는 것을 나타내는 지표는?",options:["경제성장률","실업률","부채비율","관세율"],answer:0,explain:"GDP가 전년 대비 얼마나 늘었는지가 경제성장률입니다."},
+  {q:"일자리가 늘어나면 실업률은 보통?",options:["올라간다","내려간다","변화 없다","사라진다"],answer:1,explain:"일자리가 늘면 실업자가 줄어 실업률이 내려갑니다."},
+  {q:"중앙은행이 시중에 돈을 많이 풀면 물가는 보통?",options:["내려간다","올라가는 경향","변화 없다","0이 된다"],answer:1,explain:"통화량이 늘면 물가가 오르는 인플레이션 압력이 생깁니다."},
+  {q:"용돈을 받으면 가장 현명한 첫 습관은?",options:["전부 즉시 쓰기","일부 저축하기","빌려주기","숨기기"],answer:1,explain:"일부를 저축하는 습관이 건강한 돈 관리의 출발입니다."},
+  {q:"'예산을 세운다'는 것은?",options:["돈 쓸 계획을 미리 정함","무조건 아낌","돈을 버림","빚을 냄"],answer:0,explain:"수입에 맞춰 지출 계획을 세우는 것이 예산 세우기입니다."},
+  {q:"꼭 필요한 것과 갖고 싶은 것 중 먼저 사야 할 것은?",options:["갖고 싶은 것","필요한 것","비싼 것","광고에 나온 것"],answer:1,explain:"한정된 돈은 '필요(needs)'를 우선하는 것이 현명합니다."},
+  {q:"저축의 가장 큰 장점은?",options:["미래에 대비할 수 있음","이자가 사라짐","돈이 줄어듦","세금이 늘어남"],answer:0,explain:"저축은 비상시·미래 목표에 대비하게 해줍니다."},
+  {q:"비싼 물건을 살 때 현명한 방법은?",options:["충동구매","가격 비교 후 결정","무조건 외상","가장 비싼 것"],answer:1,explain:"여러 곳의 가격·품질을 비교한 뒤 사는 것이 현명한 소비입니다."},
+  {q:"광고의 주된 목적은?",options:["물건을 사게 하려는 것","공짜로 주려는 것","정보 봉사","날씨 안내"],answer:0,explain:"광고는 소비자가 상품을 사도록 설득하는 것이 주 목적입니다."},
+  {q:"신용카드를 쓰면 결제 대금은?",options:["즉시 사라짐","나중에 갚아야 함","공짜","저절로 사라짐"],answer:1,explain:"신용카드는 외상이므로 나중에 반드시 갚아야 합니다."},
+  {q:"'충동구매'를 줄이는 좋은 방법은?",options:["사기 전 잠깐 멈춰 생각하기","바로 결제","빚내서 사기","남 따라 사기"],answer:0,explain:"구매 전 한 번 멈춰 필요성을 따지면 충동구매를 줄일 수 있습니다."},
+  {q:"목표를 위해 돈을 꾸준히 모으는 통장은?",options:["적금","대출","보험금","벌금"],answer:0,explain:"정기적으로 일정액을 모으는 상품이 적금입니다."},
+  {q:"미래의 위험(사고·질병)에 대비해 미리 돈을 내는 제도는?",options:["보험","주식","복권","대출"],answer:0,explain:"위험에 대비해 함께 돈을 모아 보장하는 제도가 보험입니다."},
+  {q:"'기회'와 '위험'이 함께 커지는 투자처는?",options:["신흥국","예금","현금","금고"],answer:0,explain:"성장 잠재력이 큰 신흥국은 기회와 위험이 모두 큽니다."},
+  {q:"선진국 경제의 일반적 특징은?",options:["안정적이나 성장률 낮음","항상 폭등","거래 불가","화폐 없음"],answer:0,explain:"선진국은 안정적이지만 성장률은 신흥국보다 낮은 경향입니다."},
+  {q:"'GDP 성장률'이 높다는 것은?",options:["경제가 빠르게 커짐","경제가 줄어듦","인구 감소","변화 없음"],answer:0,explain:"성장률이 높을수록 경제가 활발히 커지고 있다는 뜻입니다."},
+  {q:"중앙은행의 핵심 역할이 아닌 것은?",options:["금리 결정","통화량 조절","물가 안정","개인 대출 영업"],answer:3,explain:"중앙은행은 통화정책을 담당하며 개인 대출 영업은 하지 않습니다."},
+  {q:"'외국인 투자 유입'이 늘면 보통?",options:["경제에 긍정적","즉시 파산","화폐 소멸","인구 감소"],answer:0,explain:"외국 자본이 들어오면 투자·고용이 늘어 경제에 도움이 됩니다."},
+  {q:"나라의 빚이 GDP에 비해 너무 크면 위험한 이유는?",options:["이자 부담·신용 하락","보너스 증가","물가 하락","인구 증가"],answer:0,explain:"과도한 부채는 이자 부담과 신용등급 하락 위험을 키웁니다."},
+  {q:"'신용등급 AAA'는 무엇을 뜻할까요?",options:["빚 갚을 능력 매우 높음","곧 부도","거래 금지","세금 면제"],answer:0,explain:"AAA는 최고 등급으로, 빚을 갚을 능력이 매우 우수함을 뜻합니다."},
+  {q:"다음 중 '안전자산'으로 흔히 꼽히는 것은?",options:["금","복권","신흥국 코인","폐지"],answer:0,explain:"금은 위기 때 가치를 지키는 대표적 안전자산으로 꼽힙니다."},
+  {q:"물가가 오를 때 같은 1만 원으로 살 수 있는 양은?",options:["늘어난다","줄어든다","변화 없다","두 배"],answer:1,explain:"물가가 오르면 같은 돈의 구매력이 줄어듭니다."},
+  {q:"'경제 체력'이 떨어진 나라를 회복시키려면(게임)?",options:["복지·건전화 정책 실행","방치","부채만 늘리기","아무것도 안 함"],answer:0,explain:"재정 건전화·복지 정책 등으로 경제 체력을 회복시킬 수 있습니다."},
+  {q:"'금리'를 다른 말로 하면?",options:["이자율","환율","세율","성장률"],answer:0,explain:"돈을 빌리고 빌려줄 때의 이자 비율이 금리(이자율)입니다."},
+  {q:"저축한 돈에 붙는 이자가 많아지려면 금리가?",options:["낮아야","높아야","0이어야","음수여야"],answer:1,explain:"예금 금리가 높을수록 받는 이자가 많아집니다."},
+  {q:"돈을 빌리는 사람 입장에서 유리한 금리는?",options:["높은 금리","낮은 금리","변동 금리만","상관없음"],answer:1,explain:"빌리는 입장에선 이자가 적은 낮은 금리가 유리합니다."},
+  {q:"'예산 적자'를 줄이는 방법이 아닌 것은?",options:["지출 축소","세금 확대","지출 무한 증가","효율화"],answer:2,explain:"지출을 무한히 늘리면 적자가 더 커집니다."},
+  {q:"회사 주식을 많이 가진 사람일수록?",options:["회사에 대한 영향력 큼","영향력 없음","직원이 됨","세금 면제"],answer:0,explain:"지분이 많을수록 의결권 등 회사에 대한 영향력이 커집니다."},
+  {q:"물건 값이 싸질 때 소비자는 보통?",options:["더 많이 산다","사지 않는다","화를 낸다","수출한다"],answer:0,explain:"가격이 내리면 수요가 늘어 더 많이 구매하는 경향이 있습니다."},
+  {q:"기업이 신제품을 알리려고 돈을 쓰는 활동은?",options:["마케팅·광고","저축","납세","청소"],answer:0,explain:"제품을 알리고 팔기 위한 활동이 마케팅·광고입니다."},
+  {q:"'독과점'을 막아 공정 경쟁을 지키는 기관은?",options:["공정거래 당국","우체국","도서관","기상청"],answer:0,explain:"공정한 시장 경쟁을 감시·보호하는 곳이 공정거래 당국입니다."},
+  {q:"물물교환의 가장 큰 불편함은?",options:["원하는 것이 서로 맞아야 함","너무 빠름","돈이 필요함","세금"],answer:0,explain:"서로 원하는 물건이 맞아야 해서, 이를 해결하려 화폐가 등장했습니다."},
+  {q:"'가계'란 경제에서 무엇을 뜻할까요?",options:["소비의 주체(가정)","정부","외국","은행"],answer:0,explain:"소비·노동을 담당하는 가정 단위를 경제에서 가계라 합니다."},
+  {q:"경제의 3대 주체가 아닌 것은?",options:["가계","기업","정부","외계인"],answer:3,explain:"경제의 3대 주체는 가계·기업·정부입니다."},
+  {q:"기업이 사람을 뽑아 일을 시키는 것을?",options:["고용","해고","파업","폐업"],answer:0,explain:"노동력을 채용해 일하게 하는 것이 고용입니다."},
+  {q:"일한 대가로 받는 돈을?",options:["임금(급여)","세금","이자","배당"],answer:0,explain:"노동의 대가로 받는 돈이 임금(급여)입니다."},
+  {q:"최저임금 제도의 목적은?",options:["근로자 최소 생활 보장","임금 삭감","고용 금지","세금 인상"],answer:0,explain:"근로자에게 최소한의 임금을 보장하기 위한 제도입니다."},
+  {q:"'생산성'이 높다는 것은?",options:["같은 자원으로 더 많이 생산","적게 생산","낭비가 많음","쉬는 시간 많음"],answer:0,explain:"투입 대비 산출이 많을수록 생산성이 높습니다."},
+  {q:"자원을 가장 효율적으로 쓰는 상태를?",options:["효율적 배분","낭비","독점","적자"],answer:0,explain:"자원이 가장 가치 있게 쓰이는 상태가 효율적 배분입니다."},
+  {q:"'공공재'의 예로 알맞은 것은?",options:["가로등·국방","개인 휴대폰","집","자동차"],answer:0,explain:"모두가 함께 누리는 가로등·국방 등이 공공재입니다."},
+  {q:"환경오염처럼 거래에 포함 안 된 사회적 비용을?",options:["외부효과","이익","배당","관세"],answer:0,explain:"거래 당사자 밖에 미치는 영향을 외부효과라 합니다."},
+  {q:"정부가 시장에 개입하는 주된 이유는?",options:["시장 실패 보완","재미로","이유 없음","손해 보려고"],answer:0,explain:"독과점·공공재 등 시장이 못 푸는 문제를 보완하려 개입합니다."},
+  {q:"'경제 자유도'가 높은 나라의 특징은?",options:["시장 거래가 자유로움","거래 금지","정부가 모두 결정","화폐 없음"],answer:0,explain:"민간의 자유로운 경제 활동이 보장될수록 경제 자유도가 높습니다."},
+  {q:"'적금'과 '예금'의 차이는?",options:["적금은 매달 납입, 예금은 한 번에","둘이 똑같음","예금은 빚","적금은 세금"],answer:0,explain:"적금은 매달 일정액을 붓고, 예금은 한 번에 맡깁니다."},
+  {q:"주식 투자에서 '분산'을 하면?",options:["위험이 줄어듦","위험이 커짐","수익 0","거래 금지"],answer:0,explain:"여러 종목에 나누면 한 곳 손실을 다른 곳이 메워 위험이 줍니다."},
+  {q:"'리스크(위험)'를 아예 0으로 만드는 투자는?",options:["거의 없다","항상 있다","주식","코인"],answer:0,explain:"수익이 있는 투자에는 대개 어느 정도 위험이 따릅니다."},
+  {q:"나라 경제가 커지면 보통 국민의 삶은?",options:["나아질 가능성↑","무조건 나빠짐","변화 없음","인구 0"],answer:0,explain:"경제 성장은 일자리·소득 증가로 삶의 질 향상에 기여할 수 있습니다."},
+  {q:"'세계 1위 GDP' 국가는 경제 규모가?",options:["가장 큼","가장 작음","중간","없음"],answer:0,explain:"GDP 1위는 그 시점 경제 규모가 가장 큰 나라입니다."},
+  {q:"환율이 내리면(자국 화폐 강세) 유리한 쪽은?",options:["수입 기업","수출 기업","아무도","농부만"],answer:0,explain:"화폐 가치가 오르면 수입품이 싸져 수입 기업에 유리합니다."},
+  {q:"'무역 적자'가 계속되면 우려되는 점은?",options:["외화 유출","흑자 전환","인구 증가","물가 하락"],answer:0,explain:"수입이 수출보다 많으면 외화가 빠져나가는 부담이 생깁니다."},
+  {q:"기업이 빚을 너무 많이 지면 위험한 이유는?",options:["이자·파산 위험","보너스","세금 면제","성장 보장"],answer:0,explain:"과도한 부채는 이자 부담과 파산 위험을 키웁니다."},
+  {q:"'예금자 보호'란?",options:["은행이 망해도 일정액 보장","무한 보장","보장 없음","주식 보장"],answer:0,explain:"은행이 파산해도 예금을 일정 한도까지 보호해 주는 제도입니다."},
+  {q:"물가가 안정적이라는 것은?",options:["가격이 크게 안 흔들림","가격 폭등","가격 0","거래 중단"],answer:0,explain:"물가가 큰 변동 없이 유지되는 상태가 물가 안정입니다."},
+  {q:"'환테크'는 무엇을 활용한 재테크일까요?",options:["환율 변동","날씨","나이","키"],answer:0,explain:"환율 변동을 이용해 수익을 노리는 것이 환테크입니다."},
+  {q:"주식의 '평균 단가(평단)'란?",options:["산 가격의 평균","최고가","최저가","오늘 종가"],answer:0,explain:"여러 번 매수한 가격의 평균이 평균 단가(평단가)입니다."},
+  {q:"주가가 평단보다 높으면 팔 때?",options:["이익(수익)","손해","변화 없음","세금만"],answer:0,explain:"현재가가 평단보다 높으면 차익(이익)이 발생합니다."},
+  {q:"주가가 평단보다 낮을 때 팔면?",options:["이익","손해(손실)","수수료 면제","배당"],answer:1,explain:"현재가가 평단보다 낮으면 손실이 발생합니다."},
+  {q:"'장기 우상향'을 믿는 투자 철학은?",options:["오래 보유","매일 사고팔기","빚투","도박"],answer:0,explain:"시장이 길게 보면 오른다고 보고 오래 보유하는 전략입니다."},
+  {q:"'코스트 애버리징(분할 매수)'의 장점은?",options:["평단 평준화","수수료 0","무조건 이익","위험 0"],answer:0,explain:"여러 번 나눠 사면 매수 평단이 평준화돼 변동 위험이 줍니다."},
+  {q:"나라가 기술에 투자하면 장기적으로?",options:["경쟁력·성장 기대","즉시 파산","인구 감소","화폐 소멸"],answer:0,explain:"기술 투자는 장기 경쟁력과 성장 동력을 키웁니다."},
+  {q:"'반도체'가 중요한 이유는?",options:["거의 모든 전자기기 핵심 부품","장식용","식품","연료"],answer:0,explain:"반도체는 컴퓨터·스마트폰 등 거의 모든 전자기기의 핵심입니다."},
+  {q:"국가 간 협력으로 얻는 이점이 아닌 것은?",options:["무역 확대","기술 교류","고립 심화","공동 위기 대응"],answer:2,explain:"협력은 교류·무역을 늘리며 고립과는 반대입니다."},
+  {q:"'지속 가능한 성장'이 강조하는 것은?",options:["환경·미래까지 고려","당장의 이익만","무한 개발","낭비"],answer:0,explain:"미래 세대와 환경까지 고려한 성장을 지속 가능한 성장이라 합니다."},
+  {q:"저축을 일찍 시작할수록 유리한 이유는?",options:["복리 효과를 오래 누림","이자가 사라짐","위험 증가","세금 폭탄"],answer:0,explain:"일찍 시작하면 복리로 더 오래, 더 많이 불릴 수 있습니다."},
+  {q:"'금융 문맹'에서 벗어나는 가장 좋은 방법은?",options:["꾸준한 경제 공부","무시하기","빚내기","도박"],answer:0,explain:"경제·금융을 꾸준히 공부하면 현명한 결정을 내릴 수 있습니다."},
+  {q:"물건을 살 때 '단위당 가격'을 비교하면?",options:["더 알뜰한 선택 가능","손해","불법","불가능"],answer:0,explain:"같은 종류라도 단위당 가격을 비교하면 알뜰하게 살 수 있습니다."},
+  {q:"'세금'이 쓰이는 곳이 아닌 것은?",options:["도로·학교 등 공공","국방","개인 용돈","복지"],answer:2,explain:"세금은 공공·국방·복지에 쓰이며 개인 용돈으로 쓰지 않습니다."},
+  {q:"경제 뉴스에서 '호황'은 어떤 상태?",options:["경기가 좋음","경기가 나쁨","전쟁","폐업"],answer:0,explain:"생산·소비·고용이 활발한 좋은 경기 상태가 호황입니다."},
+  {q:"'투기'와 '투자'의 차이로 가장 알맞은 것은?",options:["투기는 단기 도박적, 투자는 가치 기반","똑같다","투자가 더 위험","투기가 안전"],answer:0,explain:"투자는 가치에 근거하고, 투기는 단기 가격에 베팅하는 성격이 강합니다."},
+  {q:"주가가 회사 실적보다 과하게 오르면 의심할 것은?",options:["거품(버블)","저평가","무위험","배당"],answer:0,explain:"실적 대비 과도한 상승은 거품일 가능성을 의심해야 합니다."},
+  {q:"국가 경제가 위기일 때 중앙은행의 대응은?",options:["금리 인하·유동성 공급","즉시 폐쇄","아무것도 안 함","세금 폭등"],answer:0,explain:"위기 시 금리를 내리고 돈을 풀어 경기를 떠받칩니다."},
+  {q:"'외환위기'는 무엇이 부족해 생길까요?",options:["외화(달러 등)","국내 인구","땅","공기"],answer:0,explain:"갚을 외화가 부족해 발생하는 위기가 외환위기입니다."},
+  {q:"경제 성장과 환경 보호를 함께 추구하는 산업은?",options:["친환경(그린) 산업","폐기물 무단투기","남벌","오염 배출"],answer:0,explain:"환경을 지키며 성장하는 분야가 친환경(그린) 산업입니다."},
+  {q:"'주식 배당금'은 언제 받을 수 있나요?",options:["주주일 때","비주주일 때","직원만","사장만"],answer:0,explain:"배당은 해당 시점에 주식을 보유한 주주에게 지급됩니다."},
+  {q:"나라의 '잠재성장률'이란?",options:["무리 없이 낼 수 있는 성장 한계","최대 부채","최저 임금","관세율"],answer:0,explain:"물가 자극 없이 달성 가능한 성장 수준이 잠재성장률입니다."},
+  {q:"'엔화·달러' 같은 외국 돈을 사고파는 시장은?",options:["외환시장","주식시장","부동산시장","중고시장"],answer:0,explain:"외국 통화를 거래하는 시장이 외환시장입니다."},
+  {q:"기업 실적이 좋아지면 그 회사 주가는 보통?",options:["오르는 경향","무조건 폭락","변화 없음","상장폐지"],answer:0,explain:"실적 개선은 주가 상승 요인으로 작용하는 경향이 있습니다."},
+  {q:"'세계 경제'가 연결돼 있어서 한 나라 위기가?",options:["다른 나라로 퍼질 수 있음","전혀 영향 없음","항상 이익","즉시 해결"],answer:0,explain:"글로벌화로 한 나라의 위기가 다른 나라로 전이될 수 있습니다."},
+  {q:"'재테크'란?",options:["재산을 불리는 기술·활동","세금 회피","낭비","파산"],answer:0,explain:"재산을 효율적으로 관리·증식하는 활동이 재테크입니다."},
+  {q:"물건이 부족할 때(품귀) 가격은 보통?",options:["오른다","내린다","0이 된다","사라진다"],answer:0,explain:"공급이 부족하면(희소) 가격이 오르는 경향이 있습니다."},
+  {q:"정부가 돈을 너무 많이 찍어내면?",options:["화폐 가치 하락(인플레)","화폐 가치 상승","변화 없음","부자 됨"],answer:0,explain:"통화를 과도하게 발행하면 화폐 가치가 떨어지고 물가가 오릅니다."},
+  {q:"'국부(나라의 부)'를 키우는 바람직한 방법은?",options:["생산성·기술 향상","빚만 늘리기","낭비","고립"],answer:0,explain:"생산성과 기술을 높이는 것이 국부 증대의 핵심입니다."},
+  {q:"경제를 공부하면 좋은 점은?",options:["현명한 선택을 할 수 있음","손해만 봄","쓸모없음","위험만 커짐"],answer:0,explain:"경제 지식은 돈과 관련한 현명한 의사결정을 돕습니다."},
+  {q:"이 게임에서 '시가총액'의 기준이 되는 지표는?",options:["GDP","인구","면적","국기 색"],answer:0,explain:"각 국가의 초기 시가총액은 실제 GDP를 기반으로 산정됩니다."},
+  {q:"이 게임에서 변동성이 큰 국가는 주로?",options:["신흥국","선진국","무국적","없음"],answer:0,explain:"정치·경제가 불안정한 신흥국일수록 변동성이 큽니다."},
+  {q:"이 게임에서 분산 투자를 하면?",options:["위험을 줄일 수 있음","무조건 손해","거래 금지","AP 0"],answer:0,explain:"여러 국가에 나눠 투자하면 한 곳 폭락의 손실을 줄일 수 있습니다."},
+  {q:"이 게임의 랭킹은 주로 무엇으로 매겨질까요?",options:["성장/수익률","로그인 횟수","국기 색","이름 길이"],answer:0,explain:"꾸준한 성장률·수익률이 랭킹의 핵심 기준입니다."},
+  {q:"이 게임에서 위기 이벤트가 발생하면?",options:["선택에 따라 결과가 달라짐","무조건 게임 종료","보상만 받음","변화 없음"],answer:0,explain:"위기 상황의 선택에 따라 경제에 다른 결과가 나타납니다."},
+  {q:"이 게임에서 출석(체크인)을 꾸준히 하면?",options:["연속 보상 증가","페널티","부채 증가","랭킹 하락"],answer:0,explain:"연속 출석할수록 보상이 커지도록 설계돼 있습니다."},
+  {q:"이 게임에서 반도체단지를 지으면?",options:["성장·국고 보너스","페널티","부채","인구 감소"],answer:0,explain:"반도체단지는 성장 보너스와 국고 수입을 함께 제공합니다."},
+  {q:"이 게임에서 경제 지식 레벨이 높으면?",options:["정책 효과 보너스","페널티","거래 금지","AP 0"],answer:0,explain:"레벨이 높을수록 정책 효과 효율에 보너스가 붙습니다."},
+  {q:"이 게임에서 부채를 줄이는 정책은?",options:["부채 상환","국채 발행","방치","주식 매수"],answer:0,explain:"'부채 상환' 정책으로 국고를 써서 빚을 갚을 수 있습니다."},
+  {q:"이 게임에서 신용등급을 올리면 좋은 점은?",options:["경제 안정·투자 유치","페널티","부채 증가","성장 둔화"],answer:0,explain:"높은 신용등급은 경제 안정과 외국인 투자 유치에 도움이 됩니다."},
+  {q:"'경제'라는 말의 기본 의미에 가장 가까운 것은?",options:["자원을 생산·분배·소비하는 활동","요리법","운동","날씨"],answer:0,explain:"경제는 한정된 자원으로 생산·분배·소비하는 모든 활동입니다."},
+  {q:"돈을 '교환의 매개'로 쓰면 좋은 점은?",options:["거래가 편리해짐","거래 불가","세금 면제","가격 0"],answer:0,explain:"돈 덕분에 물물교환의 불편 없이 쉽게 거래할 수 있습니다."},
+  {q:"'시장'이란 경제에서?",options:["사고파는 거래가 이뤄지는 곳","공원","학교","병원"],answer:0,explain:"수요자와 공급자가 만나 거래하는 곳·체계가 시장입니다."},
+  {q:"자유시장 경제의 특징은?",options:["가격이 수요·공급으로 결정","정부가 모든 가격 결정","거래 금지","화폐 없음"],answer:0,explain:"민간의 수요·공급으로 가격이 정해지는 것이 자유시장 경제입니다."},
+  {q:"'계획경제'의 특징은?",options:["국가가 생산·분배 결정","시장이 모두 결정","화폐 없음","거래 자유"],answer:0,explain:"정부가 생산·분배를 계획·통제하는 것이 계획경제입니다."},
+  {q:"저축이 많은 나라가 투자에 쓸 수 있는 자금은?",options:["풍부해짐","사라짐","줄어듦","무관"],answer:0,explain:"저축이 모이면 그것이 기업 투자의 재원이 됩니다."},
+  {q:"'금융'이란 무엇을 다루는 분야일까요?",options:["돈의 흐름·거래","요리","건축","농사"],answer:0,explain:"자금의 조달·운용·거래를 다루는 분야가 금융입니다."},
+  {q:"위험을 감수하고 미래 가치를 보고 돈을 넣는 사람을?",options:["투자자","소비자만","구경꾼","공무원"],answer:0,explain:"수익을 기대하고 자금을 투입하는 사람이 투자자입니다."},
+  {q:"물가와 임금이 함께 오르기만 하는 악순환을?",options:["임금-물가 악순환","디플레이션","흑자","호황"],answer:0,explain:"물가 상승이 임금 상승을 부르고 다시 물가를 올리는 악순환입니다."},
+  {q:"나라 경제의 '기초체력'을 흔히 무엇이라 부를까요?",options:["펀더멘털","버블","루머","공매도"],answer:0,explain:"성장률·물가·고용 등 경제의 기초 여건을 펀더멘털이라 합니다."},
+  {q:"주식시장에서 '거래량'이 많다는 것은?",options:["사고파는 활동이 활발","거래 정지","상장폐지","휴장"],answer:0,explain:"거래량은 일정 기간 사고팔린 주식 수로, 많을수록 활발합니다."},
+  {q:"'배당수익률'이 높은 주식의 특징은?",options:["주가 대비 배당이 많음","배당이 없음","무조건 손해","상장폐지"],answer:0,explain:"주가 대비 배당이 많을수록 배당수익률이 높습니다."},
+  {q:"경기 부양을 위해 정부가 세금을 '내리면'?",options:["가계 소비 여력↑","소비 감소","물가 0","거래 금지"],answer:0,explain:"감세는 가계의 쓸 수 있는 돈을 늘려 소비를 촉진합니다."},
+  {q:"'규제 완화'가 기업에 주는 영향은?",options:["사업이 자유로워짐","사업 금지","세금 폭탄","파산"],answer:0,explain:"불필요한 규제를 줄이면 기업 활동이 더 자유로워집니다."},
+  {q:"국가가 미래 산업을 키우려고 하는 일은?",options:["연구개발·인재 투자","연구 금지","고립","낭비"],answer:0,explain:"R&D와 인재 양성에 투자해 미래 산업을 키웁니다."},
+  {q:"'환율 방어'를 위해 중앙은행이 쓰는 수단은?",options:["외환보유액 활용","주식 매수","복권 발행","아무것도"],answer:0,explain:"급격한 환율 변동 시 외환보유액으로 시장에 개입합니다."},
+  {q:"물가가 0% 근처에서 안정되면 경제는?",options:["예측·계획이 쉬워짐","즉시 붕괴","거래 금지","화폐 소멸"],answer:0,explain:"물가가 안정되면 가계·기업이 미래를 계획하기 쉬워집니다."},
+  {q:"'경제 지표'를 보는 이유는?",options:["경제 상태를 파악하려고","재미로만","의미 없음","세금 때문"],answer:0,explain:"GDP·물가·고용 등 지표로 경제 상황을 진단합니다."},
+  {q:"나라 빚을 갚을 능력이 좋아지면 신용등급은?",options:["오른다","내린다","사라진다","무관"],answer:0,explain:"상환 능력이 개선되면 신용등급이 올라갑니다."},
+  {q:"투자에서 가장 중요한 마음가짐은?",options:["감당 가능한 위험 안에서 결정","전 재산 몰빵","빚투","남 따라하기"],answer:0,explain:"자신이 감당할 수 있는 범위에서 신중히 결정하는 것이 중요합니다."},
+  {q:"'디플레이션'이 지속되면 사람들이 소비를?",options:["미룬다","늘린다","멈추지 않는다","두 배로"],answer:0,explain:"값이 더 내릴 것을 기대해 소비를 미루는 경향이 생깁니다."},
+  {q:"'경상수지'에 포함되는 대표 항목은?",options:["무역수지","주가","날씨","인구"],answer:0,explain:"상품·서비스 거래 등을 포괄하는 것이 경상수지입니다."},
+  {q:"기업이 자금을 모으려 주식을 새로 발행하는 것을?",options:["증자","감자","배당","상장폐지"],answer:0,explain:"자본을 늘리기 위해 주식을 새로 발행하는 것이 증자입니다."},
+  {q:"주식 수를 줄여 가치를 조정하는 것을?",options:["감자","증자","배당","상장"],answer:0,explain:"발행 주식 수를 줄이는 것이 감자입니다."},
+  {q:"'금융위기'가 경제 전체로 번지는 현상을?",options:["전이(전염)","고립","흑자","호황"],answer:0,explain:"한 부문의 위기가 경제 전반으로 퍼지는 것을 전이라 합니다."},
+  {q:"물가·금리·환율은 모두 무엇에 속할까요?",options:["거시경제 지표","요리 재료","운동 종목","색깔"],answer:0,explain:"나라 전체 경제를 보는 거시경제 지표들입니다."},
+  {q:"개인·기업 단위의 경제를 보는 분야는?",options:["미시경제","거시경제","천문학","지리학"],answer:0,explain:"개별 소비자·기업의 행동을 다루는 것이 미시경제입니다."},
+  {q:"나라 전체의 경제를 보는 분야는?",options:["거시경제","미시경제","화학","생물학"],answer:0,explain:"국가 전체의 성장·물가·고용을 다루는 것이 거시경제입니다."},
+  {q:"'경제 교육'을 어릴 때 받으면 좋은 점은?",options:["평생 돈 관리에 도움","손해","무의미","위험"],answer:0,explain:"어릴 때부터의 경제 교육은 평생의 현명한 돈 관리를 돕습니다."},
+  {q:"게임으로 경제를 배우면 좋은 점은?",options:["재미있게 원리 체득","의미 없음","손해","위험"],answer:0,explain:"직접 의사결정을 하며 경제 원리를 재미있게 익힐 수 있습니다."},
 ];
 
 // 글로벌 경제 뉴스 템플릿
@@ -1095,6 +1359,14 @@ let state = {
   rival: null,           // {code, name, flag, gdp} AI 라이벌
   season: null,          // {id, startGdp, claimed}
   missionTab: 'daily',   // 미션 모달 탭
+  // ===== 신규 확장 기능 (중앙은행/건설/경제레벨) =====
+  interestRate: 2.5,     // 🏦 기준금리 % (0.5~5.0, 기본 2.5)
+  inflation: 2.0,        // 🏦 현재 인플레이션 % (목표치로 서서히 수렴)
+  lastRateChange: 0,     // 🏦 마지막 금리 변경 시각 (쿨다운용)
+  inflCrisisSince: 0,    // 🏦 인플레 위기(7%↑) 지속 시작 시각 (신용 강등 판정용)
+  buildings: {},         // 🏗️ 건설 완료 시설 {bId:true}
+  econLevel: 1,          // 🎓 경제 지식 레벨 (1~10)
+  econXP: 0,             // 🎓 누적 경제 지식 경험치
 };
 
 // World GDP prices (live drift)
@@ -1174,6 +1446,14 @@ function resetGameState() {
   state.rival = null;
   state.season = null;
   state.missionTab = 'daily';
+  // 신규 확장 기능 초기화
+  state.interestRate = 2.5;
+  state.inflation = 2.0;
+  state.lastRateChange = 0;
+  state.inflCrisisSince = 0;
+  state.buildings = {};
+  state.econLevel = 1;
+  state.econXP = 0;
 }
 
 async function onAuthChange(user) {
@@ -1238,6 +1518,13 @@ function openAccount() {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
       <button onclick="closeModal('accountModal');openSeason()" style="padding:11px;border-radius:9px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">🗓️ 시즌 정보</button>
       <button onclick="closeModal('accountModal');openCheckin()" style="padding:11px;border-radius:9px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">📅 출석 보상</button>
+      <button onclick="closeModal('accountModal');openCentralBank()" style="padding:11px;border-radius:9px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">🏦 중앙은행</button>
+      <button onclick="closeModal('accountModal');openBuildings()" style="padding:11px;border-radius:9px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">🏗️ 국가 건설</button>
+    </div>
+
+    <!-- 경제 지식 레벨 -->
+    <div style="margin-bottom:12px;">
+      ${econLevelBarHtml(false)}
     </div>
 
     <!-- 성장 그래프 -->
@@ -1405,6 +1692,7 @@ function createMyNation() {
     totalBoost: 0,
     treasury: 50,        // 국고 (자금, billions)
     debt: 0,             // 국가 부채
+    debtSources: {bond:0, interest:0, repay:0}, // 부채 발생 원인별 누적
     creditRating: 5,     // 신용등급 (0~10, 5=BBB 시작)
     stocks: {},          // 보유 주식 {code: shares}
     activePolicies: {},  // 지속 정책 효과
@@ -1449,8 +1737,20 @@ function startGame() {
   ensureMissions();
   ensureRival();
   ensureSeason();
+  ensureEconomyFeatures();   // 🏦🏗️🎓 금리/인플레/건설/레벨 기본값 보정
   updateMissionBadge();
   checkDailyLogin();   // 출석 보상 자동 체크
+}
+
+// 🏦🏗️🎓 신규 확장 기능 상태 기본값 보정 (구버전 세이브 대비)
+function ensureEconomyFeatures() {
+  if (typeof state.interestRate !== 'number') state.interestRate = RATE_DEFAULT;
+  if (typeof state.inflation !== 'number') state.inflation = INFL_TARGET_BASE;
+  if (typeof state.lastRateChange !== 'number') state.lastRateChange = 0;
+  if (typeof state.inflCrisisSince !== 'number') state.inflCrisisSince = 0;
+  if (!state.buildings || typeof state.buildings !== 'object') state.buildings = {};
+  if (typeof state.econLevel !== 'number' || state.econLevel < 1) state.econLevel = 1;
+  if (typeof state.econXP !== 'number') state.econXP = 0;
 }
 
 // ============================================================
@@ -1496,16 +1796,24 @@ function worldTick() {
     // 4.5) 동맹 성장 보너스 — 동맹국 수에 비례
     const allyBonus = (state.alliances?.length||0) * 0.003; // 동맹 1국당 +0.003%/틱
 
-    const totalRate = baseRate + debtDrag + noise + allyBonus;
+    // 4.6) 🏦 금리·인플레이션 보정 + 🏗️ 건설 성장 보너스
+    inflationTick(now);                       // 인플레이션을 목표치로 수렴 + 위기 패널티
+    const rateAdj = rateGrowthAdj();          // 금리: 낮을수록 성장↑
+    const inflAdj = inflationGrowthAdj();      // 인플레 과열 시 성장 제동
+    const buildAdj = buildGrowthBonus();       // 건설 시설 영구 성장 보너스
+
+    const totalRate = baseRate + debtDrag + noise + allyBonus + rateAdj + inflAdj + buildAdj;
     mn.gdp = Math.max(0.01, mn.gdp * (1 + totalRate/100));
 
-    // 5) Treasury income — GDP에 비례한 세수 (3초마다 소액)
-    mn.treasury = (mn.treasury||0) + mn.gdp * 0.0008 + tradeBonus();
+    // 5) Treasury income — GDP에 비례한 세수 + 무역 + 🏗️ 건설 국고수입
+    mn.treasury = (mn.treasury||0) + mn.gdp * 0.0008 + tradeBonus() + buildIncomeBonus();
 
     // 6) Debt interest accrual — 부채 이자
     if (mn.debt > 0) {
       const rate = (12 - (mn.creditRating||5)) * 0.00002; // 신용 낮을수록 이자 높음
-      mn.debt *= (1 + rate);
+      const interest = mn.debt * rate;
+      mn.debt += interest;
+      recordDebt('interest', interest);
     }
 
     // 7) Stock portfolio value tracking (passive)
@@ -1545,6 +1853,7 @@ function worldTick() {
   updateMyNationUI();
   renderTickerTape();
   if (document.getElementById('mapView').classList.contains('active')) drawMap();
+  if (document.getElementById('centralBankModal')?.classList.contains('active')) renderCentralBank();
   if (state.selectedCode && document.getElementById('chartView').classList.contains('active')) updateChartHeader();
   scheduleSave();
 }
@@ -2226,11 +2535,22 @@ function renderStockMarket() {
         const cur = worldPrices[code].current/1000;
         const profit = (cur - h.avgPrice) * h.shares;
         const pct = h.avgPrice>0 ? (cur-h.avgPrice)/h.avgPrice*100 : 0;
-        return `<div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg2);border-radius:8px;margin-bottom:5px;">
-          <span style="font-size:16px;">${c.flag}</span>
-          <div style="flex:1;"><div style="font-size:12px;font-weight:600;">${c.name}</div><div style="font-size:10px;color:var(--txt3);">${h.shares}주 · 평단 $${(h.avgPrice).toFixed(3)}B</div></div>
-          <div style="text-align:right;"><div style="font-family:var(--font-mono);font-size:11px;color:${profit>=0?'var(--green)':'var(--red)'};">${profit>=0?'+':''}${fmtGDP(Math.abs(profit))}</div><div style="font-size:10px;color:${pct>=0?'var(--green)':'var(--red)'};">${pct>=0?'+':''}${pct.toFixed(1)}%</div></div>
-          <button onclick="sellStock('${code}')" style="padding:5px 10px;background:var(--red);border:none;border-radius:6px;color:#fff;font-size:11px;cursor:pointer;font-family:var(--font-kr);">매도</button>
+        return `<div style="background:var(--bg2);border-radius:8px;margin-bottom:5px;padding:8px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;">${c.flag}</span>
+            <div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;">${c.name}</div><div style="font-size:10px;color:var(--txt3);">${h.shares}주 · 평단 $${(h.avgPrice).toFixed(3)}B</div></div>
+            <div style="text-align:right;"><div style="font-family:var(--font-mono);font-size:11px;color:${profit>=0?'var(--green)':'var(--red)'};">${profit>=0?'+':''}${fmtGDP(Math.abs(profit))}</div><div style="font-size:10px;color:${pct>=0?'var(--green)':'var(--red)'};">${pct>=0?'+':''}${pct.toFixed(1)}%</div></div>
+          </div>
+          <div class="trade-row" style="margin-top:8px;">
+            <div class="qty-stepper">
+              <button onclick="stepQty('sell-qty-${code}',-1,${h.shares})">−</button>
+              <input id="sell-qty-${code}" type="number" inputmode="numeric" min="1" max="${h.shares}" value="1" onchange="clampQty(this,${h.shares})">
+              <button onclick="stepQty('sell-qty-${code}',1,${h.shares})">+</button>
+            </div>
+            <button class="qty-quick" onclick="setQty('sell-qty-${code}',${Math.max(1,Math.floor(h.shares/2))})">½</button>
+            <button class="qty-quick" onclick="setQty('sell-qty-${code}',${h.shares})">최대</button>
+            <button class="trade-sell" onclick="sellStock('${code}')">매도</button>
+          </div>
         </div>`;
       }).join('')}
     </div>`;
@@ -2239,11 +2559,24 @@ function renderStockMarket() {
   const listHtml = all.slice(0,40).map(c=>{
     const price = c.price/1000;
     const chgCls = c.chg>0.01?'var(--green)':c.chg<-0.01?'var(--red)':'var(--txt3)';
-    return `<div style="display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid rgba(30,45,66,0.5);">
-      <span style="font-size:16px;">${c.flag}</span>
-      <div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;">${c.name}</div><div style="font-size:10px;color:var(--txt3);">Tier ${c.tier} · 변동성 ${c.volatility}</div></div>
-      <div style="text-align:right;margin-right:6px;"><div style="font-family:var(--font-mono);font-size:12px;">$${price.toFixed(3)}B</div><div style="font-family:var(--font-mono);font-size:10px;color:${chgCls};">${c.chg>=0?'+':''}${c.chg.toFixed(2)}%</div></div>
-      <button onclick="buyStock('${c.code}')" style="padding:5px 10px;background:var(--green);border:none;border-radius:6px;color:#000;font-size:11px;cursor:pointer;font-family:var(--font-kr);font-weight:600;">매수</button>
+    const mnT = mn.treasury||0;
+    const maxBuy = Math.max(1, Math.floor(mnT/price)); // 국고로 살 수 있는 최대 주수
+    return `<div style="padding:8px;border-bottom:1px solid rgba(30,45,66,0.5);">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:16px;">${c.flag}</span>
+        <div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;">${c.name}</div><div style="font-size:10px;color:var(--txt3);">Tier ${c.tier} · 변동성 ${c.volatility}</div></div>
+        <div style="text-align:right;"><div style="font-family:var(--font-mono);font-size:12px;">$${price.toFixed(3)}B</div><div style="font-family:var(--font-mono);font-size:10px;color:${chgCls};">${c.chg>=0?'+':''}${c.chg.toFixed(2)}%</div></div>
+      </div>
+      <div class="trade-row" style="margin-top:8px;">
+        <div class="qty-stepper">
+          <button onclick="stepQty('buy-qty-${c.code}',-1,${maxBuy})">−</button>
+          <input id="buy-qty-${c.code}" type="number" inputmode="numeric" min="1" max="${maxBuy}" value="5" onchange="clampQty(this,${maxBuy})" oninput="updateBuyCost('${c.code}',${price})">
+          <button onclick="stepQty('buy-qty-${c.code}',1,${maxBuy})">+</button>
+        </div>
+        <button class="qty-quick" onclick="setQty('buy-qty-${c.code}',${maxBuy});updateBuyCost('${c.code}',${price})">최대</button>
+        <span class="buy-cost" id="buy-cost-${c.code}" style="flex:1;text-align:right;font-family:var(--font-mono);font-size:10px;color:var(--txt3);">≈ $${(5*price).toFixed(2)}B</span>
+        <button class="trade-buy" onclick="buyStock('${c.code}')">매수</button>
+      </div>
     </div>`;
   }).join('');
 
@@ -2260,14 +2593,19 @@ function renderStockMarket() {
     ${listHtml}`;
 }
 
-function buyStock(code) {
+function buyStock(code, qty) {
   const mn = state.myNation;
   const price = worldPrices[code]?.current/1000; // billions per share
   if (!price) return;
-  // 매수 단위: 국고의 일부 또는 고정 5주
-  const shares = 5;
+  // 수량: 인자로 받거나, 입력란(buy-qty-{code})에서 읽기. 기본 5주.
+  let shares = qty;
+  if (shares == null) {
+    const inp = document.getElementById('buy-qty-'+code);
+    shares = inp ? parseInt(inp.value,10) : 5;
+  }
+  shares = Math.max(1, Math.min(9999, isNaN(shares)?1:shares));
   const cost = shares * price;
-  if ((mn.treasury||0) < cost) { showToast('error','국고 부족',`💰 ${fmtGDP(cost)}가 필요합니다. 국채 발행으로 자금을 마련하세요.`); return; }
+  if ((mn.treasury||0) < cost) { showToast('error','국고 부족',`💰 ${shares}주 매수에 ${fmtGDP(cost)}가 필요합니다. (보유 ${fmtGDP(mn.treasury||0)}) 국채 발행으로 자금을 마련하세요.`); return; }
   mn.treasury -= cost;
   if (!mn.stocks) mn.stocks = {};
   if (!mn.stocks[code]) mn.stocks[code] = {shares:0, avgPrice:0};
@@ -2283,23 +2621,131 @@ function buyStock(code) {
   checkBadges();
 }
 
-function sellStock(code) {
+function sellStock(code, qty) {
   const mn = state.myNation;
   const h = mn.stocks?.[code];
   if (!h || h.shares<=0) return;
   const price = worldPrices[code].current/1000;
-  const proceeds = h.shares * price;
-  const profit = (price - h.avgPrice) * h.shares;
+  // 수량: 인자로 받거나, 입력란(sell-qty-{code})에서 읽기. 기본 전량.
+  let shares = qty;
+  if (shares == null) {
+    const inp = document.getElementById('sell-qty-'+code);
+    shares = inp ? parseInt(inp.value,10) : h.shares;
+  }
+  shares = Math.max(1, Math.min(h.shares, isNaN(shares)?h.shares:shares));
+  const proceeds = shares * price;
+  const profit = (price - h.avgPrice) * shares;
   mn.treasury = (mn.treasury||0) + proceeds;
-  delete mn.stocks[code];
+  h.shares -= shares;
+  if (h.shares <= 0) delete mn.stocks[code]; // 전량 매도 시 정리
   state.stats.stockTrades = (state.stats.stockTrades||0)+1;
   bumpMission('trades', 1);
   state.stats.stockProfit = (state.stats.stockProfit||0) + profit;
   scheduleSave();
   renderStockMarket();
   updateMyNationUI();
-  showToast(profit>=0?'success':'warning','📉 주식 매도',`${countryMap[code].flag} ${countryMap[code].name} 전량 매도 · 손익 ${profit>=0?'+':''}${fmtGDP(Math.abs(profit))}`);
+  const allSold = !mn.stocks[code];
+  showToast(profit>=0?'success':'warning','📉 주식 매도',`${countryMap[code].flag} ${countryMap[code].name} ${shares}주 매도${allSold?'(전량)':''} · 손익 ${profit>=0?'+':''}${fmtGDP(Math.abs(profit))}`);
   checkBadges();
+}
+
+// 주식 수량 입력 헬퍼 (매수/매도 공용)
+function stepQty(id, delta, max) {
+  const inp = document.getElementById(id); if (!inp) return;
+  let v = parseInt(inp.value,10); if (isNaN(v)) v = 1;
+  v = Math.max(1, Math.min(max||9999, v + delta));
+  inp.value = v;
+  inp.dispatchEvent(new Event('input'));
+}
+function setQty(id, val) {
+  const inp = document.getElementById(id); if (!inp) return;
+  inp.value = Math.max(1, val);
+  inp.dispatchEvent(new Event('input'));
+}
+function clampQty(inp, max) {
+  let v = parseInt(inp.value,10); if (isNaN(v)||v<1) v = 1;
+  v = Math.min(max||9999, v);
+  inp.value = v;
+}
+function updateBuyCost(code, price) {
+  const inp = document.getElementById('buy-qty-'+code);
+  const out = document.getElementById('buy-cost-'+code);
+  if (!inp || !out) return;
+  let v = parseInt(inp.value,10); if (isNaN(v)||v<1) v = 1;
+  out.textContent = '≈ $' + (v*price).toFixed(2) + 'B';
+}
+
+// ============================================================
+// 💰 국가부채 — 발생 내역 기록 & 설명 팝업
+// ============================================================
+// 부채 발생 원인별 누적 추적: bond(국채 발행), interest(이자), repay(상환)
+function recordDebt(kind, amount) {
+  const mn = state.myNation;
+  if (!mn) return;
+  if (!mn.debtSources) mn.debtSources = {bond:0, interest:0, repay:0};
+  if (kind === 'bond') mn.debtSources.bond += amount;
+  else if (kind === 'interest') mn.debtSources.interest += amount;
+  else if (kind === 'repay') mn.debtSources.repay += amount;
+}
+
+function openDebtInfo() {
+  const mn = state.myNation;
+  if (!mn) return;
+  const src = mn.debtSources || {bond:0, interest:0, repay:0};
+  const debt = mn.debt || 0;
+  const ratio = mn.gdp > 0 ? (debt/mn.gdp*100) : 0;
+  // 부채 부담 단계
+  let levelTxt, levelColor, levelDesc;
+  if (ratio < 30) { levelTxt='✅ 안정'; levelColor='var(--green)'; levelDesc='부채 비율이 낮아 성장에 영향이 거의 없습니다.'; }
+  else if (ratio < 60) { levelTxt='⚠️ 주의'; levelColor='var(--amber)'; levelDesc='부채 비율이 높아져 GDP 성장이 다소 둔화됩니다.'; }
+  else { levelTxt='🚨 위험'; levelColor='var(--red)'; levelDesc='부채 비율이 매우 높아 성장이 크게 둔화되고 신용이 위험합니다.'; }
+
+  // 이자율(현재 신용 기준, 틱당 → 표시용 환산)
+  const tickRate = (12 - (mn.creditRating||5)) * 0.00002;
+
+  const rows = [
+    {icon:'🪙', label:'국채 발행 누적', val:src.bond, color:'var(--red)', desc:'정책으로 국채를 발행해 국고를 마련할 때마다 부채가 늘어납니다.'},
+    {icon:'💸', label:'이자 누적', val:src.interest, color:'var(--amber)', desc:'부채에는 매 순간 이자가 붙습니다. 신용등급이 낮을수록 이자가 커집니다.'},
+    {icon:'✅', label:'상환 누적', val:src.repay, color:'var(--green)', desc:"'부채 상환' 정책으로 갚은 누적 금액입니다.", isRepay:true},
+  ];
+
+  let html = `
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-size:34px;">💰</div>
+      <div style="font-family:var(--font-title);font-size:18px;font-weight:900;color:var(--red);margin-top:4px;">국가부채란?</div>
+      <div style="font-size:11px;color:var(--txt2);margin-top:4px;line-height:1.6;">국가부채는 나라가 갚아야 할 빚입니다. 국고가 부족할 때 <strong>국채를 발행</strong>해 빌리며, 빌린 돈에는 <strong>이자</strong>가 붙습니다.</div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid ${levelColor};border-radius:10px;padding:14px;margin-bottom:14px;text-align:center;">
+      <div style="font-size:11px;color:var(--txt2);">현재 국가부채</div>
+      <div style="font-family:var(--font-mono);font-size:26px;font-weight:900;color:var(--red);">${fmtGDP(debt)}</div>
+      <div style="font-size:11px;color:${levelColor};margin-top:4px;">부채/GDP 비율 ${ratio.toFixed(1)}% · ${levelTxt}</div>
+      <div style="font-size:10px;color:var(--txt3);margin-top:6px;line-height:1.5;">${levelDesc}</div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:8px;">📊 부채는 왜 생겼나요?</div>
+    ${rows.map(r=>`
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:11px;margin-bottom:7px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;font-weight:600;">${r.icon} ${r.label}</span>
+          <span style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:${r.color};">${r.isRepay?'-':'+'}${fmtGDP(r.val||0)}</span>
+        </div>
+        <div style="font-size:10px;color:var(--txt3);margin-top:4px;line-height:1.5;">${r.desc}</div>
+      </div>`).join('')}
+
+    <div style="background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.25);border-radius:10px;padding:12px;margin-top:12px;">
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:6px;">💡 부채를 줄이려면?</div>
+      <div style="font-size:10px;color:var(--txt2);line-height:1.7;">
+        • <strong>'부채 상환'</strong> 정책으로 국고를 써서 빚을 갚으세요.<br>
+        • 신용등급을 올리면 이자율이 낮아져 부채가 천천히 늘어납니다.<br>
+        • 국채 발행은 꼭 필요할 때만! 부채 비율이 60%를 넘으면 성장이 크게 둔화됩니다.
+      </div>
+    </div>
+
+    <div style="font-size:9px;color:var(--txt3);margin-top:10px;text-align:center;">현재 이자율: 신용등급 ${(mn.creditRating||5).toFixed(1)} 기준 · 신용이 높을수록 이자가 낮아집니다</div>`;
+
+  document.getElementById('debtInfoBody').innerHTML = html;
+  document.getElementById('debtInfoModal').classList.add('active');
 }
 
 function confirmAction(cat, id) {
@@ -2360,15 +2806,19 @@ function executeAction(cat, id) {
       case 'bond_small':
         mn.treasury += 10; mn.debt = (mn.debt||0) + 10;
         mn.creditRating = Math.max(0, (mn.creditRating||5) - 0.3);
+        recordDebt('bond', 10);
         specialMsg = '국채 발행으로 국고 +$10B (부채도 증가)';
         break;
       case 'bond_large':
         mn.treasury += 30; mn.debt = (mn.debt||0) + 30;
         mn.creditRating = Math.max(0, (mn.creditRating||5) - 0.8);
+        recordDebt('bond', 30);
         specialMsg = '대규모 국채로 국고 +$30B (부채 부담 증가)';
         break;
       case 'repay':
+        const repayAmt = Math.min(15, mn.debt||0);
         mn.debt = Math.max(0, (mn.debt||0) - 15);
+        recordDebt('repay', repayAmt);
         specialMsg = '부채 $15B 상환! 이자 부담 감소, 신용등급 상승';
         break;
       case 'fdi':
@@ -2390,8 +2840,10 @@ function executeAction(cat, id) {
     }
   }
 
-  mn.gdp *= (1 + action.gdpBoost/100);
-  mn.totalBoost = (mn.totalBoost||0) + action.gdpBoost;
+  // 🎓 경제 지식 레벨에 따른 정책 효과 배수 (Lv.10이면 +27%)
+  const effBoost = action.gdpBoost * econPolicyMultiplier();
+  mn.gdp *= (1 + effBoost/100);
+  mn.totalBoost = (mn.totalBoost||0) + effBoost;
   if (!mn.cdMap) mn.cdMap = {};
   mn.cdMap[id] = Date.now() + action.cooldown * 1000;
   state.stats.actionsUsed = (state.stats.actionsUsed||0)+1;
@@ -2407,7 +2859,9 @@ function executeAction(cat, id) {
   updateMyNationUI();
   renderPolicies();
   scheduleSave();
-  const msg = specialMsg || (action.gdpBoost>0 ? `GDP +${action.gdpBoost}% 성장! 경제 체력도 회복되었습니다.` : '정책이 실행되었습니다.');
+  const lvlBonusPct = (((state.econLevel||1)-1)*3);
+  const effBoostShow = (action.gdpBoost * econPolicyMultiplier()).toFixed(1);
+  const msg = specialMsg || (action.gdpBoost>0 ? `GDP +${effBoostShow}% 성장!${lvlBonusPct>0?` (🎓Lv.${state.econLevel} 보너스 +${lvlBonusPct}% 적용)`:''} 경제 체력도 회복되었습니다.` : '정책이 실행되었습니다.');
   showToast('success',`${action.icon} ${action.title}`, msg);
   checkBadges();
   if (action.gdpBoost > 0) addMyNationNews(action);
@@ -2652,7 +3106,11 @@ function openQuiz() {
     document.getElementById('quizModal').classList.add('active');
     return;
   }
-  const shuffled = [...QUIZ_DATA].sort(()=>seededRand(hashStr(today+Math.random()))-0.5).slice(0,5);
+  // 210문제 풀에서 날짜 시드로 매일 5문제를 결정론적으로 출제 (같은 날엔 동일 문제)
+  const seed = hashStr('quiz-'+today);
+  const pool = QUIZ_DATA.map((q,i)=>({q, sort: seededRand(seed + i*97)}));
+  pool.sort((a,b)=>a.sort-b.sort);
+  const shuffled = pool.slice(0,5).map(x=>x.q);
   quizState = {idx:0,score:0,qs:shuffled,answered:false};
   document.getElementById('quizModal').classList.add('active');
   renderQuiz();
@@ -2685,12 +3143,17 @@ function finishQuiz() {
   state.quizLog[today]={completed:true,score:quizState.score,total:quizState.qs.length};
   state.stats.quizzesCompleted=(state.stats.quizzesCompleted||0)+1;
   bumpMission('quiz', 1);
+  // 🎓 정답 수만큼 경제 지식 경험치 획득
+  const xpGain = quizState.score * ECON_XP_PER_CORRECT;
+  addEconXP(quizState.score);
   scheduleSave(); updateMyNationUI(); checkBadges();
-  document.getElementById('quizBody').innerHTML=`<div style="text-align:center;padding:30px 20px;">
+  document.getElementById('quizBody').innerHTML=`<div style="text-align:center;padding:24px 20px 8px;">
     <div style="font-size:40px;margin-bottom:12px;">${quizState.score>=4?'🏆':quizState.score>=2?'👍':'📚'}</div>
     <div style="font-size:18px;font-weight:700;margin-bottom:8px;">${quizState.score} / ${quizState.qs.length} 정답</div>
-    <div style="font-size:14px;color:var(--cyan);font-weight:600;margin-bottom:16px;">⚡ AP +${apReward} 보상!</div>
-    <div style="font-size:12px;color:var(--txt3);">매일 퀴즈로 AP를 획득하고 내 나라를 성장시키세요!</div></div>`;
+    <div style="font-size:14px;color:var(--cyan);font-weight:600;margin-bottom:6px;">⚡ AP +${apReward} · 🎓 경험치 +${xpGain} XP</div>
+    <div style="font-size:12px;color:var(--txt3);margin-bottom:14px;">매일 퀴즈로 AP와 경제 지식을 쌓아 내 나라를 성장시키세요!</div>
+    ${econLevelBarHtml(true)}
+  </div>`;
 }
 
 // ============================================================
@@ -3372,6 +3835,308 @@ function openSeason() {
 }
 
 // ============================================================
+// 🏦 CENTRAL BANK — 금리 & 인플레이션
+// ============================================================
+const RATE_MIN = 0.5, RATE_MAX = 5.0, RATE_STEP = 0.25, RATE_DEFAULT = 2.5;
+const RATE_CHANGE_AP = 2;          // 금리 변경 시 AP 소모
+const RATE_CD_MS = 30000;          // 금리 변경 쿨다운 30초
+const INFL_TARGET_BASE = 2.0;      // 기준금리(2.5%)일 때 목표 인플레
+const INFL_WARN = 4.0, INFL_CRISIS = 7.0; // 경고/위기 임계
+const INFL_CREDIT_HOLD_MS = 45000; // 위기 지속 시 신용 강등까지 걸리는 시간
+
+// 경제레벨 5 도달 시 금리 하한이 0.25%까지 확대 (연계 해금)
+function rateMinAllowed() { return (state.econLevel||1) >= 5 ? 0.25 : RATE_MIN; }
+
+// 현재 금리에 따른 목표 인플레이션(%) — 저금리=고인플레, 고금리=저인플레
+function inflationTarget() {
+  const rate = state.interestRate ?? RATE_DEFAULT;
+  return (RATE_DEFAULT - rate) * 1.2 + INFL_TARGET_BASE;
+}
+// 금리의 GDP 성장 보정(%/틱) — 금리 낮을수록 성장 가속
+function rateGrowthAdj() {
+  const rate = state.interestRate ?? RATE_DEFAULT;
+  return (RATE_DEFAULT - rate) * 0.004;
+}
+// 인플레이션의 성장 보정(%/틱) — 과열(4%↑) 시 제동
+function inflationGrowthAdj() {
+  const infl = state.inflation ?? INFL_TARGET_BASE;
+  if (infl > INFL_WARN) return -0.006;
+  return 0;
+}
+// 매 틱 인플레이션을 목표치로 5%씩 수렴 + 위기 패널티 처리 (worldTick에서 호출)
+function inflationTick(now) {
+  const target = inflationTarget();
+  state.inflation = (state.inflation ?? INFL_TARGET_BASE) + (target - (state.inflation ?? INFL_TARGET_BASE)) * 0.05;
+  const mn = state.myNation;
+  if (!mn) return;
+  if (state.inflation > INFL_CRISIS) {
+    // 위기: 매 틱 경제 체력 감소
+    mn.health = Math.max(0, (mn.health||100) - 0.4);
+    if (!state.inflCrisisSince) state.inflCrisisSince = now;
+    // 장기 지속 시 신용등급 강등 (한 번 강등 후 타이머 리셋)
+    if (now - state.inflCrisisSince >= INFL_CREDIT_HOLD_MS) {
+      mn.creditRating = Math.max(0, (mn.creditRating||5) - 0.5);
+      state.inflCrisisSince = now;
+      showToast('error','📉 신용등급 강등','초인플레이션이 지속되어 신용등급이 하락했습니다! 금리를 올려 물가를 잡으세요.');
+    }
+  } else {
+    state.inflCrisisSince = 0;
+  }
+}
+
+function openCentralBank() {
+  if (!state.myNation) { showToast('warning','🏦 중앙은행','먼저 국가를 건국하세요.'); return; }
+  renderCentralBank();
+  document.getElementById('centralBankModal').classList.add('active');
+}
+
+function renderCentralBank() {
+  const rate = state.interestRate ?? RATE_DEFAULT;
+  const infl = state.inflation ?? INFL_TARGET_BASE;
+  const target = inflationTarget();
+  const gAdj = rateGrowthAdj() + inflationGrowthAdj();
+  const minR = rateMinAllowed();
+  const cdLeft = Math.max(0, Math.ceil((RATE_CD_MS - (Date.now() - (state.lastRateChange||0)))/1000));
+  const inflColor = infl > INFL_CRISIS ? 'var(--red)' : infl > INFL_WARN ? 'var(--amber)' : 'var(--green)';
+  const inflLabel = infl > INFL_CRISIS ? '⚠️ 위기 (초인플레)' : infl > INFL_WARN ? '🔥 과열' : '✅ 안정';
+  const ratePct = ((rate - minR) / (RATE_MAX - minR)) * 100;
+
+  let html = `
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-size:34px;">🏦</div>
+      <div style="font-family:var(--font-title);font-size:18px;font-weight:900;color:var(--cyan);margin-top:4px;">중앙은행</div>
+      <div style="font-size:11px;color:var(--txt2);margin-top:2px;">금리를 조절해 성장과 물가의 균형을 잡으세요</div>
+    </div>
+
+    <!-- 현재 지표 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:10px;color:var(--txt2);">기준금리</div>
+        <div style="font-family:var(--font-mono);font-size:24px;font-weight:900;color:var(--cyan);">${rate.toFixed(2)}%</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:10px;color:var(--txt2);">인플레이션</div>
+        <div style="font-family:var(--font-mono);font-size:24px;font-weight:900;color:${inflColor};">${infl.toFixed(1)}%</div>
+        <div style="font-size:9px;color:${inflColor};">${inflLabel}</div>
+      </div>
+    </div>
+
+    <!-- 금리 슬라이더 -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--txt3);margin-bottom:6px;">
+        <span>${minR.toFixed(2)}% (성장↑·물가↑)</span>
+        <span>${RATE_MAX.toFixed(1)}% (성장↓·물가↓)</span>
+      </div>
+      <input type="range" id="rateSlider" min="${minR}" max="${RATE_MAX}" step="${RATE_STEP}" value="${rate}"
+        oninput="previewRate(this.value)"
+        style="width:100%;accent-color:var(--cyan);cursor:pointer;">
+      <div style="text-align:center;margin-top:8px;">
+        <span style="font-size:11px;color:var(--txt2);">설정할 금리: </span>
+        <span id="ratePreview" style="font-family:var(--font-mono);font-size:16px;font-weight:900;color:var(--amber);">${rate.toFixed(2)}%</span>
+      </div>
+    </div>
+
+    <!-- 실시간 효과 미리보기 -->
+    <div id="rateEffect" style="background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.25);border-radius:10px;padding:12px;margin-bottom:14px;font-size:11px;line-height:1.8;">
+      ${rateEffectHtml(rate)}
+    </div>
+
+    <button id="rateApplyBtn" onclick="applyRate()" ${cdLeft>0?'disabled':''}
+      style="width:100%;padding:13px;border-radius:9px;border:none;background:${cdLeft>0?'var(--border)':'var(--cyan)'};color:${cdLeft>0?'var(--txt3)':'#000'};font-family:var(--font-kr);font-size:13px;font-weight:700;cursor:${cdLeft>0?'not-allowed':'pointer'};">
+      ${cdLeft>0?`⏳ ${cdLeft}초 후 변경 가능`:`💹 금리 적용 (⚡${RATE_CHANGE_AP} AP)`}
+    </button>
+    <div style="font-size:10px;color:var(--txt3);margin-top:10px;text-align:center;line-height:1.6;">
+      금리 변경은 ⚡${RATE_CHANGE_AP} AP 소모 · 30초 쿨다운<br>
+      ${(state.econLevel||1)>=5?'🎓 경제 Lv.5 — 금리 하한 0.25%까지 확대됨':'🎓 경제 Lv.5 도달 시 금리 하한 0.25%로 확대'}
+    </div>`;
+  document.getElementById('centralBankBody').innerHTML = html;
+}
+
+function rateEffectHtml(rate) {
+  const r = parseFloat(rate);
+  const gAdj = (RATE_DEFAULT - r) * 0.004;
+  const tgt = (RATE_DEFAULT - r) * 1.2 + INFL_TARGET_BASE;
+  const gColor = gAdj >= 0 ? 'var(--green)' : 'var(--red)';
+  const tColor = tgt > INFL_CRISIS ? 'var(--red)' : tgt > INFL_WARN ? 'var(--amber)' : 'var(--green)';
+  return `
+    <div style="display:flex;justify-content:space-between;"><span style="color:var(--txt2);">📈 성장률 영향</span><span style="font-family:var(--font-mono);color:${gColor};">${gAdj>=0?'+':''}${gAdj.toFixed(3)}%/틱</span></div>
+    <div style="display:flex;justify-content:space-between;"><span style="color:var(--txt2);">🎯 목표 물가</span><span style="font-family:var(--font-mono);color:${tColor};">${tgt.toFixed(1)}%</span></div>
+    <div style="font-size:10px;color:var(--txt3);margin-top:4px;">${r<=1.5?'💡 초저금리: 성장 폭발 — 단, 물가 과열 위험!':r>=4?'💡 고금리: 물가는 잡히지만 성장 둔화':'💡 균형 구간'}</div>`;
+}
+
+function previewRate(v) {
+  document.getElementById('ratePreview').textContent = parseFloat(v).toFixed(2) + '%';
+  document.getElementById('rateEffect').innerHTML = rateEffectHtml(v);
+}
+
+function applyRate() {
+  const mn = state.myNation;
+  if (!mn) return;
+  const cdLeft = RATE_CD_MS - (Date.now() - (state.lastRateChange||0));
+  if (cdLeft > 0) { showToast('warning','재사용 대기',`${Math.ceil(cdLeft/1000)}초 후 변경할 수 있습니다.`); return; }
+  if ((mn.ap||0) < RATE_CHANGE_AP) { showToast('error','AP 부족',`⚡${RATE_CHANGE_AP} AP가 필요합니다. (현재 ${mn.ap} AP)`); return; }
+  const slider = document.getElementById('rateSlider');
+  const newRate = Math.max(rateMinAllowed(), Math.min(RATE_MAX, parseFloat(slider.value)));
+  if (Math.abs(newRate - (state.interestRate||RATE_DEFAULT)) < 0.001) { showToast('warning','변경 없음','금리가 현재와 동일합니다.'); return; }
+  const dir = newRate < (state.interestRate||RATE_DEFAULT) ? '인하' : '인상';
+  mn.ap -= RATE_CHANGE_AP;
+  state.interestRate = newRate;
+  state.lastRateChange = Date.now();
+  updateMyNationUI(); renderCentralBank(); scheduleSave();
+  showToast('success','🏦 금리 '+dir, `기준금리를 ${newRate.toFixed(2)}%로 ${dir}했습니다. 물가가 서서히 ${inflationTarget().toFixed(1)}%로 움직입니다.`);
+}
+
+// ============================================================
+// 🏗️ NATIONAL BUILDINGS — 건설 테크트리
+// ============================================================
+const BUILDINGS = [
+  {id:'industry', icon:'🏗️', name:'산업단지', req:null,          reqLevel:0, cost:30,  growth:0.004, income:0,    desc:'성장 +0.004%/틱'},
+  {id:'port',     icon:'⚓',  name:'항만',     req:'industry',    reqLevel:0, cost:70,  growth:0,     income:0.30, desc:'국고수입 +0.30/틱'},
+  {id:'airport',  icon:'✈️', name:'국제공항', req:'port',        reqLevel:0, cost:150, growth:0.008, income:0,    desc:'성장 +0.008%/틱'},
+  {id:'semicon',  icon:'🔬', name:'반도체단지', req:'airport',   reqLevel:0, cost:320, growth:0.006, income:0.80, desc:'성장 +0.006%/틱 · 국고 +0.80/틱'},
+  {id:'space',    icon:'🚀', name:'우주센터', req:'semicon',     reqLevel:7, cost:650, growth:0.015, income:0,    desc:'성장 +0.015%/틱 (Lv.7 해금)'},
+];
+function buildingMap() { const m={}; BUILDINGS.forEach(b=>m[b.id]=b); return m; }
+
+// 건설 완료 시설들의 성장 보너스 합산(%/틱) — worldTick에서 사용
+function buildGrowthBonus() {
+  const b = state.buildings || {};
+  return BUILDINGS.reduce((s,def)=> s + (b[def.id] ? def.growth : 0), 0);
+}
+// 건설 완료 시설들의 국고 수입 보너스 합산(/틱) — worldTick에서 사용
+function buildIncomeBonus() {
+  const b = state.buildings || {};
+  return BUILDINGS.reduce((s,def)=> s + (b[def.id] ? def.income : 0), 0);
+}
+
+function openBuildings() {
+  if (!state.myNation) { showToast('warning','🏗️ 건설','먼저 국가를 건국하세요.'); return; }
+  renderBuildings();
+  document.getElementById('buildingModal').classList.add('active');
+}
+
+function renderBuildings() {
+  const mn = state.myNation;
+  const owned = state.buildings || {};
+  const lvl = state.econLevel || 1;
+  let html = `
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-size:34px;">🏗️</div>
+      <div style="font-family:var(--font-title);font-size:18px;font-weight:900;color:var(--amber);margin-top:4px;">국가 건설 트리</div>
+      <div style="font-size:11px;color:var(--txt2);margin-top:2px;">국고를 투자해 시설을 건설하면 영구 보너스를 얻습니다</div>
+    </div>
+    <div style="background:rgba(255,181,71,0.06);border:1px solid rgba(255,181,71,0.25);border-radius:10px;padding:12px;margin-bottom:14px;text-align:center;">
+      <div style="display:flex;justify-content:space-around;">
+        <div><div style="font-size:10px;color:var(--txt2);">💰 보유 국고</div><div style="font-family:var(--font-mono);font-size:16px;font-weight:900;color:var(--amber);">${fmtGDP(mn.treasury||0)}</div></div>
+        <div><div style="font-size:10px;color:var(--txt2);">📈 건설 성장보너스</div><div style="font-family:var(--font-mono);font-size:16px;font-weight:900;color:var(--green);">+${buildGrowthBonus().toFixed(3)}%/틱</div></div>
+        <div><div style="font-size:10px;color:var(--txt2);">🏦 건설 국고수입</div><div style="font-family:var(--font-mono);font-size:16px;font-weight:900;color:var(--cyan);">+${buildIncomeBonus().toFixed(2)}/틱</div></div>
+      </div>
+    </div>`;
+
+  html += BUILDINGS.map((b,i)=>{
+    const built = !!owned[b.id];
+    const reqMet = !b.req || owned[b.req];
+    const lvlMet = lvl >= (b.reqLevel||0);
+    const fundMet = (mn.treasury||0) >= b.cost;
+    const canBuild = !built && reqMet && lvlMet && fundMet;
+    const reqName = b.req ? (buildingMap()[b.req]?.name) : null;
+    let statusBadge, borderC, bg;
+    if (built) { statusBadge = '<span style="color:var(--green);font-weight:700;">✅ 건설 완료</span>'; borderC='var(--green)'; bg='rgba(0,229,160,0.06)'; }
+    else if (!reqMet) { statusBadge = `<span style="color:var(--txt3);">🔒 선행: ${reqName} 필요</span>`; borderC='var(--border)'; bg='var(--bg2)'; }
+    else if (!lvlMet) { statusBadge = `<span style="color:var(--purple);">🔒 경제 Lv.${b.reqLevel} 필요</span>`; borderC='var(--border)'; bg='var(--bg2)'; }
+    else { statusBadge = `<span style="color:var(--amber);">건설 가능</span>`; borderC='var(--amber)'; bg='var(--bg2)'; }
+    return `
+    <div style="background:${bg};border:1px solid ${borderC};border-radius:10px;padding:12px;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:8px;">
+        <span style="font-size:26px;">${b.icon}</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;">${i+1}. ${b.name}</div>
+          <div style="font-size:10px;color:var(--txt3);">${b.desc}</div>
+        </div>
+        <div style="text-align:right;font-size:10px;">${statusBadge}</div>
+      </div>
+      ${built ? '' : `
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:${fundMet?'var(--txt2)':'var(--red)'};">💰 건설 비용: <strong>$${b.cost}B</strong></span>
+        <button onclick="buildFacility('${b.id}')" ${canBuild?'':'disabled'}
+          style="padding:7px 16px;border-radius:8px;border:none;background:${canBuild?'var(--amber)':'var(--border)'};color:${canBuild?'#000':'var(--txt3)'};font-family:var(--font-kr);font-size:11px;font-weight:700;cursor:${canBuild?'pointer':'not-allowed'};">
+          🏗️ 건설</button>
+      </div>`}
+    </div>`;
+  }).join('');
+  html += `<div style="font-size:10px;color:var(--txt3);margin-top:8px;text-align:center;line-height:1.6;">상위 시설은 하위 시설을 먼저 지어야 해금됩니다. 모든 보너스는 영구 적용되며 동맹·무역 보너스와 합산됩니다.</div>`;
+  document.getElementById('buildingBody').innerHTML = html;
+}
+
+function buildFacility(id) {
+  const mn = state.myNation;
+  if (!mn) return;
+  const def = buildingMap()[id];
+  if (!def) return;
+  if (state.buildings?.[id]) { showToast('warning','이미 건설됨','이미 건설된 시설입니다.'); return; }
+  if (def.req && !state.buildings?.[def.req]) { showToast('error','선행 조건 미충족',`먼저 ${buildingMap()[def.req].name}을(를) 건설하세요.`); return; }
+  if ((state.econLevel||1) < (def.reqLevel||0)) { showToast('error','레벨 부족',`경제 지식 Lv.${def.reqLevel} 이상 필요합니다. (현재 Lv.${state.econLevel})`); return; }
+  if ((mn.treasury||0) < def.cost) { showToast('error','국고 부족',`💰 $${def.cost}B가 필요합니다. (보유 ${fmtGDP(mn.treasury||0)})`); return; }
+  mn.treasury -= def.cost;
+  if (!state.buildings) state.buildings = {};
+  state.buildings[id] = true;
+  updateMyNationUI(); renderBuildings(); scheduleSave(); checkBadges();
+  showToast('success',`${def.icon} ${def.name} 건설 완료!`, `${def.desc} — 영구 보너스가 적용되었습니다!`);
+}
+
+// ============================================================
+// 🎓 ECONOMIC KNOWLEDGE LEVEL — 퀴즈 경험치 → 레벨
+// ============================================================
+const ECON_MAX_LEVEL = 10;
+const ECON_XP_PER_CORRECT = 10;   // 퀴즈 정답 1개당 경험치
+// 누적 XP 기준 현재 레벨 계산: 각 레벨 필요량 = Lv×100 (1→2:100, 2→3:200 ...)
+function econLevelFromXP(xp) {
+  let lvl = 1, need = 100, acc = 0;
+  while (lvl < ECON_MAX_LEVEL && xp >= acc + need) { acc += need; lvl++; need = lvl*100; }
+  return { level: lvl, accXP: acc, nextNeed: need };
+}
+// 레벨에 따른 정책 효과 배수 — Lv.10이면 +27%
+function econPolicyMultiplier() {
+  return 1 + ((state.econLevel||1) - 1) * 0.03;
+}
+// 퀴즈 정답 수만큼 경험치 추가 + 레벨업 처리 (finishQuiz에서 호출)
+function addEconXP(correctCount) {
+  if (correctCount <= 0) return { leveledUp:false };
+  const before = state.econLevel || 1;
+  state.econXP = (state.econXP||0) + correctCount * ECON_XP_PER_CORRECT;
+  const info = econLevelFromXP(state.econXP);
+  state.econLevel = info.level;
+  const leveledUp = info.level > before;
+  if (leveledUp) {
+    let bonusMsg = '';
+    if (info.level === 5) bonusMsg = ' 🏦 금리 하한이 0.25%로 확대되었습니다!';
+    if (info.level === 7) bonusMsg = ' 🚀 우주센터 건설이 해금되었습니다!';
+    showToast('success', `🎓 경제 지식 Lv.${info.level} 달성!`, `정책 효과가 강화되었습니다 (+${((info.level-1)*3)}%).${bonusMsg}`);
+  }
+  return { leveledUp, level: info.level };
+}
+// 레벨/경험치 진행바 HTML (프로필·퀴즈 결과에서 사용)
+function econLevelBarHtml(compact) {
+  const lvl = state.econLevel || 1;
+  const xp = state.econXP || 0;
+  const info = econLevelFromXP(xp);
+  const inLevel = xp - info.accXP;
+  const pct = lvl >= ECON_MAX_LEVEL ? 100 : Math.min(100, (inLevel / info.nextNeed) * 100);
+  const mult = (((lvl-1)*3)).toFixed(0);
+  return `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:${compact?'10px 12px':'13px'};">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+        <span style="font-size:12px;font-weight:700;color:var(--purple);">🎓 경제 지식 Lv.${lvl}${lvl>=ECON_MAX_LEVEL?' (MAX)':''}</span>
+        <span style="font-size:10px;color:var(--green);">정책 효과 +${mult}%</span>
+      </div>
+      <div style="height:8px;background:var(--bg0);border-radius:5px;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--purple),var(--cyan));border-radius:5px;transition:width .4s;"></div>
+      </div>
+      <div style="font-size:9px;color:var(--txt3);margin-top:5px;text-align:right;">${lvl>=ECON_MAX_LEVEL?'최고 레벨 달성!':`${inLevel} / ${info.nextNeed} XP · 퀴즈 정답으로 +${ECON_XP_PER_CORRECT} XP`}</div>
+    </div>`;
+}
+
+// ============================================================
 // BADGES
 // ============================================================
 const BADGE_DEFS = [
@@ -3406,6 +4171,12 @@ const BADGE_DEFS = [
   {id:'checkin_7',icon:'📅',name:'개근상',desc:'7일 연속 출석 달성',check:s=>(s.checkin?.streak||0)>=7},
   {id:'beat_rival',icon:'⚔️',name:'라이벌 격파',desc:'AI 라이벌을 추월',check:s=>s.rival&&s.myNation&&s.myNation.gdp>s.rival.gdp},
   {id:'crisis_master',icon:'🛡️',name:'위기 관리자',desc:'위기 상황을 3회 극복',check:s=>(s.stats?.crisisResolved||0)>=3},
+  {id:'central_banker',icon:'🏦',name:'중앙은행 총재',desc:'기준금리를 직접 조정했습니다',check:s=>(s.lastRateChange||0)>0},
+  {id:'price_keeper',icon:'🎯',name:'물가 관리관',desc:'인플레이션을 안정 범위(4% 이하)로 유지',check:s=>!!s.myNation&&(s.inflation||2)<=4},
+  {id:'builder',icon:'🏗️',name:'건설의 시작',desc:'첫 시설을 건설했습니다',check:s=>Object.keys(s.buildings||{}).length>=1},
+  {id:'space_nation',icon:'🚀',name:'우주 강국',desc:'우주센터까지 모든 시설 건설',check:s=>!!(s.buildings&&s.buildings.space)},
+  {id:'econ_lv5',icon:'🎓',name:'경제 석사',desc:'경제 지식 Lv.5 달성',check:s=>(s.econLevel||1)>=5},
+  {id:'econ_lv10',icon:'🧠',name:'경제 박사',desc:'경제 지식 Lv.10 만렙 달성!',check:s=>(s.econLevel||1)>=10},
 ];
 
 function checkBadges() {
@@ -3520,6 +4291,13 @@ async function saveState() {
     tradeDeals: state.tradeDeals,
     rival: state.rival,
     season: state.season,
+    interestRate: state.interestRate,
+    inflation: state.inflation,
+    lastRateChange: state.lastRateChange,
+    inflCrisisSince: state.inflCrisisSince,
+    buildings: state.buildings,
+    econLevel: state.econLevel,
+    econXP: state.econXP,
     savedAt: Date.now(),
   };
   // Local backup — keyed per account (guest vs each logged-in uid), never a shared key
@@ -3596,11 +4374,20 @@ function applyLoadedData(data) {
   if (data.tradeDeals) state.tradeDeals = data.tradeDeals;
   if (data.rival) state.rival = data.rival;
   if (data.season) state.season = data.season;
+  // 신규 확장 기능 복원
+  if (typeof data.interestRate === 'number') state.interestRate = data.interestRate;
+  if (typeof data.inflation === 'number') state.inflation = data.inflation;
+  if (typeof data.lastRateChange === 'number') state.lastRateChange = data.lastRateChange;
+  if (typeof data.inflCrisisSince === 'number') state.inflCrisisSince = data.inflCrisisSince;
+  if (data.buildings && typeof data.buildings === 'object') state.buildings = data.buildings;
+  if (typeof data.econLevel === 'number') state.econLevel = data.econLevel;
+  if (typeof data.econXP === 'number') state.econXP = data.econXP;
   // Backfill new fields for older saves
   if (state.myNation) {
     const mn = state.myNation;
     if (mn.treasury === undefined) mn.treasury = 50;
     if (mn.debt === undefined) mn.debt = 0;
+    if (mn.debtSources === undefined) mn.debtSources = {bond:0, interest:0, repay:0};
     if (mn.creditRating === undefined) mn.creditRating = 5;
     if (mn.stocks === undefined) mn.stocks = {};
     if (mn.lastDecay === undefined) mn.lastDecay = Date.now();
@@ -3609,6 +4396,14 @@ function applyLoadedData(data) {
   if (!state.alliances) state.alliances = [];
   if (!state.challenges) state.challenges = {};
   if (!state.tradeDeals) state.tradeDeals = [];
+  // 신규 확장 기능 백필 (구버전 세이브 호환)
+  if (typeof state.interestRate !== 'number') state.interestRate = RATE_DEFAULT;
+  if (typeof state.inflation !== 'number') state.inflation = INFL_TARGET_BASE;
+  if (typeof state.lastRateChange !== 'number') state.lastRateChange = 0;
+  if (typeof state.inflCrisisSince !== 'number') state.inflCrisisSince = 0;
+  if (!state.buildings || typeof state.buildings !== 'object') state.buildings = {};
+  if (typeof state.econLevel !== 'number' || state.econLevel < 1) state.econLevel = 1;
+  if (typeof state.econXP !== 'number') state.econXP = 0;
 }
 
 // Guest-only local load (uses shared key)

@@ -90,7 +90,7 @@ state = {
 
 | 기능 | 핵심 함수 | 모달 ID |
 |------|-----------|---------|
-| **인증/로그인** | `signInWithGoogle`, `onAuthChange`, `playAsGuest`, `proceedAfterLogin` | — |
+| **인증/로그인** | `signInWithGoogle`(모바일=redirect/PC=popup), `onAuthChange`, `playAsGuest`, `proceedAfterLogin`, `setAuthLoading`. Firebase 초기화 시 `getRedirectResult`+`onAuthStateChanged`로 리다이렉트 복귀 처리 | — |
 | **건국/시작** | `createMyNation`, `startGame`, `buildFlagSelector` | `onboardModal` |
 | **내 계정/프로필** | `openAccount`, `profileStat`, `renderGrowthChart`, `saveAlias` | `accountModal` |
 | **세계지도** | `drawMap`, `initMapCanvas`, `lonLatToXY`, `mapHover/Click` | — (canvas) |
@@ -268,4 +268,35 @@ node --check extracted.js
 
 ---
 
-*최종 업데이트: 2026-05 (📱 퀴즈200·주식수량·부채팝업·모바일 최적화 UX 4종 추가) / 작성: Claude (Ryan의 NationRise 프로젝트 작업 중)*
+## 13. 버그 수정 — 📱 모바일 구글 로그인 리다이렉트 복귀 (2026-05)
+
+### 증상
+모바일에서 구글 로그인(`signInWithRedirect`) 후 페이지가 다시 로드되며 돌아오는데,
+**로그인이 됐는데도 첫 로그인 화면이 다시 표시**되어 게임으로 진입하지 못함.
+
+### 원인 (타이밍 경쟁)
+- 리다이렉트 복귀 시 `DOMContentLoaded` → `init()`이 먼저 실행되어 **로그인 카드를 무조건 표시**.
+- 그 직후 Firebase가 초기화되고 `getRedirectResult`/`onAuthStateChanged`로 user가 도착하지만,
+  init이 인증 도착 여부와 무관하게 로그인 화면을 띄워 둔 상태라 사용자에겐 첫 화면으로 보임.
+- `onAuthStateChanged` 콜백이 `window.onAuthChange` 정의보다 먼저 올 수 있는 순서 문제도 존재.
+
+### 해결
+- **인증 대기 상태** 개념 도입: `sessionStorage('nr_redirecting')` + `window._authResolved` 플래그로
+  "리다이렉트 복귀/인증 응답 대기 중"이면 로그인 버튼 대신 **"로그인 처리 중…" 스피너**(`#authLoading`) 표시.
+- `init()`이 보류된 인증 결과(`window._pendingAuthUser`)가 있으면 즉시 처리(콜백이 init보다 먼저 온 경우).
+- `getRedirectResult(auth)`를 명시적으로 처리하고 성공/실패 모두 플래그 정리.
+- `onAuthChange(user)`: 인증 확정 시 타이머/플래그 정리, user 있으면 `proceedAfterLogin`,
+  user=null이면 로그인 화면 복귀. `setAuthLoading(bool)`로 화면 전환 일원화.
+- 안전장치: 일정 시간(리다이렉트 8s / 일반 3.5s) 내 인증 결과가 없으면 로그인 화면으로 자동 복귀.
+- `signInWithGoogle`/`playAsGuest`도 처리중 표시·플래그를 올바르게 set/clear.
+
+### 검증
+- jsdom 인증 흐름 테스트(`test_auth.js`) **17/17 통과**: 리다이렉트 복귀→생성화면, 인증 선도착 보관처리,
+  기존 국가 유저 즉시 게임진입, user=null 확정 시 로그인화면 복귀 4시나리오 검증.
+- 기존 기능 테스트 **105/105 통과**(회귀 없음).
+- ⚠️ 실기기 최종 확인 필요: Firebase 콘솔의 **승인된 도메인(Authorized domains)**에 GitHub Pages
+  도메인이 등록돼 있어야 리다이렉트 로그인이 완료됨(코드가 아닌 콘솔 설정 사항).
+
+---
+
+*최종 업데이트: 2026-05 (📱 모바일 구글 로그인 리다이렉트 복귀 버그 수정) / 작성: Claude (Ryan의 NationRise 프로젝트 작업 중)*

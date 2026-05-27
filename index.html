@@ -100,7 +100,8 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
 .my-nation-bar:hover { background:rgba(255,181,71,0.15); }
 .mn-flag { font-size:18px; }
 .mn-info { }
-.mn-name { font-size:12px; font-weight:700; color:var(--amber); }
+/* 상단 내 정보 박스에는 국가명을 노출하지 않음 (개인정보/UI 간결화) */
+.mn-name { display:none; }
 .mn-gdp { font-family:var(--font-mono); font-size:10px; color:var(--txt2); }
 .mn-rank { font-family:var(--font-mono); font-size:11px; color:var(--amber); font-weight:700; }
 .top-clock { font-family:var(--font-mono); font-size:11px; color:var(--txt3); }
@@ -218,6 +219,30 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
 .gdp-bar-lbl { font-family:var(--font-mono); font-size:10px; color:var(--txt2); margin-bottom:5px; display:flex; justify-content:space-between; }
 .gdp-bar-bg { height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; }
 .gdp-bar-fill { height:100%; background:linear-gradient(90deg, var(--amber), var(--green)); border-radius:3px; transition:width 1s ease; }
+
+/* 📊 국가 현황 대시보드 */
+.nation-dash { padding:12px 14px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.nd-section-title { font-family:var(--font-mono); font-size:9px; font-weight:700; color:var(--txt3);
+  text-transform:uppercase; letter-spacing:.8px; margin:0 0 8px; display:flex; align-items:center; gap:6px; }
+.nd-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.nd-card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:9px 10px;
+  cursor:pointer; transition:border-color .15s, background .15s; }
+.nd-card:hover { border-color:var(--border2); background:var(--bg3); }
+.nd-card-lbl { font-family:var(--font-mono); font-size:9px; color:var(--txt3); margin-bottom:3px;
+  display:flex; align-items:center; gap:4px; }
+.nd-card-val { font-family:var(--font-mono); font-size:13px; font-weight:700; }
+.nd-card-sub { font-size:9px; color:var(--txt3); margin-top:2px; }
+.nd-quick { display:flex; gap:6px; flex-wrap:wrap; }
+.nd-qbtn { flex:1; min-width:calc(33% - 4px); padding:9px 4px; background:var(--bg2);
+  border:1px solid var(--border); border-radius:8px; color:var(--txt1);
+  font-family:var(--font-kr); font-size:10.5px; font-weight:600; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:3px; transition:border-color .15s; }
+.nd-qbtn:hover { border-color:var(--amber); }
+.nd-qbtn .nd-qicon { font-size:16px; }
+.nd-tip { font-size:10px; color:var(--txt3); line-height:1.55; margin-top:10px;
+  background:rgba(255,181,71,0.06); border:1px solid rgba(255,181,71,0.15);
+  border-radius:8px; padding:9px 10px; }
+
 
 /* POLICY TABS */
 .policy-tabs { display:flex; gap:0; border-bottom:1px solid var(--border); flex-shrink:0; }
@@ -441,6 +466,26 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   .main { display:block; height:calc(100vh - 84px); height:calc(100dvh - 84px); position:relative; }
   .panel { position:absolute; inset:0; border:none; padding-bottom:56px; display:none; }
   .panel.m-show { display:flex; }
+  /* === 📱 모바일 전체 세로 스크롤 (경영/순위 패널) === */
+  /* 좌측 순위·우측 경영 패널 자체를 위아래로 스크롤 가능하게 (하단 내용 잘림 방지). */
+  /* 중앙(차트/지도) 패널은 캔버스가 화면을 꽉 채워야 하므로 스크롤에서 제외. */
+  .left-panel.m-show, .right-panel.m-show {
+    overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+    padding-bottom:calc(64px + env(safe-area-inset-bottom)); }
+  .left-panel.m-show::-webkit-scrollbar, .right-panel.m-show::-webkit-scrollbar { width:4px; }
+  .left-panel.m-show::-webkit-scrollbar-thumb,
+  .right-panel.m-show::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+  /* 경영(우측) 패널: 내부 섹션이 고정되지 않고 자연스럽게 흐르도록 block 전환 */
+  .right-panel.m-show { display:block; }
+  /* 정책 목록: 모바일에선 자체 스크롤 대신 패널 전체 스크롤에 맡겨 전부 보이게 */
+  .right-panel .policy-panels { flex:none; overflow:visible; }
+  /* 정책 탭을 모바일에서 sticky 처리해 스크롤 중에도 카테고리 전환 가능 */
+  .right-panel .policy-tabs { position:sticky; top:0; z-index:5; background:var(--bg1); }
+  /* 좌측 순위: 국가 리스트가 페이지 흐름을 따라 늘어나도록 (이중 스크롤 방지) */
+  .left-panel .clist { flex:none; overflow:visible; }
+  .left-panel .search-wrap, .left-panel .tier-tabs { position:sticky; z-index:4; background:var(--bg1); }
+  .left-panel .search-wrap { top:0; }
+  .left-panel .tier-tabs { top:46px; }
   .mob-nav { display:flex; }
   .sync-ind { bottom:64px; }
   .badge-grid { grid-template-columns:repeat(3,1fr); }
@@ -712,6 +757,8 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
       </div>
       <button onclick="openStockMarket()" style="width:100%;margin-top:10px;padding:10px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.3);border-radius:8px;color:var(--cyan);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">📊 글로벌 주식시장 (다른 나라에 투자)</button>
     </div>
+    <!-- 📊 국가 현황 대시보드 (확장 지표) -->
+    <div class="nation-dash" id="nationDashboard"></div>
     <!-- Action Point bar -->
     <div class="ap-bar">
       <div class="ap-row">
@@ -2392,6 +2439,66 @@ const COUNTRY_COORDS = {
   SOM:[46,10], SSD:[31,7], RWA:[30,-2],
 };
 
+// ISO3 → ISO2 (flagcdn.com 국기 이미지용). 좌표가 있는 국가 위주로 매핑.
+const ISO3_TO_ISO2 = {
+  USA:'us', CHN:'cn', DEU:'de', JPN:'jp', IND:'in', GBR:'gb', FRA:'fr', ITA:'it',
+  BRA:'br', CAN:'ca', RUS:'ru', MEX:'mx', AUS:'au', KOR:'kr', ESP:'es', IDN:'id',
+  NLD:'nl', TUR:'tr', SAU:'sa', CHE:'ch', POL:'pl', ARG:'ar', BEL:'be', SWE:'se',
+  NGA:'ng', ARE:'ae', THA:'th', SGP:'sg', VNM:'vn', EGY:'eg', ZAF:'za', IRN:'ir',
+  PAK:'pk', MYS:'my', PHL:'ph', COL:'co', CHL:'cl', DNK:'dk', FIN:'fi', NOR:'no',
+  IRL:'ie', ISR:'il', AUT:'at', GRC:'gr', PRT:'pt', CZE:'cz', HUN:'hu', PER:'pe',
+  KAZ:'kz', QAT:'qa', UKR:'ua', ECU:'ec', BGD:'bd', ETH:'et', KEN:'ke', GHA:'gh',
+  TZA:'tz', AGO:'ao', LUX:'lu', CRI:'cr', PAN:'pa', NZL:'nz', HRV:'hr', SVN:'si',
+  LTU:'lt', LVA:'lv', EST:'ee', HKG:'hk', TWN:'tw', MMR:'mm', KHM:'kh', BOL:'bo',
+  PRY:'py', SRB:'rs', JOR:'jo', LBN:'lb', IRQ:'iq', TUN:'tn', DZA:'dz', MAR:'ma',
+  UZB:'uz', AZE:'az', LKA:'lk', GTM:'gt', JAM:'jm', MNG:'mn', GEO:'ge', ARM:'am',
+  MOZ:'mz', MDG:'mg', ZMB:'zm', ZWE:'zw', SEN:'sn', NAM:'na', UGA:'ug', CMR:'cm',
+  CIV:'ci', BFA:'bf', MLI:'ml', TGO:'tg', BEN:'bj', NER:'ne', TCD:'td', GNQ:'gq',
+  LBY:'ly', AFG:'af', NPL:'np', HTI:'ht', NIC:'ni', HND:'hn', SOM:'so', SSD:'ss',
+  RWA:'rw',
+};
+
+// 국기 이미지 캐시 — code → {img, loaded}. 로드 완료 시 지도 1회 갱신.
+const flagImgCache = {};
+function getFlagImg(code) {
+  const iso2 = ISO3_TO_ISO2[code];
+  if (!iso2) return null;
+  if (flagImgCache[code]) return flagImgCache[code];
+  const rec = { img: new Image(), loaded: false };
+  rec.img.crossOrigin = 'anonymous';
+  rec.img.onload = () => {
+    rec.loaded = true;
+    // 평면 모드: 이미지 도착 시 한 번 다시 그려 반영 (지구본은 매 프레임 다시 그림)
+    if (mapMode === 'flat' && document.getElementById('mapView')?.classList.contains('active')) drawMap();
+  };
+  rec.img.onerror = () => { rec.loaded = false; rec.error = true; };
+  rec.img.src = `https://flagcdn.com/w40/${iso2}.png`;
+  flagImgCache[code] = rec;
+  return rec;
+}
+
+// 원형으로 클리핑한 국기 이미지를 (cx,cy) 중심, 반지름 r로 그리고 tier 색 테두리 추가
+function drawFlagMarker(ctx, rec, cx, cy, r, ringColor, ringWidth) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI*2);
+  ctx.closePath();
+  ctx.clip();
+  // 국기 비율(4:3 근사)을 원에 꽉 차게 cover 방식으로 그림
+  const iw = rec.img.naturalWidth || 40, ih = rec.img.naturalHeight || 30;
+  const d = r*2;
+  const scale = Math.max(d/iw, d/ih);
+  const dw = iw*scale, dh = ih*scale;
+  ctx.drawImage(rec.img, cx-dw/2, cy-dh/2, dw, dh);
+  ctx.restore();
+  // tier 색 링
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI*2);
+  ctx.strokeStyle = ringColor;
+  ctx.lineWidth = ringWidth || 1.5;
+  ctx.stroke();
+}
+
 function initMapCanvas() {
   const container = document.getElementById('worldMap');
   mapCanvas = document.getElementById('mapCanvas');
@@ -2484,7 +2591,7 @@ function drawMap() {
     ctx.fillText('90°N',W*0.005,H*0.08); ctx.fillText('0°',W*0.005,H*0.5); ctx.fillText('90°S',W*0.005,H*0.95);
   }
 
-  // Draw country dots
+  // Draw country markers (국기 이미지 + tier 링, 미로드/실패 시 색 점으로 폴백)
   const all = getAllSorted();
   Object.entries(COUNTRY_COORDS).forEach(([code, [lon,lat]])=>{
     const p = lonLatToXY(lon,lat,W,H,mapMode);
@@ -2492,16 +2599,30 @@ function drawMap() {
     const entry = all.find(x=>x.code===code);
     if (!entry) return;
     const isMe = entry.isMe;
-    const r = isMe ? 7 : Math.max(3, Math.min(10, Math.log10(entry.gdp+1)*2.5));
-    ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+    // 국기가 보일 만큼 약간 키운 반지름 (점보다 큼)
+    const dotR = isMe ? 7 : Math.max(3, Math.min(10, Math.log10(entry.gdp+1)*2.5));
+    const flagR = isMe ? 11 : Math.max(7, Math.min(13, dotR + 4));
+    const rec = isMe ? null : getFlagImg(code);
+
     if (isMe) {
-      const grd = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r*2);
+      // 내 나라: 앰버 글로우 + 국기(있으면) / 없으면 앰버 점
+      const grd = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,flagR*2);
       grd.addColorStop(0,'rgba(255,181,71,0.9)'); grd.addColorStop(1,'rgba(255,181,71,0)');
-      ctx.fillStyle=grd; ctx.arc(p.x,p.y,r*2,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2);
-      ctx.fillStyle='rgba(255,181,71,0.9)'; ctx.fill();
-      ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+      ctx.beginPath(); ctx.arc(p.x,p.y,flagR*2,0,Math.PI*2); ctx.fillStyle=grd; ctx.fill();
+      const myRec = getFlagImg(code);
+      if (myRec && myRec.loaded) {
+        drawFlagMarker(ctx, myRec, p.x, p.y, flagR, 'rgba(255,181,71,1)', 2.5);
+      } else {
+        ctx.beginPath(); ctx.arc(p.x,p.y,flagR,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,181,71,0.9)'; ctx.fill();
+        ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+      }
+    } else if (rec && rec.loaded) {
+      // 국기 이미지로 표시 + tier 색 링
+      drawFlagMarker(ctx, rec, p.x, p.y, flagR, tierColor(entry.tier, 0.95), 1.5);
     } else {
+      // 폴백: 기존 색 점 (이미지 로딩 중이거나 미지원)
+      ctx.beginPath(); ctx.arc(p.x, p.y, dotR, 0, Math.PI*2);
       ctx.fillStyle=tierColor(entry.tier, 0.75); ctx.fill();
       ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=0.5; ctx.stroke();
     }
@@ -2622,7 +2743,114 @@ function updateMyNationUI() {
 
   mn.tier = getMyTier();
   updatePolicyCooldowns();
+  renderNationDashboard();
   checkBadges();
+}
+
+// 📊 국가 현황 대시보드 — 확장 지표 + 빠른 이동 버튼 (경영 화면 콘텐츠 보강)
+function renderNationDashboard() {
+  const el = document.getElementById('nationDashboard');
+  if (!el || !state.myNation) return;
+  const mn = state.myNation;
+
+  // --- 지표 수집 (모든 값은 안전 기본값 처리) ---
+  const rate = (state.interestRate != null) ? state.interestRate : 2.5;
+  const infl = (state.inflation != null) ? state.inflation : 2.0;
+  const lvl = state.econLevel || 1;
+  const polMult = ((lvl - 1) * 3); // 정책 효과 보너스 %
+  const allyCnt = (state.alliances || []).length;
+  const tradeCnt = (state.tradeDeals || []).length;
+  const builtCnt = Object.values(state.buildings || {}).filter(Boolean).length;
+  const buildTotal = (typeof BUILDINGS !== 'undefined') ? BUILDINGS.length : 5;
+  const stockVal = (typeof getStockValue === 'function') ? getStockValue() : 0;
+  const heldCnt = Object.values(mn.stocks || {}).filter(h => (h?.shares || 0) > 0).length;
+  const badgeCnt = (state.badges || []).length;
+  const seasonLeft = (typeof seasonDaysLeft === 'function') ? seasonDaysLeft() : null;
+
+  // 인플레이션 상태 색상
+  const inflColor = infl >= 7 ? 'var(--red)' : infl >= 4 ? 'var(--amber)' : 'var(--green)';
+  const inflTag = infl >= 7 ? '⚠️ 위기' : infl >= 4 ? '주의' : '안정';
+
+  el.innerHTML = `
+    <div class="nd-section-title">📈 경제 지표</div>
+    <div class="nd-grid">
+      <div class="nd-card" onclick="openCentralBank()" title="중앙은행에서 금리 조정">
+        <div class="nd-card-lbl">🏦 기준금리</div>
+        <div class="nd-card-val" style="color:var(--cyan);">${rate.toFixed(2)}%</div>
+        <div class="nd-card-sub">탭하여 조정</div>
+      </div>
+      <div class="nd-card" onclick="openCentralBank()" title="물가 상승률">
+        <div class="nd-card-lbl">📊 인플레이션</div>
+        <div class="nd-card-val" style="color:${inflColor};">${infl.toFixed(1)}%</div>
+        <div class="nd-card-sub">${inflTag}</div>
+      </div>
+      <div class="nd-card" onclick="openQuiz()" title="퀴즈로 경제 지식 레벨업">
+        <div class="nd-card-lbl">🎓 경제 지식</div>
+        <div class="nd-card-val" style="color:var(--purple);">Lv.${lvl}</div>
+        <div class="nd-card-sub">정책효과 +${polMult}%</div>
+      </div>
+      <div class="nd-card" onclick="openBuildings()" title="국가 건설 트리">
+        <div class="nd-card-lbl">🏗️ 건설</div>
+        <div class="nd-card-val" style="color:var(--amber);">${builtCnt} / ${buildTotal}</div>
+        <div class="nd-card-sub">시설 보유</div>
+      </div>
+    </div>
+
+    <div class="nd-section-title">🌐 외교 · 자산</div>
+    <div class="nd-grid">
+      <div class="nd-card" onclick="openDiplomacy()" title="동맹·무역협정 관리">
+        <div class="nd-card-lbl">🤝 동맹</div>
+        <div class="nd-card-val" style="color:var(--green);">${allyCnt}개국</div>
+        <div class="nd-card-sub">무역협정 ${tradeCnt}개국</div>
+      </div>
+      <div class="nd-card" onclick="openStockMarket()" title="보유 주식 평가액">
+        <div class="nd-card-lbl">📦 주식 평가액</div>
+        <div class="nd-card-val" style="color:var(--cyan);">${fmtGDP(stockVal)}</div>
+        <div class="nd-card-sub">보유 ${heldCnt}개국</div>
+      </div>
+      <div class="nd-card" onclick="openBadges()" title="획득 배지">
+        <div class="nd-card-lbl">🎖️ 배지</div>
+        <div class="nd-card-val" style="color:var(--amber);">${badgeCnt}개</div>
+        <div class="nd-card-sub">업적 달성</div>
+      </div>
+      <div class="nd-card" onclick="openSeason()" title="현재 시즌 정보">
+        <div class="nd-card-lbl">🏁 시즌</div>
+        <div class="nd-card-val" style="color:var(--purple);">${seasonLeft != null ? seasonLeft + '일' : '—'}</div>
+        <div class="nd-card-sub">남은 기간</div>
+      </div>
+    </div>
+
+    <div class="nd-section-title">⚡ 빠른 이동</div>
+    <div class="nd-quick">
+      <button class="nd-qbtn" onclick="openMissions()"><span class="nd-qicon">📋</span>미션</button>
+      <button class="nd-qbtn" onclick="openMiniGame()"><span class="nd-qicon">🎮</span>미니게임</button>
+      <button class="nd-qbtn" onclick="openQuiz()"><span class="nd-qicon">🎓</span>퀴즈</button>
+      <button class="nd-qbtn" onclick="openRanking()"><span class="nd-qicon">🏆</span>랭킹</button>
+      <button class="nd-qbtn" onclick="openGlossary()"><span class="nd-qicon">📖</span>용어사전</button>
+      <button class="nd-qbtn" onclick="openView('map')"><span class="nd-qicon">🗺️</span>세계지도</button>
+    </div>
+
+    <div class="nd-tip">💡 <strong>오늘의 팁:</strong> ${dashboardTip()}</div>
+  `;
+}
+
+// 대시보드 하단에 표시할 교육용 팁 (날짜 시드로 매일 다른 팁)
+function dashboardTip() {
+  const tips = [
+    '금리를 내리면 성장은 빨라지지만 인플레이션이 오릅니다. 균형이 중요해요!',
+    '퀴즈를 풀어 경제 지식 레벨을 올리면 모든 정책 효과가 강해집니다.',
+    '여러 나라에 분산 투자하면 한 곳이 폭락해도 손실을 줄일 수 있어요.',
+    '동맹을 맺으면 매 틱 성장 보너스를 받습니다. 외교 화면을 확인해 보세요.',
+    '산업단지 → 항만 → 공항 순으로 건설하면 성장과 국고가 함께 늘어납니다.',
+    '인플레이션이 7%를 넘으면 경제 체력과 신용등급이 떨어지니 주의하세요!',
+    '국채를 발행하면 국고는 늘지만 부채도 함께 늘어납니다. 갚는 것도 잊지 마세요.',
+    '미션과 출석 보상을 챙기면 AP와 국고를 꾸준히 얻을 수 있습니다.',
+    '신용등급이 높을수록 외국인 투자가 잘 들어와 경제가 안정됩니다.',
+    '미니게임 "물가 안정 작전"으로 인플레이션 관리 개념을 체험해 보세요!',
+  ];
+  const today = new Date().toISOString().slice(0,10);
+  const seed = (typeof hashStr === 'function') ? hashStr('tip-'+today) : today.length;
+  return tips[Math.abs(seed) % tips.length];
 }
 
 function creditLabel(r) {

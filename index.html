@@ -420,6 +420,16 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
 /* 로그인 처리 중 스피너 */
 .auth-spinner { width:34px; height:34px; border:3px solid var(--border2); border-top-color:var(--amber); border-radius:50%; animation:authspin 0.8s linear infinite; }
 @keyframes authspin { to { transform:rotate(360deg); } }
+/* 차트 상단 퀵 트레이드 바 */
+.quick-trade { padding:10px 18px; border-bottom:1px solid var(--border); background:rgba(0,229,160,0.04); flex-shrink:0; }
+.qt-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:4px; }
+.qt-title { font-size:12px; font-weight:700; color:var(--green); }
+.qt-price { font-family:var(--font-mono); font-size:11px; color:var(--txt2); }
+.qt-held { font-size:10px; color:var(--txt2); margin-bottom:8px; }
+.qt-held-none { color:var(--txt3); }
+.qt-actions { display:flex; gap:16px; flex-wrap:wrap; }
+.qt-col { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.qt-cost { font-family:var(--font-mono); font-size:10px; color:var(--txt3); white-space:nowrap; }
 
 @media(max-width:768px) {
   .topbar-nav .nav-btn span { display:none; }
@@ -450,6 +460,26 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   .buy-cost { flex-basis:100%; order:5; text-align:left; margin-top:2px; }
   /* 슬라이더 터치 영역 확대 */
   input[type="range"] { height:28px; }
+
+  /* === 글자 겹침 방지 보강 === */
+  /* 차트 헤더: 긴 국가명이 우측 GDP와 겹치지 않도록 */
+  .chart-hdr { padding:10px 14px; gap:8px; }
+  .ch-left { min-width:0; flex:1; }
+  .ch-name { font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+  .ch-right { flex-shrink:0; }
+  .ch-gdp { font-size:18px; }
+  /* 퀵 트레이드: 좁은 화면에서 두 컬럼을 세로로 쌓기 */
+  .qt-actions { flex-direction:column; gap:10px; }
+  .qt-col { width:100%; }
+  /* 국가 리스트 행: 이름이 길어도 넘치지 않게 */
+  .crow { gap:6px; }
+  .c-info { min-width:0; }
+  .c-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* 차트 도구 줄: 좁으면 줄바꿈 */
+  .chart-tools { flex-wrap:wrap; gap:8px; }
+  .chart-badge { margin-left:0; }
+  /* 내 나라 상태 값이 길어도 줄 안에서 정리 */
+  .mns-val { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 }
 /* 가로 모드/아주 작은 높이 대응 */
 @media(max-height:520px) {
@@ -523,6 +553,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
     <button class="nav-btn" onclick="openBuildings()">🏗️ <span>건설</span></button>
     <button class="nav-btn" onclick="openRanking()">🏆 <span>랭킹</span></button>
     <button class="nav-btn" onclick="openQuiz()">🎓 <span>퀴즈</span></button>
+    <button class="nav-btn" onclick="openMiniGame()">🎮 <span>미니게임</span></button>
     <button class="nav-btn" onclick="openBadges()">🎖️ <span>배지</span></button>
     <button class="nav-btn" onclick="openGlossary()">📖 <span>사전</span></button>
   </div>
@@ -585,6 +616,8 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
           <div class="ch-chg" id="chChg">+0.00%</div>
         </div>
       </div>
+      <!-- 퀵 트레이드 바: 좌측 국가 선택 시 바로 매수/매도 -->
+      <div class="quick-trade" id="quickTrade" style="display:none;"></div>
       <div class="chart-tools">
         <div class="tf-group">
           <button class="tf-btn" data-tf="60" onclick="setTF(60)">1H</button>
@@ -665,7 +698,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
       </div>
       <div class="gdp-bar-wrap" style="margin-bottom:8px;">
         <div class="gdp-bar-lbl">
-          <span>❤️ 경제 체력 (방치 시 GDP 하락!)</span>
+          <span>❤️ 경제 체력 (높을수록 빠른 성장!)</span>
           <span id="healthPct">100%</span>
         </div>
         <div class="gdp-bar-bg"><div class="gdp-bar-fill" id="healthBarFill" style="width:100%;background:linear-gradient(90deg,var(--red),var(--green));"></div></div>
@@ -845,6 +878,14 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   <div class="modal modal-sm">
     <div class="mh"><div class="mh-title">💰 국가부채 설명</div><button class="mh-close" onclick="closeModal('debtInfoModal')">×</button></div>
     <div class="mb" id="debtInfoBody"></div>
+  </div>
+</div>
+
+<!-- Mini Game (경제 테마 미니게임) -->
+<div class="modal-bd" id="miniGameModal">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mh-title">🎮 경제 미니게임</div><button class="mh-close" onclick="closeMiniGame()">×</button></div>
+    <div class="mb" id="miniGameBody"></div>
   </div>
 </div>
 
@@ -1387,6 +1428,7 @@ let state = {
   buildings: {},         // 🏗️ 건설 완료 시설 {bId:true}
   econLevel: 1,          // 🎓 경제 지식 레벨 (1~10)
   econXP: 0,             // 🎓 누적 경제 지식 경험치
+  miniGame: null,        // 🎮 미니게임 일일 기록 {date, plays, bestScore}
 };
 
 // World GDP prices (live drift)
@@ -1519,6 +1561,7 @@ function resetGameState() {
   state.buildings = {};
   state.econLevel = 1;
   state.econXP = 0;
+  state.miniGame = null;
 }
 
 async function onAuthChange(user) {
@@ -1849,27 +1892,28 @@ function worldTick() {
   if (state.myNation) {
     const mn = state.myNation;
 
-    // 1) Health decay over time — 정책을 안 하면 경제 체력이 떨어진다
-    // 매 틱(3초)마다 감소. 약 2~3분 방치하면 위험 수준에 도달.
-    mn.health = Math.max(0, (mn.health||100) - 1.2);
+    // 1) Health decay over time — 정책을 안 해도 경제 체력이 거의 줄지 않음 (사실상 안전)
+    // 매 틱(3초) -0.0025씩만 감소 → 하루(28,800틱) 방치해도 체력 약 -72,
+    // 실제로는 정책/퀴즈/미니게임으로 회복되므로 방치 패널티는 미미한 수준.
+    mn.health = Math.max(0, (mn.health||100) - 0.0025);
     mn.lastDecay = now;
 
     // 2) GDP change driven by health
-    // health 80+: 성장, 50~80: 정체, 50미만: 하락
+    // 체력이 낮아도 GDP는 절대 마이너스(하락)로 가지 않음 — 최악의 경우 '성장 정체(0)'
     const health = mn.health || 100;
     let baseRate;
     if (health >= 80) baseRate = 0.04 + (mn.totalBoost||0)*0.0003;   // 강한 성장
     else if (health >= 60) baseRate = 0.02;                          // 완만 성장
-    else if (health >= 40) baseRate = -0.005;                        // 정체~소폭 하락
-    else if (health >= 20) baseRate = -0.03;                         // 하락
-    else baseRate = -0.06;                                            // 위기, 급락
+    else if (health >= 40) baseRate = 0.008;                         // 소폭 성장
+    else if (health >= 20) baseRate = 0.002;                         // 미미한 성장
+    else baseRate = 0;                                                // 정체 (하락 없음)
 
     // 3) Debt interest drag — 부채가 많으면 GDP 성장 둔화
     const debtRatio = mn.gdp > 0 ? (mn.debt||0) / mn.gdp : 0;
     const debtDrag = debtRatio > 0.6 ? -0.02 : debtRatio > 0.3 ? -0.008 : 0;
 
-    // 4) Random market noise
-    const noise = (seededRand(seed + 777) - 0.5) * 0.02;
+    // 4) Random market noise — 방치 시 하락 방지를 위해 0 이상(양의 변동)만 적용
+    const noise = Math.abs(seededRand(seed + 777) - 0.5) * 0.02;
 
     // 4.5) 동맹 성장 보너스 — 동맹국 수에 비례
     const allyBonus = (state.alliances?.length||0) * 0.003; // 동맹 1국당 +0.003%/틱
@@ -1880,7 +1924,11 @@ function worldTick() {
     const inflAdj = inflationGrowthAdj();      // 인플레 과열 시 성장 제동
     const buildAdj = buildGrowthBonus();       // 건설 시설 영구 성장 보너스
 
-    const totalRate = baseRate + debtDrag + noise + allyBonus + rateAdj + inflAdj + buildAdj;
+    // 방치/보너스성 성장 요소는 절대 음수가 되지 않게(최소 0) → 방치만으로는 GDP 하락 없음
+    const passiveRate = Math.max(0, baseRate + allyBonus + rateAdj + buildAdj + noise);
+    // 부채·인플레 과열은 플레이어의 능동적 선택 결과이므로 패널티 유지(음수 가능)
+    const activePenalty = Math.min(0, debtDrag + inflAdj);
+    const totalRate = passiveRate + activePenalty;
     mn.gdp = Math.max(0.01, mn.gdp * (1 + totalRate/100));
 
     // 5) Treasury income — GDP에 비례한 세수 + 무역 + 🏗️ 건설 국고수입
@@ -2083,6 +2131,77 @@ function selectCountry(code) {
   buildChartHistory(code);
   drawChart();
   renderCountryList();
+  renderQuickTrade(code);
+}
+
+// 차트 상단 퀵 트레이드 바 — 좌측 리스트에서 국가 선택 시 바로 매수/매도
+function renderQuickTrade(code) {
+  const wrap = document.getElementById('quickTrade');
+  if (!wrap) return;
+  // 내 나라는 거래 대상이 아님 → 숨김
+  if (code === MY_CODE || !state.myNation) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  const c = countryMap[code];
+  const wp = worldPrices[code];
+  if (!c || !wp) { wrap.style.display = 'none'; return; }
+  const price = wp.current / 1000; // billions per share
+  const mn = state.myNation;
+  const held = mn.stocks?.[code];
+  const maxBuy = Math.max(1, Math.floor((mn.treasury||0) / price));
+  const heldShares = held ? held.shares : 0;
+  const profit = held ? (price - held.avgPrice) * held.shares : 0;
+  const pct = held && held.avgPrice>0 ? (price-held.avgPrice)/held.avgPrice*100 : 0;
+
+  wrap.style.display = 'block';
+  wrap.innerHTML = `
+    <div class="qt-head">
+      <span class="qt-title">💹 ${c.flag} ${c.name} 빠른 거래</span>
+      <span class="qt-price">$${price.toFixed(3)}B / 주</span>
+    </div>
+    ${heldShares>0 ? `<div class="qt-held">보유 ${heldShares}주 · 평단 $${held.avgPrice.toFixed(3)}B · 평가손익 <span style="color:${profit>=0?'var(--green)':'var(--red)'};">${profit>=0?'+':''}${fmtGDP(Math.abs(profit))} (${pct>=0?'+':''}${pct.toFixed(1)}%)</span></div>` : `<div class="qt-held qt-held-none">아직 보유하지 않은 국가입니다</div>`}
+    <div class="qt-actions">
+      <div class="qt-col">
+        <div class="qty-stepper">
+          <button onclick="stepQty('qt-buy-${code}',-1,${maxBuy})">−</button>
+          <input id="qt-buy-${code}" type="number" inputmode="numeric" min="1" max="${maxBuy}" value="5" onchange="clampQty(this,${maxBuy})" oninput="qtUpdateCost('${code}',${price})">
+          <button onclick="stepQty('qt-buy-${code}',1,${maxBuy})">+</button>
+        </div>
+        <button class="qty-quick" onclick="setQty('qt-buy-${code}',${maxBuy});qtUpdateCost('${code}',${price})">최대</button>
+        <button class="trade-buy" onclick="buyStockFromQuick('${code}')">매수</button>
+        <span class="qt-cost" id="qt-cost-${code}">≈ $${(5*price).toFixed(2)}B</span>
+      </div>
+      ${heldShares>0 ? `
+      <div class="qt-col">
+        <div class="qty-stepper">
+          <button onclick="stepQty('qt-sell-${code}',-1,${heldShares})">−</button>
+          <input id="qt-sell-${code}" type="number" inputmode="numeric" min="1" max="${heldShares}" value="1" onchange="clampQty(this,${heldShares})">
+          <button onclick="stepQty('qt-sell-${code}',1,${heldShares})">+</button>
+        </div>
+        <button class="qty-quick" onclick="setQty('qt-sell-${code}',${Math.max(1,Math.floor(heldShares/2))})">½</button>
+        <button class="qty-quick" onclick="setQty('qt-sell-${code}',${heldShares})">최대</button>
+        <button class="trade-sell" onclick="sellStockFromQuick('${code}')">매도</button>
+      </div>` : ''}
+    </div>`;
+}
+
+function qtUpdateCost(code, price) {
+  const inp = document.getElementById('qt-buy-'+code);
+  const out = document.getElementById('qt-cost-'+code);
+  if (!inp || !out) return;
+  let v = parseInt(inp.value,10); if (isNaN(v)||v<1) v = 1;
+  out.textContent = '≈ $' + (v*price).toFixed(2) + 'B';
+}
+// 퀵 트레이드 전용 래퍼: 매수/매도 후 퀵 바도 갱신
+function buyStockFromQuick(code) {
+  const inp = document.getElementById('qt-buy-'+code);
+  const qty = inp ? parseInt(inp.value,10) : 5;
+  buyStock(code, qty);
+  renderQuickTrade(code);
+}
+function sellStockFromQuick(code) {
+  const inp = document.getElementById('qt-sell-'+code);
+  const qty = inp ? parseInt(inp.value,10) : null;
+  sellStock(code, qty);
+  renderQuickTrade(code);
 }
 
 function updateChartHeader() {
@@ -2824,6 +2943,191 @@ function openDebtInfo() {
 
   document.getElementById('debtInfoBody').innerHTML = html;
   document.getElementById('debtInfoModal').classList.add('active');
+}
+
+// ============================================================
+// 🎮 ECONOMIC MINI-GAME — 물가 안정 작전 (인플레이션 파이터)
+// 좌우로 움직이는 물가 지표를 '안정 구간(녹색)'에 들어왔을 때 탭하면 점수 획득.
+// 제한 시간 내 목표 점수 달성 시 국고+AP 보상. 하루 3회 제한.
+// ============================================================
+const MINIGAME_MAX_PER_DAY = 3;
+const MINIGAME_DURATION = 20;     // 초
+const MINIGAME_TARGET = 8;        // 목표 점수(안정 유지 성공 횟수)
+let miniGameState = null;
+
+function miniGamePlaysToday() {
+  const today = new Date().toISOString().slice(0,10);
+  if (!state.miniGame || state.miniGame.date !== today) return 0;
+  return state.miniGame.plays || 0;
+}
+
+function openMiniGame() {
+  if (!state.myNation) { showToast('warning','🎮 미니게임','먼저 국가를 건국하세요.'); return; }
+  renderMiniGameIntro();
+  document.getElementById('miniGameModal').classList.add('active');
+}
+
+function renderMiniGameIntro() {
+  const plays = miniGamePlaysToday();
+  const left = Math.max(0, MINIGAME_MAX_PER_DAY - plays);
+  document.getElementById('miniGameBody').innerHTML = `
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:38px;">📊</div>
+      <div style="font-family:var(--font-title);font-size:18px;font-weight:900;color:var(--amber);margin-top:6px;">물가 안정 작전</div>
+      <div style="font-size:12px;color:var(--txt2);margin-top:8px;line-height:1.7;">
+        물가 지표가 좌우로 출렁입니다.<br>
+        <strong style="color:var(--green);">녹색 안정 구간</strong>에 들어왔을 때 <strong>[안정화]</strong> 버튼을 누르세요!<br>
+        ${MINIGAME_DURATION}초 안에 <strong>${MINIGAME_TARGET}회</strong> 성공하면 보상을 받습니다.
+      </div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:8px;">🏆 보상</div>
+      <div style="font-size:11px;color:var(--txt2);line-height:1.8;">
+        • 목표 달성: <strong style="color:var(--amber);">국고 +$15B</strong> + <strong style="color:var(--cyan);">⚡AP +3</strong> + 경제체력 +10<br>
+        • 점수 비례 추가 보상(많이 맞출수록 ↑)<br>
+        • 💡 물가 관리는 중앙은행의 핵심 역할! 게임으로 체험해보세요.
+      </div>
+    </div>
+    <div style="text-align:center;font-size:11px;color:var(--txt3);margin-bottom:12px;">오늘 남은 횟수: <strong style="color:${left>0?'var(--green)':'var(--red)'};">${left} / ${MINIGAME_MAX_PER_DAY}</strong></div>
+    <button onclick="startMiniGame()" ${left<=0?'disabled':''}
+      style="width:100%;padding:14px;border-radius:10px;border:none;background:${left>0?'var(--amber)':'var(--border)'};color:${left>0?'#000':'var(--txt3)'};font-family:var(--font-kr);font-size:14px;font-weight:700;cursor:${left>0?'pointer':'not-allowed'};">
+      ${left>0?'▶️ 게임 시작':'오늘 횟수를 모두 사용했습니다'}
+    </button>`;
+}
+
+function startMiniGame() {
+  if (miniGamePlaysToday() >= MINIGAME_MAX_PER_DAY) { showToast('warning','횟수 초과','내일 다시 도전하세요!'); return; }
+  miniGameState = {
+    score: 0, timeLeft: MINIGAME_DURATION,
+    pos: 50, dir: 1, speed: 1.6,
+    zoneStart: 38, zoneEnd: 62,  // 안정 구간(%)
+    running: true, lastTapOk: null,
+  };
+  renderMiniGamePlay();
+  // 물가 지표 이동 루프 (~30fps)
+  miniGameState.moveTimer = setInterval(miniGameTick, 33);
+  // 1초 카운트다운
+  miniGameState.countTimer = setInterval(()=>{
+    if (!miniGameState || !miniGameState.running) return;
+    miniGameState.timeLeft--;
+    const t = document.getElementById('mgTime');
+    if (t) t.textContent = miniGameState.timeLeft;
+    if (miniGameState.timeLeft <= 0) endMiniGame();
+  }, 1000);
+}
+
+function renderMiniGamePlay() {
+  document.getElementById('miniGameBody').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-size:13px;font-weight:700;">📊 점수: <span id="mgScore" style="color:var(--amber);">0</span> / ${MINIGAME_TARGET}</div>
+      <div style="font-size:13px;font-weight:700;">⏱️ <span id="mgTime" style="color:var(--cyan);">${MINIGAME_DURATION}</span>초</div>
+    </div>
+    <!-- 물가 게이지 트랙 -->
+    <div style="position:relative;height:46px;background:var(--bg0);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+      <!-- 안정 구간(녹색) -->
+      <div style="position:absolute;top:0;bottom:0;left:38%;width:24%;background:rgba(0,229,160,0.22);border-left:2px dashed var(--green);border-right:2px dashed var(--green);"></div>
+      <!-- 물가 인디케이터 -->
+      <div id="mgIndicator" style="position:absolute;top:4px;bottom:4px;width:6px;border-radius:3px;background:var(--amber);left:50%;transform:translateX(-50%);transition:background .1s;"></div>
+      <div style="position:absolute;left:6px;top:2px;font-size:9px;color:var(--red);">디플레</div>
+      <div style="position:absolute;right:6px;top:2px;font-size:9px;color:var(--red);">인플레</div>
+      <div style="position:absolute;left:50%;bottom:2px;transform:translateX(-50%);font-size:9px;color:var(--green);">안정</div>
+    </div>
+    <div id="mgFeedback" style="text-align:center;height:20px;font-size:12px;font-weight:700;margin-bottom:10px;"></div>
+    <button onclick="miniGameTap()" id="mgTapBtn"
+      style="width:100%;padding:18px;border-radius:12px;border:none;background:var(--green);color:#000;font-family:var(--font-kr);font-size:16px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      🎯 안정화!
+    </button>
+    <div style="text-align:center;font-size:10px;color:var(--txt3);margin-top:10px;">물가 막대가 녹색 구간에 있을 때 누르세요</div>`;
+}
+
+function miniGameTick() {
+  const mg = miniGameState;
+  if (!mg || !mg.running) return;
+  // 물가 위치 이동(좌우 왕복), 시간이 지날수록 약간 빨라짐
+  mg.pos += mg.dir * mg.speed;
+  if (mg.pos >= 96) { mg.pos = 96; mg.dir = -1; }
+  if (mg.pos <= 4) { mg.pos = 4; mg.dir = 1; }
+  const ind = document.getElementById('mgIndicator');
+  if (ind) {
+    ind.style.left = mg.pos + '%';
+    const inZone = mg.pos >= mg.zoneStart && mg.pos <= mg.zoneEnd;
+    ind.style.background = inZone ? 'var(--green)' : 'var(--amber)';
+  }
+}
+
+function miniGameTap() {
+  const mg = miniGameState;
+  if (!mg || !mg.running) return;
+  const inZone = mg.pos >= mg.zoneStart && mg.pos <= mg.zoneEnd;
+  const fb = document.getElementById('mgFeedback');
+  if (inZone) {
+    mg.score++;
+    document.getElementById('mgScore').textContent = mg.score;
+    if (fb) { fb.textContent = '✅ 물가 안정 성공! (+1)'; fb.style.color = 'var(--green)'; }
+    // 성공할수록 난이도 소폭 상승
+    mg.speed = Math.min(3.2, mg.speed + 0.12);
+    if (mg.score >= MINIGAME_TARGET) endMiniGame();
+  } else {
+    if (fb) { fb.textContent = mg.pos < mg.zoneStart ? '❌ 디플레이션! 너무 빨랐어요' : '❌ 인플레이션! 너무 늦었어요'; fb.style.color = 'var(--red)'; }
+  }
+}
+
+function endMiniGame() {
+  const mg = miniGameState;
+  if (!mg) return;
+  mg.running = false;
+  clearInterval(mg.moveTimer);
+  clearInterval(mg.countTimer);
+  const success = mg.score >= MINIGAME_TARGET;
+  const mn = state.myNation;
+
+  // 하루 플레이 횟수 기록
+  const today = new Date().toISOString().slice(0,10);
+  if (!state.miniGame || state.miniGame.date !== today) state.miniGame = { date: today, plays: 0, bestScore: 0 };
+  state.miniGame.plays++;
+  state.miniGame.bestScore = Math.max(state.miniGame.bestScore||0, mg.score);
+
+  // 보상: 점수 비례 + 목표 달성 보너스
+  let fundReward = mg.score * 1.5;     // 점수당 국고 $1.5B
+  let apReward = Math.floor(mg.score / 3);
+  let healthReward = mg.score;
+  if (success) { fundReward += 15; apReward += 3; healthReward += 10; }
+  fundReward = Math.round(fundReward);
+
+  if (mn) {
+    mn.treasury = (mn.treasury||0) + fundReward;
+    mn.ap = Math.min(mn.maxAp, (mn.ap||0) + apReward);
+    mn.health = Math.min(100, (mn.health||100) + healthReward);
+  }
+  scheduleSave(); updateMyNationUI(); checkBadges();
+
+  document.getElementById('miniGameBody').innerHTML = `
+    <div style="text-align:center;padding:14px 8px;">
+      <div style="font-size:44px;margin-bottom:10px;">${success?'🏆':mg.score>=MINIGAME_TARGET/2?'👍':'📊'}</div>
+      <div style="font-size:18px;font-weight:900;margin-bottom:6px;color:${success?'var(--green)':'var(--txt)'};">${success?'물가 안정 성공!':'작전 종료'}</div>
+      <div style="font-size:14px;color:var(--txt2);margin-bottom:16px;">최종 점수: <strong style="color:var(--amber);">${mg.score}</strong> / ${MINIGAME_TARGET}</div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px;">
+        <div style="font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:8px;">🎁 획득 보상</div>
+        <div style="display:flex;justify-content:space-around;font-family:var(--font-mono);">
+          <div><div style="font-size:10px;color:var(--txt3);">국고</div><div style="font-size:15px;font-weight:900;color:var(--amber);">+$${fundReward}B</div></div>
+          <div><div style="font-size:10px;color:var(--txt3);">AP</div><div style="font-size:15px;font-weight:900;color:var(--cyan);">+${apReward}</div></div>
+          <div><div style="font-size:10px;color:var(--txt3);">경제체력</div><div style="font-size:15px;font-weight:900;color:var(--green);">+${healthReward}</div></div>
+        </div>
+      </div>
+      <button onclick="renderMiniGameIntro()" style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:13px;font-weight:700;cursor:pointer;">다시 하기 / 종료</button>
+    </div>`;
+  showToast(success?'success':'info','🎮 미니게임 종료', `점수 ${mg.score}점 · 국고 +$${fundReward}B, AP +${apReward}`);
+}
+
+function closeMiniGame() {
+  if (miniGameState && miniGameState.running) {
+    // 진행 중 닫으면 게임 중단(보상 없음, 횟수 미차감)
+    miniGameState.running = false;
+    clearInterval(miniGameState.moveTimer);
+    clearInterval(miniGameState.countTimer);
+  }
+  miniGameState = null;
+  closeModal('miniGameModal');
 }
 
 function confirmAction(cat, id) {
@@ -4255,6 +4559,7 @@ const BADGE_DEFS = [
   {id:'space_nation',icon:'🚀',name:'우주 강국',desc:'우주센터까지 모든 시설 건설',check:s=>!!(s.buildings&&s.buildings.space)},
   {id:'econ_lv5',icon:'🎓',name:'경제 석사',desc:'경제 지식 Lv.5 달성',check:s=>(s.econLevel||1)>=5},
   {id:'econ_lv10',icon:'🧠',name:'경제 박사',desc:'경제 지식 Lv.10 만렙 달성!',check:s=>(s.econLevel||1)>=10},
+  {id:'inflation_fighter',icon:'🎮',name:'물가 파이터',desc:'미니게임 물가 안정 작전 성공',check:s=>!!(s.miniGame&&(s.miniGame.bestScore||0)>=8)},
 ];
 
 function checkBadges() {
@@ -4376,6 +4681,7 @@ async function saveState() {
     buildings: state.buildings,
     econLevel: state.econLevel,
     econXP: state.econXP,
+    miniGame: state.miniGame,
     savedAt: Date.now(),
   };
   // Local backup — keyed per account (guest vs each logged-in uid), never a shared key
@@ -4460,6 +4766,7 @@ function applyLoadedData(data) {
   if (data.buildings && typeof data.buildings === 'object') state.buildings = data.buildings;
   if (typeof data.econLevel === 'number') state.econLevel = data.econLevel;
   if (typeof data.econXP === 'number') state.econXP = data.econXP;
+  if (data.miniGame && typeof data.miniGame === 'object') state.miniGame = data.miniGame;
   // Backfill new fields for older saves
   if (state.myNation) {
     const mn = state.myNation;

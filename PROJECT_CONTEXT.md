@@ -68,6 +68,7 @@ state = {
   buildings,     // 🏗️ 건설 완료 시설 {bId:true} (industry/port/airport/semicon/space)
   econLevel,     // 🎓 경제 지식 레벨 (1~10)
   econXP,        // 🎓 누적 경제 지식 경험치 (퀴즈 정답 1개=+10XP)
+  miniGame,      // 🎮 미니게임 일일 기록 {date, plays, bestScore} (하루 3회 제한)
 }
 ```
 
@@ -94,8 +95,9 @@ state = {
 | **건국/시작** | `createMyNation`, `startGame`, `buildFlagSelector` | `onboardModal` |
 | **내 계정/프로필** | `openAccount`, `profileStat`, `renderGrowthChart`, `saveAlias` | `accountModal` |
 | **세계지도** | `drawMap`, `initMapCanvas`, `lonLatToXY`, `mapHover/Click` | — (canvas) |
-| **국가 목록/차트** | `renderCountryList`, `selectCountry`, `drawChart`, `buildChartHistory` | — |
+| **국가 목록/차트** | `renderCountryList`, `selectCountry`(→차트+퀵트레이드), `drawChart`, `buildChartHistory`, `renderQuickTrade`, `buyStockFromQuick`, `sellStockFromQuick`, `qtUpdateCost` | — (차트 상단 `#quickTrade`) |
 | **정책 실행** | `renderPolicies`, `confirmAction`, `executeAction`, `switchPol` | `actionModal` |
+| **🎮 경제 미니게임** ⭐NEW | `openMiniGame`, `renderMiniGameIntro`, `startMiniGame`, `miniGameTick`, `miniGameTap`, `endMiniGame`, `closeMiniGame`, `miniGamePlaysToday` | `miniGameModal` |
 | **주식시장** | `openStockMarket`, `renderStockMarket`, `buyStock(code,qty)`, `sellStock(code,qty)`, `stepQty`, `setQty`, `clampQty`, `updateBuyCost` | `stockModal` |
 | **뉴스** | `generateNews`, `renderNews`, `openNews`, `renderTickerTape` | `newsModal` |
 | **랭킹** | `openRanking`, `renderRanking`, `loadPlayerRanking`, `renderWorldRanking` | `rankingModal` |
@@ -300,3 +302,44 @@ node --check extracted.js
 ---
 
 *최종 업데이트: 2026-05 (📱 모바일 구글 로그인 리다이렉트 복귀 버그 수정) / 작성: Claude (Ryan의 NationRise 프로젝트 작업 중)*
+
+---
+
+## 14. 변경 이력 — 🎮 밸런스/UX 4종 (2026-05)
+
+### ⚖️ 경제 체력/GDP 하락 완화 (방치 패널티 대폭 축소)
+- **체력 감소량**: 틱당 `-1.2` → **`-0.0025`** (약 480배 완화). 방치해도 사실상 안전.
+- **GDP 하락 제거**: 체력이 낮아도 baseRate가 음수가 되지 않게 변경(최악 시 0=성장 정체).
+  - 기존: health<40에서 -0.005~-0.06%/틱(하락) → 변경: 0.008/0.002/0%(정체까지만).
+- **방치 시 절대 하락 없음 보장**: worldTick 성장식을 재구성.
+  - `passiveRate = max(0, baseRate + allyBonus + rateAdj + buildAdj + noise)` (noise도 양수만 적용).
+  - `activePenalty = min(0, debtDrag + inflAdj)` — 부채·인플레 과열은 능동적 선택의 패널티라 유지.
+  - `totalRate = passiveRate + activePenalty`. 즉 **방치만으로는 안 줄고, 과다 부채/초인플레는 성장 둔화**.
+- UI 문구 변경: "방치 시 GDP 하락!" → "높을수록 빠른 성장!".
+
+### 💹 좌측 국가 리스트 → 퀵 트레이드 (PC)
+- 좌측 리스트에서 국가 선택(`selectCountry`) 시 차트 상단 `#quickTrade` 바에 즉시 매수/매도 UI 노출.
+- `renderQuickTrade(code)`: 가격·보유·평가손익 표시 + 수량 스테퍼(−/+)·½·최대 + 매수/매도 버튼.
+- 내 나라 선택 시 자동 숨김. 기존 `buyStock/sellStock(code,qty)` 재사용(`buyStockFromQuick`/`sellStockFromQuick`).
+
+### 🎮 경제 미니게임 — "물가 안정 작전"
+- 좌우로 움직이는 물가 지표를 **안정 구간(녹색)**에서 [안정화] 탭 → 점수. 20초 내 8회 성공 시 목표 달성.
+- 보상: 점수 비례 국고 + 목표 달성 시 국고 +$15B·AP +3·체력 +10. **하루 3회 제한**(`state.miniGame`).
+- 인플레이션=물가 관리라는 경제 개념을 체감하는 교육 효과. 배지 `inflation_fighter`(🎮) 추가.
+- 저장 3곳(state 정의/resetGameState/saveState·applyLoadedData) 반영.
+
+### 📱 모바일 글자 겹침 방지
+- 차트 헤더: `ch-left`에 `min-width:0`+`flex:1`, `ch-name` 말줄임(ellipsis) → 긴 국가명이 GDP와 겹침 방지.
+- 퀵 트레이드: 모바일에서 매수/매도 컬럼을 세로 배치(`flex-direction:column`).
+- 국가 리스트: `c-info min-width:0`, `c-name` 말줄임. 내 나라 상태값(`mns-val`) 말줄임.
+- 차트 도구 줄바꿈 허용, 상단 네비 가로 스크롤(미니게임 버튼 추가로 항목 증가).
+
+### 검증
+- `node --check` 문법 통과 / 인라인 핸들러 참조 무결성 통과 / 신규 함수 12개 정의 확인.
+- jsdom 통합 테스트 **33/33 통과**: 체력 완화(틱당 0.0025), 체력0 방치 시 GDP 무하락,
+  과다부채 성장 둔화, 퀵트레이드 매수/부분매도, 미니게임 점수·보상·일일제한, miniGame 저장복원, 모바일 CSS.
+- 🔒 닉네임 보호: `publicDoc`에 miniGame 등 신규 필드 누출 없음 확인.
+
+---
+
+*최종 업데이트: 2026-05 (🎮 체력완화·퀵트레이드·미니게임·모바일 겹침수정 4종) / 작성: Claude (Ryan의 NationRise 프로젝트 작업 중)*

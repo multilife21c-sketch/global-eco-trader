@@ -1567,22 +1567,60 @@ function signInWithGoogle() {
     playAsGuest();
     return;
   }
-  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768;
+  // 🔑 팝업 우선 전략 (모바일/PC 공통)
+  //   이 앱은 GitHub Pages(*.github.io)에 호스팅되고 authDomain 은 *.firebaseapp.com 이라,
+  //   signInWithRedirect 는 복귀 시 firebaseapp.com 의 '서드파티' 저장소(iframe)에서 상태를
+  //   읽어와야 한다. iOS Safari·삼성 인터넷·서드파티 쿠키 차단 크롬 등 저장소 파티셔닝
+  //   브라우저에서는 그 저장소가 막혀 "missing initial state" 로 로그인 복귀가 실패한다.
+  //   → 팝업은 결과를 '동일 출처 opener' 로 돌려받으므로 이 문제를 회피한다(Firebase 권장 옵션 2).
+  //   ⚠️ 팝업은 반드시 클릭 제스처 안에서 await 없이 즉시 호출해야 팝업 차단을 피한다.
+  fbPopupSignIn();
+}
+
+// 팝업 로그인 + (팝업 차단 환경 한정) 리다이렉트 폴백
+function fbPopupSignIn() {
+  if (!window.fb || !window.fb.signInWithPopup) {
+    // 구버전 SDK 등 팝업 미지원 → 리다이렉트로 시도
+    return fbRedirectSignIn();
+  }
   try {
-    if (isMobile && window.fb.signInWithRedirect) {
-      setAuthLoading(true);
-      try { sessionStorage.setItem('nr_redirecting','1'); } catch(e){}
-      window.fb.signInWithRedirect(window.fb.auth, window.fb.provider);
-    } else {
-      setAuthLoading(true);
-      window.fb.signInWithPopup(window.fb.auth, window.fb.provider).catch(e=>{
-        if (e.code && (e.code.includes('popup'))) {
-          try { sessionStorage.setItem('nr_redirecting','1'); } catch(e2){}
-          window.fb.signInWithRedirect(window.fb.auth, window.fb.provider);
-        } else { setAuthLoading(false); showToast('error','로그인 실패', e.message||'다시 시도해주세요.'); }
-      });
-    }
-  } catch(e) { setAuthLoading(false); showToast('error','로그인 실패', e.message||'다시 시도해주세요.'); }
+    setAuthLoading(true);
+    window.fb.signInWithPopup(window.fb.auth, window.fb.provider).catch(handlePopupError);
+  } catch(e) { handlePopupError(e); }
+}
+
+function handlePopupError(e) {
+  const code = (e && e.code) ? e.code : '';
+  // 1) 사용자가 팝업을 직접 닫음 / 중복 요청 → 조용히 로그인 화면 복귀 (에러 토스트 X)
+  if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request' || code === 'auth/user-cancelled') {
+    setAuthLoading(false);
+    return;
+  }
+  // 2) 팝업 자체가 차단된 환경(일부 인앱 웹뷰 등) → 리다이렉트로 폴백
+  if (code === 'auth/popup-blocked' || code === 'auth/operation-not-supported-in-environment' || code.includes('popup')) {
+    fbRedirectSignIn();
+    return;
+  }
+  // 3) 그 외 오류
+  setAuthLoading(false);
+  showToast('error','로그인 실패', (e && e.message) || '다시 시도해주세요.');
+}
+
+function fbRedirectSignIn() {
+  if (!window.fb || !window.fb.signInWithRedirect) {
+    setAuthLoading(false);
+    showToast('error','로그인 실패','이 브라우저에서 로그인 창을 열 수 없습니다. Chrome 또는 Safari 등 기본 브라우저에서 열어 다시 시도해주세요.');
+    return;
+  }
+  setAuthLoading(true);
+  try { sessionStorage.setItem('nr_redirecting','1'); } catch(e){}
+  try {
+    window.fb.signInWithRedirect(window.fb.auth, window.fb.provider);
+  } catch(e) {
+    try { sessionStorage.removeItem('nr_redirecting'); } catch(e2){}
+    setAuthLoading(false);
+    showToast('error','로그인 실패','이 브라우저에서 로그인 창을 열 수 없습니다. Chrome 또는 Safari 등 기본 브라우저에서 열어 다시 시도해주세요.');
+  }
 }
 
 function resetGameState() {

@@ -526,6 +526,20 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   /* 내 나라 상태 값이 길어도 줄 안에서 정리 */
   .mns-val { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 }
+/* === 🖥️ PC: 우측 '경영' 패널 전체 세로 스크롤 (하단 AP·정책탭 잘림 방지) === */
+/* 위쪽 고정 영역(국가카드·대시보드)이 길어 화면 높이를 넘으면, 기존엔 내부 .policy-panels 만
+   스크롤돼 AP바·정책탭(경영/금융/기술/외교/사회)이 패널 밖으로 잘렸음.
+   → 모바일과 동일하게 '패널 전체'를 스크롤 대상으로 전환하고 정책탭을 sticky 로 고정. */
+@media(min-width:769px) {
+  .right-panel { overflow-y:auto; overflow-x:hidden;
+    scrollbar-width:thin; scrollbar-color:var(--border2) transparent; }
+  .right-panel::-webkit-scrollbar { width:6px; }
+  .right-panel::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+  /* 정책 목록: 자체(내부) 스크롤 대신 패널 전체 스크롤에 맡겨 전부 보이게 */
+  .right-panel .policy-panels { flex:none; overflow:visible; }
+  /* 정책 탭을 sticky 처리해 스크롤 중에도 카테고리 전환 가능 */
+  .right-panel .policy-tabs { position:sticky; top:0; z-index:5; background:var(--bg1); }
+}
 /* 가로 모드/아주 작은 높이 대응 */
 @media(max-height:520px) {
   .modal, .modal-sm { max-height:96vh; max-height:96dvh; }

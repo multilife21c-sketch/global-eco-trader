@@ -466,9 +466,9 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   .main { display:block; height:calc(100vh - 84px); height:calc(100dvh - 84px); position:relative; }
   .panel { position:absolute; inset:0; border:none; padding-bottom:56px; display:none; }
   .panel.m-show { display:flex; }
-  /* === 📱 모바일 전체 세로 스크롤 (경영/순위 패널) === */
+  /* === 📱 모바일 전체 세로 스크롤 (경영/순위/차트 패널) === */
   /* 좌측 순위·우측 경영 패널 자체를 위아래로 스크롤 가능하게 (하단 내용 잘림 방지). */
-  /* 중앙(차트/지도) 패널은 캔버스가 화면을 꽉 채워야 하므로 스크롤에서 제외. */
+  /* 중앙(차트) 패널도 전체 스크롤을 허용하되, 차트 영역엔 충분한 높이를 부여(아래 별도 규칙). */
   .left-panel.m-show, .right-panel.m-show {
     overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
     padding-bottom:calc(64px + env(safe-area-inset-bottom)); }
@@ -523,6 +523,18 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   /* 차트 도구 줄: 좁으면 줄바꿈 */
   .chart-tools { flex-wrap:wrap; gap:8px; }
   .chart-badge { margin-left:0; }
+  /* === 📊 모바일 중앙(차트) 패널: 전체 스크롤 + 차트 높이 확보 === */
+  /* 헤더·퀵트레이드·도구·통계·뉴스가 쌓여 차트가 눌리던 문제 → 패널 전체 스크롤,
+     차트 영역은 화면 높이의 약 절반으로 고정해 추세를 충분히 볼 수 있게 함. */
+  .center-panel.m-show {
+    overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+    padding-bottom:calc(64px + env(safe-area-inset-bottom)); }
+  .center-panel.m-show::-webkit-scrollbar { width:4px; }
+  .center-panel.m-show::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+  .center-panel.m-show .chart-view.active { height:auto; min-height:100%; flex:none; }
+  .center-panel.m-show .chart-area { flex:none; height:48vh; height:48dvh; min-height:300px; }
+  /* 지도 뷰는 기존처럼 화면을 채우도록 유지 */
+  .center-panel.m-show .map-view.active { height:calc(100dvh - 84px - 56px); min-height:360px; }
   /* 내 나라 상태 값이 길어도 줄 안에서 정리 */
   .mns-val { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 }
@@ -682,6 +694,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
           <button class="tf-btn" data-tf="60" onclick="setTF(60)">1H</button>
           <button class="tf-btn" data-tf="360" onclick="setTF(360)">6H</button>
           <button class="tf-btn act" data-tf="1440" onclick="setTF(1440)">24H</button>
+          <button class="tf-btn" data-tf="43200" onclick="setTF(43200)">1M</button>
           <button class="tf-btn" data-tf="525600" onclick="setTF(525600)">1Y</button>
           <button class="tf-btn" data-tf="1576800" onclick="setTF(1576800)">3Y</button>
           <button class="tf-btn" data-tf="2628000" onclick="setTF(2628000)">5Y</button>
@@ -920,13 +933,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   </div>
 </div>
 
-<!-- Season Info -->
-<div class="modal-bd" id="seasonModal">
-  <div class="modal modal-sm">
-    <div class="mh"><div class="mh-title">🗓️ 시즌 정보</div><button class="mh-close" onclick="closeModal('seasonModal')">×</button></div>
-    <div class="mb" id="seasonBody"></div>
-  </div>
-</div>
+<!-- Season Info modal 제거됨 (시즌 기능 삭제) -->
 
 <!-- Central Bank (중앙은행 · 금리) -->
 <div class="modal-bd" id="centralBankModal">
@@ -941,6 +948,14 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
   <div class="modal modal-sm">
     <div class="mh"><div class="mh-title">💰 국가부채 설명</div><button class="mh-close" onclick="closeModal('debtInfoModal')">×</button></div>
     <div class="mb" id="debtInfoBody"></div>
+  </div>
+</div>
+
+<!-- Treasury Operations (재정 운용 — 국고 지출 수단) -->
+<div class="modal-bd" id="treasuryModal">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mh-title">💰 재정 운용</div><button class="mh-close" onclick="closeModal('treasuryModal')">×</button></div>
+    <div class="mb" id="treasuryBody"></div>
   </div>
 </div>
 
@@ -1481,7 +1496,6 @@ let state = {
   challenges: {},        // {challengeId: {claimed:true}}
   tradeDeals: [],        // [code,...] 무역협정 체결국
   rival: null,           // {code, name, flag, gdp} AI 라이벌
-  season: null,          // {id, startGdp, claimed}
   missionTab: 'daily',   // 미션 모달 탭
   // ===== 신규 확장 기능 (중앙은행/건설/경제레벨) =====
   interestRate: 2.5,     // 🏦 기준금리 % (0.5~5.0, 기본 2.5)
@@ -1652,7 +1666,6 @@ function resetGameState() {
   state.challenges = {};
   state.tradeDeals = [];
   state.rival = null;
-  state.season = null;
   state.missionTab = 'daily';
   // 신규 확장 기능 초기화
   state.interestRate = 2.5;
@@ -1736,7 +1749,6 @@ function openAccount() {
 
     <!-- 바로가기 -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-      <button onclick="closeModal('accountModal');openSeason()" style="padding:11px;border-radius:9px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">🗓️ 시즌 정보</button>
       <button onclick="closeModal('accountModal');openCheckin()" style="padding:11px;border-radius:9px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">📅 출석 보상</button>
       <button onclick="closeModal('accountModal');openCentralBank()" style="padding:11px;border-radius:9px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">🏦 중앙은행</button>
       <button onclick="closeModal('accountModal');openBuildings()" style="padding:11px;border-radius:9px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:12px;font-weight:600;cursor:pointer;">🏗️ 국가 건설</button>
@@ -1916,6 +1928,7 @@ function createMyNation() {
     debt: 0,             // 국가 부채
     debtSources: {bond:0, interest:0, repay:0}, // 부채 발생 원인별 누적
     creditRating: 5,     // 신용등급 (0~10, 5=BBB 시작)
+    swf: 0,              // 🏦 국부펀드 적립액 (재정 운용)
     stocks: {},          // 보유 주식 {code: shares}
     activePolicies: {},  // 지속 정책 효과
     lastDecay: Date.now(),
@@ -1958,7 +1971,6 @@ function startGame() {
   // 신규 기능 초기화
   ensureMissions();
   ensureRival();
-  ensureSeason();
   ensureEconomyFeatures();   // 🏦🏗️🎓 금리/인플레/건설/레벨 기본값 보정
   updateMissionBadge();
   checkDailyLogin();   // 출석 보상 자동 체크
@@ -2034,6 +2046,8 @@ function worldTick() {
 
     // 5) Treasury income — GDP에 비례한 세수 + 무역 + 🏗️ 건설 국고수입
     mn.treasury = (mn.treasury||0) + mn.gdp * 0.0008 + tradeBonus() + buildIncomeBonus();
+    // 🏦 국부펀드 복리 이자 (접속 중에만 누적 — 정적 호스팅, 백그라운드 실행 없음)
+    if ((mn.swf||0) > 0) mn.swf = mn.swf * (1 + SWF_TICK_RATE);
 
     // 6) Debt interest accrual — 부채 이자
     if (mn.debt > 0) {
@@ -2070,8 +2084,6 @@ function worldTick() {
     // 12) 챌린지 달성 알림 배지 갱신
     updateMissionBadge();
 
-    // 13) 시즌 자동 정산/갱신
-    ensureSeason();
   }
 
   // News refresh
@@ -2516,9 +2528,10 @@ function drawChart() {
   const fmtAxis = (t)=>{
     const dt = new Date(t);
     const p2 = n => String(n).padStart(2,'0');
-    if (span <= 2*86400000) return `${p2(dt.getHours())}:${p2(dt.getMinutes())}`;      // ~2일 이하: 시:분
-    if (span <= 400*86400000) return `${dt.getFullYear()%100}/${p2(dt.getMonth()+1)}`; // ~1년: 연/월
-    return `${dt.getFullYear()}`;                                                       // 그 이상: 연도
+    if (span <= 2*86400000)   return `${p2(dt.getHours())}:${p2(dt.getMinutes())}`;   // ~2일: 시:분
+    if (span <= 120*86400000) return `${p2(dt.getMonth()+1)}/${p2(dt.getDate())}`;    // ~4개월(1M 포함): 월/일
+    if (span <= 400*86400000) return `${dt.getFullYear()%100}/${p2(dt.getMonth()+1)}`;// ~1년: 연/월
+    return `${dt.getFullYear()}`;                                                      // 그 이상: 연도
   };
   [0, Math.floor(data.length/2), data.length-1].forEach(i=>{
     const d = data[i];
@@ -2908,7 +2921,6 @@ function renderNationDashboard() {
   const stockVal = (typeof getStockValue === 'function') ? getStockValue() : 0;
   const heldCnt = Object.values(mn.stocks || {}).filter(h => (h?.shares || 0) > 0).length;
   const badgeCnt = (state.badges || []).length;
-  const seasonLeft = (typeof seasonDaysLeft === 'function') ? seasonDaysLeft() : null;
 
   // 인플레이션 상태 색상
   const inflColor = infl >= 7 ? 'var(--red)' : infl >= 4 ? 'var(--amber)' : 'var(--green)';
@@ -2956,15 +2968,11 @@ function renderNationDashboard() {
         <div class="nd-card-val" style="color:var(--amber);">${badgeCnt}개</div>
         <div class="nd-card-sub">업적 달성</div>
       </div>
-      <div class="nd-card" onclick="openSeason()" title="현재 시즌 정보">
-        <div class="nd-card-lbl">🏁 시즌</div>
-        <div class="nd-card-val" style="color:var(--purple);">${seasonLeft != null ? seasonLeft + '일' : '—'}</div>
-        <div class="nd-card-sub">남은 기간</div>
-      </div>
     </div>
 
     <div class="nd-section-title">⚡ 빠른 이동</div>
     <div class="nd-quick">
+      <button class="nd-qbtn" onclick="openTreasuryOps()"><span class="nd-qicon">💰</span>재정 운용</button>
       <button class="nd-qbtn" onclick="openMissions()"><span class="nd-qicon">📋</span>미션</button>
       <button class="nd-qbtn" onclick="openMiniGame()"><span class="nd-qicon">🎮</span>미니게임</button>
       <button class="nd-qbtn" onclick="openQuiz()"><span class="nd-qicon">🎓</span>퀴즈</button>
@@ -4628,83 +4636,6 @@ function rivalStatusHtml() {
 }
 
 // ============================================================
-// SEASON SYSTEM (시즌제 — 14일 주기 경쟁)
-// ============================================================
-const SEASON_DAYS = 14;
-const SEASON_EPOCH = Date.UTC(2026, 0, 1); // 시즌 기준일
-
-function currentSeasonId() {
-  const days = Math.floor((Date.now() - SEASON_EPOCH) / 86400000);
-  return Math.floor(days / SEASON_DAYS) + 1;
-}
-
-function seasonEndsAt() {
-  const id = currentSeasonId();
-  return SEASON_EPOCH + id * SEASON_DAYS * 86400000;
-}
-
-function seasonDaysLeft() {
-  return Math.max(0, Math.ceil((seasonEndsAt() - Date.now()) / 86400000));
-}
-
-function ensureSeason() {
-  if (!state.myNation) return;
-  const id = currentSeasonId();
-  if (!state.season || state.season.id !== id) {
-    // 이전 시즌 정산
-    if (state.season && !state.season.settled) {
-      const growth = ((state.myNation.gdp - state.season.startGdp)/Math.max(state.season.startGdp,0.0001))*100;
-      // 시즌 보상: 성장률 구간별
-      let reward = {ap:5, fund:5, tier:'🥉'};
-      if (growth >= 500) reward = {ap:40, fund:80, tier:'🏆 챔피언'};
-      else if (growth >= 200) reward = {ap:25, fund:50, tier:'🥇 골드'};
-      else if (growth >= 50) reward = {ap:15, fund:25, tier:'🥈 실버'};
-      const mn = state.myNation;
-      mn.ap = Math.min(mn.maxAp, (mn.ap||0)+reward.ap);
-      mn.treasury = (mn.treasury||0)+reward.fund;
-      showToast('success','🗓️ 시즌 종료 보상', `시즌 성장률 ${growth.toFixed(0)}% · ${reward.tier} · ⚡${reward.ap} 💰$${reward.fund}B 획득!`);
-    }
-    // 새 시즌 시작
-    state.season = { id, startGdp: state.myNation.gdp, startedAt: Date.now(), settled:false };
-    scheduleSave();
-  }
-}
-
-function openSeason() {
-  if (!state.myNation) { showToast('warning','🗓️ 시즌','먼저 국가를 건국하세요.'); return; }
-  ensureSeason();
-  const s = state.season;
-  const growth = ((state.myNation.gdp - s.startGdp)/Math.max(s.startGdp,0.0001))*100;
-  const daysLeft = seasonDaysLeft();
-  const tiers = [
-    {min:500, label:'🏆 챔피언', r:'⚡40 · 💰$80B'},
-    {min:200, label:'🥇 골드', r:'⚡25 · 💰$50B'},
-    {min:50,  label:'🥈 실버', r:'⚡15 · 💰$25B'},
-    {min:0,   label:'🥉 브론즈', r:'⚡5 · 💰$5B'},
-  ];
-  const myTier = tiers.find(t=>growth>=t.min) || tiers[tiers.length-1];
-  let html = `<div style="text-align:center;margin-bottom:16px;">
-    <div style="font-size:34px;">🗓️</div>
-    <div style="font-family:var(--font-title);font-size:20px;font-weight:900;color:var(--amber);margin-top:4px;">시즌 ${s.id}</div>
-    <div style="font-size:11px;color:var(--txt2);margin-top:2px;">종료까지 ${daysLeft}일 남음</div>
-  </div>
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;text-align:center;">
-    <div style="font-size:11px;color:var(--txt2);">이번 시즌 성장률</div>
-    <div style="font-family:var(--font-mono);font-size:26px;font-weight:900;color:${growth>=0?'var(--green)':'var(--red)'};margin:4px 0;">${growth>=0?'+':''}${growth.toFixed(1)}%</div>
-    <div style="font-size:12px;font-weight:700;color:var(--amber);">현재 등급: ${myTier.label}</div>
-    <div style="font-size:10px;color:var(--txt3);">예상 보상: ${myTier.r}</div>
-  </div>
-  <div style="font-size:11px;color:var(--txt2);font-weight:700;margin-bottom:8px;">🏅 등급 기준 (시즌 성장률)</div>`;
-  html += tiers.map(t=>`<div style="display:flex;justify-content:space-between;align-items:center;background:${growth>=t.min?'rgba(255,181,71,0.08)':'var(--bg2)'};border:1px solid ${growth>=t.min?'var(--amber)':'var(--border)'};border-radius:8px;padding:9px 12px;margin-bottom:6px;font-size:12px;">
-    <span style="font-weight:700;">${t.label}</span>
-    <span style="font-size:10px;color:var(--txt2);">${t.min>0?`+${t.min}% 이상`:'기본'} · ${t.r}</span>
-  </div>`).join('');
-  html += `<div style="font-size:10px;color:var(--txt3);margin-top:12px;text-align:center;line-height:1.6;">🗓️ 매 ${SEASON_DAYS}일마다 시즌이 갱신됩니다. 시즌 종료 시 성장률에 따라 보상을 받고 새 시즌이 시작됩니다.</div>`;
-  document.getElementById('seasonBody').innerHTML = html;
-  document.getElementById('seasonModal').classList.add('active');
-}
-
-// ============================================================
 // 🏦 CENTRAL BANK — 금리 & 인플레이션
 // ============================================================
 const RATE_MIN = 0.5, RATE_MAX = 5.0, RATE_STEP = 0.25, RATE_DEFAULT = 2.5;
@@ -5007,6 +4938,153 @@ function econLevelBarHtml(compact) {
 }
 
 // ============================================================
+// 💰 TREASURY OPERATIONS (재정 운용 — 국고 지출 수단 다양화)
+// ============================================================
+const SWF_TICK_RATE = 0.00005;      // 국부펀드 틱당 복리 이자(0.005%/틱, 접속 중에만)
+const RND_COST_PER_LV = 25;         // R&D 투자 비용 = 경제지식레벨 × 값 (B)
+const RND_XP_GAIN = 2;              // R&D 1회당 경험치(퀴즈 정답 N개분)
+const WELFARE_COST = 25;            // 사회복지 투자 비용 (B)
+const AP_BUY_COST = 15;             // AP 1 구매 비용 (B)
+const AID_COST = 40;                // 해외 원조 비용 (B)
+
+function openTreasuryOps() {
+  if (!state.myNation) { showToast('warning','💰 재정 운용','먼저 국가를 건국하세요.'); return; }
+  renderTreasuryOps();
+  document.getElementById('treasuryModal').classList.add('active');
+}
+
+function renderTreasuryOps() {
+  const mn = state.myNation; if (!mn) return;
+  const t = mn.treasury || 0;
+  const swf = mn.swf || 0;
+  const lvl = state.econLevel || 1;
+  const rndCost = RND_COST_PER_LV * lvl;
+  const ticksPerHour = 3600 / ((typeof WORLD_LOOP_MS === 'number' ? WORLD_LOOP_MS : 3000) / 1000);
+  const hourlyPct = (Math.pow(1 + SWF_TICK_RATE, ticksPerHour) - 1) * 100;
+  const afford = (c)=> t >= c;
+  const mkBtn = (label,fn,can)=> `<button onclick="${can?fn:''}" ${can?'':'disabled'} style="padding:9px 14px;border-radius:9px;border:none;background:${can?'var(--amber)':'var(--border)'};color:${can?'#000':'var(--txt3)'};font-family:var(--font-kr);font-size:13px;font-weight:800;cursor:${can?'pointer':'not-allowed'};white-space:nowrap;">${label}</button>`;
+  const row = (icon,title,desc,costLabel,btnHtml,can,extra='') => `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:13px;margin-bottom:10px;">
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <div style="font-size:24px;flex-shrink:0;">${icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:800;color:var(--amber);">${title}</div>
+          <div style="font-size:11px;color:var(--txt2);line-height:1.5;margin-top:3px;">${desc}</div>
+          ${extra}
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-family:var(--font-mono);color:${can?'var(--cyan)':'var(--red)'};">${costLabel}</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">${btnHtml}</div>
+      </div>
+    </div>`;
+
+  let html = `
+    <div style="background:linear-gradient(135deg,rgba(255,181,71,0.12),rgba(0,229,160,0.06));border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center;">
+      <div style="font-size:11px;color:var(--txt2);">보유 국고</div>
+      <div style="font-family:var(--font-mono);font-size:26px;font-weight:900;color:var(--amber);margin:2px 0;">${fmtGDP(t)}</div>
+      <div style="font-size:11px;color:var(--txt2);">🏦 국부펀드 <b style="color:var(--cyan);">${fmtGDP(swf)}</b> · 이자 약 ${hourlyPct.toFixed(1)}%/시간(접속 중)</div>
+    </div>`;
+
+  html += row('🏦','국부펀드 (SWF)',
+    '남는 국고를 예치하면 접속 중 복리 이자가 붙습니다. 언제든 전액 인출 가능.',
+    `예치 시 시간당 약 +${hourlyPct.toFixed(1)}%`,
+    `${mkBtn('+$50B','swfDeposit(50)', t>=50)}${mkBtn('+$200B','swfDeposit(200)', t>=200)}${mkBtn('전액','swfDeposit(-1)', t>=1)}${mkBtn('인출','swfWithdraw()', swf>=1)}`,
+    t>=50 || swf>=1);
+
+  html += row('🔬','R&D 투자',
+    `연구개발에 투자해 경제 지식 경험치를 즉시 확보합니다 (퀴즈 ${RND_XP_GAIN}문제분).`,
+    `비용 $${rndCost}B · 현재 경제지식 Lv.${lvl}`,
+    mkBtn('투자','buyRnD()', afford(rndCost) && lvl<ECON_MAX_LEVEL),
+    lvl>=ECON_MAX_LEVEL ? '<div style="font-size:10px;color:var(--green);margin-top:4px;">최고 레벨 달성</div>' : '');
+
+  html += row('🏥','사회복지 투자',
+    '복지·물가 안정에 지출해 경제 체력을 회복하고 인플레이션을 소폭 낮춥니다.',
+    `비용 $${WELFARE_COST}B → 경제체력 +12 · 인플레 -0.4%p`,
+    mkBtn('집행','buyWelfare()', afford(WELFARE_COST)));
+
+  const apFull = (mn.ap||0) >= mn.maxAp;
+  html += row('⚡','행정력 충원 (AP 구매)',
+    '국고를 투입해 행동 포인트(AP)를 즉시 1 충전합니다.',
+    `비용 $${AP_BUY_COST}B → ⚡+1 (현재 ${mn.ap||0}/${mn.maxAp})`,
+    mkBtn('충원','buyAP()', afford(AP_BUY_COST) && !apFull),
+    apFull ? '<div style="font-size:10px;color:var(--green);margin-top:4px;">AP가 가득 찼습니다</div>' : '');
+
+  const credFull = (mn.creditRating||5) >= 10;
+  html += row('🌍','해외 원조 (소프트파워)',
+    '개발도상국 원조로 국제 신용을 높입니다. 신용↑ → 국채 이자↓.',
+    `비용 $${AID_COST}B → 신용등급 +0.4 (현재 ${(mn.creditRating||5).toFixed(1)}/10)`,
+    mkBtn('원조','foreignAid()', afford(AID_COST) && !credFull),
+    credFull ? '<div style="font-size:10px;color:var(--green);margin-top:4px;">신용등급 최고치</div>' : '');
+
+  html += `<div style="font-size:10px;color:var(--txt3);text-align:center;margin-top:6px;line-height:1.6;">💡 국부펀드 이자는 접속 중에만 누적됩니다(서버 없는 정적 호스팅 특성).</div>`;
+  document.getElementById('treasuryBody').innerHTML = html;
+}
+
+function afterTreasuryOp() {
+  scheduleSave();
+  updateMyNationUI();
+  if (document.getElementById('treasuryModal').classList.contains('active')) renderTreasuryOps();
+}
+function swfDeposit(amt) {
+  const mn = state.myNation; if (!mn) return;
+  const t = mn.treasury || 0;
+  const dep = amt < 0 ? t : Math.min(amt, t);
+  if (dep < 1) { showToast('warning','국고 부족','예치할 국고가 부족합니다.'); return; }
+  mn.treasury = t - dep;
+  mn.swf = (mn.swf || 0) + dep;
+  showToast('success','🏦 국부펀드 예치', `${fmtGDP(dep)} 예치 · 적립 ${fmtGDP(mn.swf)}`);
+  afterTreasuryOp();
+}
+function swfWithdraw() {
+  const mn = state.myNation; if (!mn) return;
+  const swf = mn.swf || 0;
+  if (swf < 1) { showToast('warning','국부펀드','인출할 적립액이 없습니다.'); return; }
+  mn.treasury = (mn.treasury || 0) + swf;
+  mn.swf = 0;
+  showToast('success','🏦 국부펀드 인출', `${fmtGDP(swf)}를 국고로 회수했습니다.`);
+  afterTreasuryOp();
+}
+function buyRnD() {
+  const mn = state.myNation; if (!mn) return;
+  const lvl = state.econLevel || 1;
+  if (lvl >= ECON_MAX_LEVEL) { showToast('info','R&D','이미 최고 경제 지식 레벨입니다.'); return; }
+  const cost = RND_COST_PER_LV * lvl;
+  if ((mn.treasury||0) < cost) { showToast('error','국고 부족',`💰 $${cost}B가 필요합니다.`); return; }
+  mn.treasury -= cost;
+  addEconXP(RND_XP_GAIN);
+  showToast('success','🔬 R&D 투자', `$${cost}B 투자 · 경제 지식 +${RND_XP_GAIN*ECON_XP_PER_CORRECT}XP`);
+  afterTreasuryOp();
+}
+function buyWelfare() {
+  const mn = state.myNation; if (!mn) return;
+  if ((mn.treasury||0) < WELFARE_COST) { showToast('error','국고 부족',`💰 $${WELFARE_COST}B가 필요합니다.`); return; }
+  mn.treasury -= WELFARE_COST;
+  mn.health = Math.min(100, (mn.health||100) + 12);
+  if (typeof state.inflation === 'number') state.inflation = Math.max(0, state.inflation - 0.4);
+  showToast('success','🏥 사회복지 투자', '경제체력 +12 · 인플레이션 완화');
+  afterTreasuryOp();
+}
+function buyAP() {
+  const mn = state.myNation; if (!mn) return;
+  if ((mn.ap||0) >= mn.maxAp) { showToast('info','AP','AP가 가득 찼습니다.'); return; }
+  if ((mn.treasury||0) < AP_BUY_COST) { showToast('error','국고 부족',`💰 $${AP_BUY_COST}B가 필요합니다.`); return; }
+  mn.treasury -= AP_BUY_COST;
+  mn.ap = Math.min(mn.maxAp, (mn.ap||0) + 1);
+  showToast('success','⚡ 행정력 충원', `AP +1 (${mn.ap}/${mn.maxAp})`);
+  afterTreasuryOp();
+}
+function foreignAid() {
+  const mn = state.myNation; if (!mn) return;
+  if ((mn.creditRating||5) >= 10) { showToast('info','해외 원조','신용등급이 이미 최고치입니다.'); return; }
+  if ((mn.treasury||0) < AID_COST) { showToast('error','국고 부족',`💰 $${AID_COST}B가 필요합니다.`); return; }
+  mn.treasury -= AID_COST;
+  mn.creditRating = Math.min(10, (mn.creditRating||5) + 0.4);
+  showToast('success','🌍 해외 원조', `국제 신용 상승 · 신용등급 ${mn.creditRating.toFixed(1)}`);
+  afterTreasuryOp();
+}
+
+// ============================================================
 // BADGES
 // ============================================================
 const BADGE_DEFS = [
@@ -5161,7 +5239,6 @@ async function saveState() {
     challenges: state.challenges,
     tradeDeals: state.tradeDeals,
     rival: state.rival,
-    season: state.season,
     interestRate: state.interestRate,
     inflation: state.inflation,
     lastRateChange: state.lastRateChange,
@@ -5245,7 +5322,6 @@ function applyLoadedData(data) {
   if (data.challenges) state.challenges = data.challenges;
   if (data.tradeDeals) state.tradeDeals = data.tradeDeals;
   if (data.rival) state.rival = data.rival;
-  if (data.season) state.season = data.season;
   // 신규 확장 기능 복원
   if (typeof data.interestRate === 'number') state.interestRate = data.interestRate;
   if (typeof data.inflation === 'number') state.inflation = data.inflation;

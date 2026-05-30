@@ -680,9 +680,11 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
       <div class="chart-tools">
         <div class="tf-group">
           <button class="tf-btn" data-tf="60" onclick="setTF(60)">1H</button>
-          <button class="tf-btn act" data-tf="360" onclick="setTF(360)">6H</button>
-          <button class="tf-btn" data-tf="1440" onclick="setTF(1440)">24H</button>
-          <button class="tf-btn" data-tf="0" onclick="setTF(0)">ALL</button>
+          <button class="tf-btn" data-tf="360" onclick="setTF(360)">6H</button>
+          <button class="tf-btn act" data-tf="1440" onclick="setTF(1440)">24H</button>
+          <button class="tf-btn" data-tf="525600" onclick="setTF(525600)">1Y</button>
+          <button class="tf-btn" data-tf="1576800" onclick="setTF(1576800)">3Y</button>
+          <button class="tf-btn" data-tf="2628000" onclick="setTF(2628000)">5Y</button>
         </div>
         <div class="chart-badge" id="virtualWorldBadge">📊 실시간 GDP</div>
       </div>
@@ -1462,7 +1464,7 @@ let state = {
   worldGdp: {},   // code -> current gdp (with drift)
   selectedCode: 'USA',
   tierFilter: 'ALL',
-  chartTF: 360,
+  chartTF: 1440,
   mapMode: 'globe',
   badges: [],
   quizLog: {},
@@ -1489,7 +1491,7 @@ let state = {
   buildings: {},         // 🏗️ 건설 완료 시설 {bId:true}
   econLevel: 1,          // 🎓 경제 지식 레벨 (1~10)
   econXP: 0,             // 🎓 누적 경제 지식 경험치
-  miniGame: null,        // 🎮 미니게임 일일 기록 {date, plays, bestScore}
+  miniGame: null,        // 🎮 미니게임 일일 기록 {date, plays:{[id]:n}, best:{[id]:score}}
 };
 
 // World GDP prices (live drift)
@@ -2044,7 +2046,7 @@ function worldTick() {
     // 7) Stock portfolio value tracking (passive)
     // (handled in UI)
 
-    mn.tier = getMyTier();
+    refreshMyTierAndAp();
     if (!state.history[MY_CODE]) state.history[MY_CODE] = [];
     state.history[MY_CODE].push({t: now, gdp: mn.gdp});
     if (state.history[MY_CODE].length > 200) state.history[MY_CODE].shift();
@@ -2135,6 +2137,16 @@ function getMyTier() {
   if (g >= 10) return 'C';
   return 'D';
 }
+// 🎯 티어별 AP 최대값: D=20, 한 단계 오를 때마다 +10 (C=30, B=40, A=50, S=60)
+const AP_TIER_ORDER = ['D','C','B','A','S'];
+function apMaxForTier(tier){ const i = AP_TIER_ORDER.indexOf(tier); return 20 + 10 * (i < 0 ? 0 : i); }
+// 티어 재계산 + 그에 맞춰 maxAp 갱신 (AP가 상한 초과 시 클램프)
+function refreshMyTierAndAp(){
+  const mn = state.myNation; if (!mn) return;
+  mn.tier = getMyTier();
+  mn.maxAp = apMaxForTier(mn.tier);
+  if (mn.ap > mn.maxAp) mn.ap = mn.maxAp;
+}
 function getAllSorted() {
   let all = COUNTRIES_RAW.map(c=>({...c, gdp: worldPrices[c.code].current, change_pct: worldPrices[c.code].change_pct}));
   if (state.myNation) {
@@ -2170,7 +2182,7 @@ function renderCountryList() {
     const chgStr = chg>0?`+${chg.toFixed(2)}%`:chg<0?`${chg.toFixed(2)}%`:'0.00%';
     const isMine = c.isMe;
     const sel = state.selectedCode === c.code;
-    return `<div class="crow ${sel?'sel':''} ${isMine?'mine-row':''}" onclick="selectCountry('${c.code}')">
+    return `<div class="crow ${sel?'sel':''} ${isMine?'mine-row':''}" onclick="pickCountry('${c.code}')">
       <div class="c-rank">${rank}</div>
       <div class="c-flag">${c.flag}</div>
       <div class="c-info">
@@ -2207,6 +2219,14 @@ function scrollToMyNation() {
 // ============================================================
 let chartHistoryData = [];
 let currentChartCode = null;
+
+// 사용자가 목록/검색/랭킹에서 나라를 '클릭'했을 때의 진입점.
+// 모바일에서는 선택 후 자동으로 중앙(차트+매수/매도) 화면으로 전환한다.
+// (초기화용 selectCountry 직접 호출은 화면 전환 없이 그대로 둔다)
+function pickCountry(code) {
+  selectCountry(code);
+  if (window.innerWidth <= 768) mobSwitch('center');
+}
 
 function selectCountry(code) {
   state.selectedCode = code;
@@ -2326,32 +2346,101 @@ function updateChartStats(code, price, chg) {
   document.getElementById('csVol').textContent = isMine ? '가변' : `${(c?.volatility||1).toFixed(1)}`;
 }
 
+// ============================================================
+// 📈 결정론적 차트 히스토리 (절대 시각 기반)
+//   곡선이 '실제 시각'의 순수 함수라, 접속 여부와 무관하게 항상 연속적인
+//   과거(최대 5년) 데이터를 만든다 → 서버 없이도 "백그라운드에서 계속 돈 것처럼" 보임.
+//   타 국가: 전부 합성. 내 나라: 실제 세션 기록(state.history)이 있는 구간은 진짜 값,
+//   그 이전 구간만 합성 프리히스토리로 매끄럽게 이어붙임.
+// ============================================================
+const TF_MS = { MIN:60000, HOUR:3600000, DAY:86400000, YEAR:31536000000 };
+
+// 부드러운 보간 노이즈 1옥타브 (-1..1). 절대 시각 t를 periodMs 버킷으로 나눠 결정론적.
+function chartOctave(key, t, periodMs) {
+  const f = t / periodMs;
+  const i0 = Math.floor(f), frac = f - i0;
+  const h = hashStr(key);
+  const a = seededRand(i0 + h) - 0.5;
+  const b = seededRand(i0 + 1 + h) - 0.5;
+  const s = frac * frac * (3 - 2 * frac); // smoothstep
+  return (a + (b - a) * s) * 2;
+}
+
+// 시각 t에서의 합성 GDP 원시값 (장기추세 × (1+다중시간대 노이즈))
+function chartSynthRaw(key, t, base, vol) {
+  const { MIN, HOUR, DAY, YEAR } = TF_MS;
+  // 국가별 결정론적 장기 추세 (연 약 -2.4% ~ +3.6%, 대체로 완만한 우상향 편향)
+  const g = (seededRand(hashStr(key) + 7) - 0.4);
+  const yearsFromNow = (t - Date.now()) / YEAR; // 과거면 음수
+  const trend = Math.exp(g * 0.06 * yearsFromNow);
+  // 다중 시간대 노이즈: 느린→빠른 순으로 진폭 감소 → 어느 줌에서도 디테일 유지
+  let n = 0;
+  n += 0.060 * chartOctave(key + 'a', t, 1.5 * YEAR);
+  n += 0.050 * chartOctave(key + 'b', t, 0.4 * YEAR);
+  n += 0.035 * chartOctave(key + 'c', t, 30 * DAY);
+  n += 0.020 * chartOctave(key + 'd', t, 2 * DAY);
+  n += 0.012 * chartOctave(key + 'e', t, 4 * HOUR);
+  n += 0.006 * chartOctave(key + 'f', t, 12 * MIN);
+  n *= (0.6 + (vol || 0.8) * 0.5); // 변동성 반영
+  return base * trend * (1 + n);
+}
+
+// [fromT,toT] 구간 합성 시리즈 생성 후, 끝점을 anchorEndVal에 맞춰 스케일(연속성 보장)
+function chartSynthSeries(key, fromT, toT, points, base, vol, anchorEndVal) {
+  const pts = [];
+  const span = Math.max(1, toT - fromT);
+  for (let i = 0; i < points; i++) {
+    const t = fromT + span * (i / (points - 1));
+    pts.push({ t, gdp: chartSynthRaw(key, t, base, vol) });
+  }
+  if (anchorEndVal != null) {
+    const endRaw = pts[pts.length - 1].gdp || 1;
+    const scale = anchorEndVal / endRaw;
+    for (const p of pts) p.gdp *= scale;
+  }
+  return pts;
+}
+
 function buildChartHistory(code) {
+  const tfMin = state.chartTF > 0 ? state.chartTF : 1440;
+  const now = Date.now();
+  const fromT = now - tfMin * 60000;
+  const points = 140;
   const isMine = code === MY_CODE;
-  if (isMine && state.history[MY_CODE]) {
-    chartHistoryData = state.history[MY_CODE].slice(-100);
+
+  if (isMine && state.myNation) {
+    const mn = state.myNation;
+    const real = (state.history[MY_CODE] || [])
+      .filter(d => d.t >= fromT && d.t <= now)
+      .sort((a, b) => a.t - b.t);
+    const startReal = real.length ? real[0].t : now;
+    const out = [];
+    // 실제 기록 이전 구간 → 합성 프리히스토리 (끝점을 첫 실제값에 맞춰 매끄럽게 연결)
+    if (fromT < startReal - 1000) {
+      const anchor = real.length ? real[0].gdp : mn.gdp;
+      const preSpan = startReal - fromT;
+      const prePts = Math.max(2, Math.round(points * preSpan / (now - fromT)));
+      out.push(...chartSynthSeries(MY_CODE, fromT, startReal, prePts,
+        mn.startGdp || mn.gdp, 0.9, anchor));
+    }
+    out.push(...real);
+    // 항상 마지막 점은 현재 실제 GDP
+    if (!out.length || out[out.length - 1].t < now - 1) out.push({ t: now, gdp: mn.gdp });
+    chartHistoryData = out.length >= 2 ? out : [{ t: fromT, gdp: mn.gdp }, { t: now, gdp: mn.gdp }];
     return;
   }
-  // Generate deterministic history for world countries
+
+  // 타 국가: 전부 결정론적 합성, 끝점은 현재가에 앵커
   const c = countryMap[code];
   if (!c) return;
-  const base = c.gdp;
-  const points = 100;
-  const now = Date.now();
-  chartHistoryData = [];
-  for (let i=points; i>=0; i--) {
-    const t = now - i * 60000;
-    const seed2 = Math.floor(t/60000);
-    const noise = (seededRand(seed2 + hashStr(code)) - 0.5) * c.volatility * 0.8;
-    const gdp = base * (1 + noise/100);
-    chartHistoryData.push({t, gdp});
-  }
-  chartHistoryData.push({t: now, gdp: worldPrices[code]?.current || base});
+  const live = (worldPrices[code] && worldPrices[code].current) || c.gdp;
+  chartHistoryData = chartSynthSeries(code, fromT, now, points, c.gdp, c.volatility, live);
 }
 
 function setTF(tf) {
   state.chartTF = tf;
-  document.querySelectorAll('.tf-btn').forEach(b=>b.classList.toggle('act', parseInt(b.dataset.tf)===tf||(tf===0&&b.dataset.tf==='0')));
+  document.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('act', b.dataset.tf === String(tf)));
+  if (currentChartCode) buildChartHistory(currentChartCode);
   drawChart();
 }
 
@@ -2374,10 +2463,6 @@ function drawChart() {
   if (!chartHistoryData.length) return;
 
   let data = chartHistoryData;
-  if (state.chartTF > 0) {
-    const cutoff = Date.now() - state.chartTF * 60000;
-    data = data.filter(d=>d.t >= cutoff);
-  }
   if (data.length < 2) data = chartHistoryData.slice(-2);
 
   const vals = data.map(d=>d.gdp);
@@ -2425,14 +2510,20 @@ function drawChart() {
   ctx.beginPath(); ctx.arc(lx,ly,4,0,Math.PI*2);
   ctx.fillStyle=lineColor; ctx.fill();
 
-  // X labels
+  // X labels — 기간에 따라 형식 자동 전환 (시:분 / 월/일 / 연.월)
   ctx.fillStyle='rgba(74,98,128,0.8)'; ctx.font='10px JetBrains Mono,monospace'; ctx.textAlign='center';
+  const span = data[data.length-1].t - data[0].t;
+  const fmtAxis = (t)=>{
+    const dt = new Date(t);
+    const p2 = n => String(n).padStart(2,'0');
+    if (span <= 2*86400000) return `${p2(dt.getHours())}:${p2(dt.getMinutes())}`;      // ~2일 이하: 시:분
+    if (span <= 400*86400000) return `${dt.getFullYear()%100}/${p2(dt.getMonth()+1)}`; // ~1년: 연/월
+    return `${dt.getFullYear()}`;                                                       // 그 이상: 연도
+  };
   [0, Math.floor(data.length/2), data.length-1].forEach(i=>{
     const d = data[i];
     if (!d) return;
-    const dt = new Date(d.t);
-    const lbl = `${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;
-    ctx.fillText(lbl, px(i), H-PAD.b+14);
+    ctx.fillText(fmtAxis(d.t), px(i), H-PAD.b+14);
   });
 }
 
@@ -2741,7 +2832,7 @@ function mapClick(e) {
   });
   if (found) {
     openView('chart');
-    selectCountry(found);
+    pickCountry(found);
   }
 }
 
@@ -2789,11 +2880,11 @@ function updateMyNationUI() {
   document.getElementById('gdpPct').textContent = `${pct.toFixed(1)}%`;
   document.getElementById('gdpBarFill').style.width = `${pct}%`;
 
-  // AP bar
+  // AP bar (티어에 따라 maxAp 먼저 갱신: D=20 … S=60)
+  refreshMyTierAndAp();
   document.getElementById('apVal').textContent = `${mn.ap} / ${mn.maxAp}`;
   document.getElementById('apBarFill').style.width = `${(mn.ap/mn.maxAp)*100}%`;
 
-  mn.tier = getMyTier();
   updatePolicyCooldowns();
   renderNationDashboard();
   checkBadges();
@@ -3230,151 +3321,270 @@ function openDebtInfo() {
 // 좌우로 움직이는 물가 지표를 '안정 구간(녹색)'에 들어왔을 때 탭하면 점수 획득.
 // 제한 시간 내 목표 점수 달성 시 국고+AP 보상. 하루 3회 제한.
 // ============================================================
-const MINIGAME_MAX_PER_DAY = 3;
-const MINIGAME_DURATION = 20;     // 초
-const MINIGAME_TARGET = 8;        // 목표 점수(안정 유지 성공 횟수)
+// ============================================================
+// 🎮 미니게임 (경제 테마) — 게임 4종 + 공용 프레임워크
+//   하루 플레이 횟수는 게임별로 카운트(각 MINIGAME_MAX_PER_DAY회/일).
+// ============================================================
+const MINIGAME_MAX_PER_DAY = 3;   // 게임별 1일 플레이 횟수
 let miniGameState = null;
 
-function miniGamePlaysToday() {
+// 게임 레지스트리 (setup 함수는 아래에서 선언 — 함수 호이스팅으로 참조 가능)
+const MINIGAMES = [
+  { id:'inflation', icon:'📊', title:'물가 안정 작전', target:8,  duration:20,
+    desc:'물가 막대가 <b style="color:var(--green)">녹색 안정 구간</b>에 올 때 [안정화]를 누르세요!',
+    tip:'물가 관리는 중앙은행의 핵심 역할입니다.', setup:mgSetupInflation },
+  { id:'trend', icon:'📈', title:'추세 예측', target:10, duration:24,
+    desc:'직전 흐름을 보고 다음 시장이 <b style="color:var(--green)">오를지(▲)</b> <b style="color:var(--red)">내릴지(▼)</b> 예측! 추세는 이어지는 경향이 있어요.',
+    tip:'추세(모멘텀)를 읽는 감각을 길러보세요.', setup:mgSetupTrend },
+  { id:'tax', icon:'🪙', title:'세금 징수', target:18, duration:22,
+    desc:'칸에 나타나는 <b style="color:var(--amber)">금화 🪙</b>를 사라지기 전에 빠르게 탭해 세수를 확보하세요!',
+    tip:'세수 확보는 재정의 기본! 순발력 게임입니다.', setup:mgSetupTax },
+  { id:'trade', icon:'⚖️', title:'무역 균형', target:14, duration:24,
+    desc:'<b>수출/수입</b> 버튼으로 무역수지를 <b style="color:var(--green)">0 부근(균형)</b>에 유지! 균형 1초마다 +1점.',
+    tip:'무역수지 균형의 어려움을 체험해보세요.', setup:mgSetupTrade },
+];
+
+function miniGameRec(){
   const today = new Date().toISOString().slice(0,10);
-  if (!state.miniGame || state.miniGame.date !== today) return 0;
-  return state.miniGame.plays || 0;
+  if (!state.miniGame || state.miniGame.date !== today || typeof state.miniGame.plays !== 'object') {
+    state.miniGame = { date: today, plays: {}, best: {} };
+  }
+  if (!state.miniGame.best) state.miniGame.best = {};
+  return state.miniGame;
 }
+function miniGamePlaysToday(id){ return miniGameRec().plays[id] || 0; }
 
 function openMiniGame() {
   if (!state.myNation) { showToast('warning','🎮 미니게임','먼저 국가를 건국하세요.'); return; }
-  renderMiniGameIntro();
+  renderMiniGameMenu();
   document.getElementById('miniGameModal').classList.add('active');
 }
 
-function renderMiniGameIntro() {
-  const plays = miniGamePlaysToday();
-  const left = Math.max(0, MINIGAME_MAX_PER_DAY - plays);
-  document.getElementById('miniGameBody').innerHTML = `
-    <div style="text-align:center;margin-bottom:16px;">
-      <div style="font-size:38px;">📊</div>
-      <div style="font-family:var(--font-title);font-size:18px;font-weight:900;color:var(--amber);margin-top:6px;">물가 안정 작전</div>
-      <div style="font-size:12px;color:var(--txt2);margin-top:8px;line-height:1.7;">
-        물가 지표가 좌우로 출렁입니다.<br>
-        <strong style="color:var(--green);">녹색 안정 구간</strong>에 들어왔을 때 <strong>[안정화]</strong> 버튼을 누르세요!<br>
-        ${MINIGAME_DURATION}초 안에 <strong>${MINIGAME_TARGET}회</strong> 성공하면 보상을 받습니다.
+// 게임 선택 메뉴
+function renderMiniGameMenu() {
+  const rec = miniGameRec();
+  const cards = MINIGAMES.map(g=>{
+    const plays = rec.plays[g.id] || 0;
+    const left = Math.max(0, MINIGAME_MAX_PER_DAY - plays);
+    const best = rec.best[g.id] || 0;
+    const can = left > 0;
+    return `
+    <button onclick="${can?`startMiniGameById('${g.id}')`:''}" ${can?'':'disabled'}
+      style="text-align:left;background:var(--bg2);border:1px solid ${can?'var(--border2)':'var(--border)'};border-radius:12px;padding:13px;cursor:${can?'pointer':'not-allowed'};opacity:${can?1:0.55};display:flex;gap:12px;align-items:center;width:100%;">
+      <div style="font-size:30px;flex-shrink:0;">${g.icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:var(--font-title);font-size:15px;font-weight:800;color:var(--amber);">${g.title}</div>
+        <div style="font-size:11px;color:var(--txt2);line-height:1.5;margin-top:3px;">${g.desc}</div>
+        <div style="font-size:10px;color:var(--txt3);font-family:var(--font-mono);margin-top:5px;">
+          오늘 남은 횟수 <b style="color:${left>0?'var(--green)':'var(--red)'};">${left}/${MINIGAME_MAX_PER_DAY}</b> · 최고 ${best}점 · 제한 ${g.duration}초
+        </div>
       </div>
-    </div>
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;">
-      <div style="font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:8px;">🏆 보상</div>
-      <div style="font-size:11px;color:var(--txt2);line-height:1.8;">
-        • 목표 달성: <strong style="color:var(--amber);">국고 +$15B</strong> + <strong style="color:var(--cyan);">⚡AP +3</strong> + 경제체력 +10<br>
-        • 점수 비례 추가 보상(많이 맞출수록 ↑)<br>
-        • 💡 물가 관리는 중앙은행의 핵심 역할! 게임으로 체험해보세요.
-      </div>
-    </div>
-    <div style="text-align:center;font-size:11px;color:var(--txt3);margin-bottom:12px;">오늘 남은 횟수: <strong style="color:${left>0?'var(--green)':'var(--red)'};">${left} / ${MINIGAME_MAX_PER_DAY}</strong></div>
-    <button onclick="startMiniGame()" ${left<=0?'disabled':''}
-      style="width:100%;padding:14px;border-radius:10px;border:none;background:${left>0?'var(--amber)':'var(--border)'};color:${left>0?'#000':'var(--txt3)'};font-family:var(--font-kr);font-size:14px;font-weight:700;cursor:${left>0?'pointer':'not-allowed'};">
-      ${left>0?'▶️ 게임 시작':'오늘 횟수를 모두 사용했습니다'}
     </button>`;
-}
-
-function startMiniGame() {
-  if (miniGamePlaysToday() >= MINIGAME_MAX_PER_DAY) { showToast('warning','횟수 초과','내일 다시 도전하세요!'); return; }
-  miniGameState = {
-    score: 0, timeLeft: MINIGAME_DURATION,
-    pos: 50, dir: 1, speed: 1.6,
-    zoneStart: 38, zoneEnd: 62,  // 안정 구간(%)
-    running: true, lastTapOk: null,
-  };
-  renderMiniGamePlay();
-  // 물가 지표 이동 루프 (~30fps)
-  miniGameState.moveTimer = setInterval(miniGameTick, 33);
-  // 1초 카운트다운
-  miniGameState.countTimer = setInterval(()=>{
-    if (!miniGameState || !miniGameState.running) return;
-    miniGameState.timeLeft--;
-    const t = document.getElementById('mgTime');
-    if (t) t.textContent = miniGameState.timeLeft;
-    if (miniGameState.timeLeft <= 0) endMiniGame();
-  }, 1000);
-}
-
-function renderMiniGamePlay() {
+  }).join('');
   document.getElementById('miniGameBody').innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-      <div style="font-size:13px;font-weight:700;">📊 점수: <span id="mgScore" style="color:var(--amber);">0</span> / ${MINIGAME_TARGET}</div>
-      <div style="font-size:13px;font-weight:700;">⏱️ <span id="mgTime" style="color:var(--cyan);">${MINIGAME_DURATION}</span>초</div>
+    <div style="font-size:12px;color:var(--txt2);text-align:center;margin-bottom:14px;line-height:1.6;">
+      경제 감각을 키우는 4종 미니게임! 성공할수록 <b style="color:var(--amber)">국고·AP·경제체력</b> 보상이 커집니다.
     </div>
-    <!-- 물가 게이지 트랙 -->
+    <div style="display:flex;flex-direction:column;gap:10px;">${cards}</div>`;
+}
+
+// 공용: 헤더(점수/시간), 피드백 영역
+function mgHeader(){
+  const mg = miniGameState;
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-size:13px;font-weight:700;">${mg.icon} 점수: <span id="mgScore" style="color:var(--amber);">${mg.score}</span> / ${mg.target}</div>
+      <div style="font-size:13px;font-weight:700;">⏱️ <span id="mgTime" style="color:var(--cyan);">${mg.timeLeft}</span>초</div>
+    </div>`;
+}
+function mgRefreshScore(){ const e=document.getElementById('mgScore'); if(e) e.textContent=miniGameState.score; }
+function mgFeedback(msg,color){ const fb=document.getElementById('mgFeedback'); if(fb){ fb.textContent=msg; fb.style.color=color; } }
+function mgAddTimer(t){ miniGameState.timers.push(t); }
+
+function startMiniGameById(id){
+  if (miniGamePlaysToday(id) >= MINIGAME_MAX_PER_DAY) { showToast('warning','횟수 초과','내일 다시 도전하세요!'); return; }
+  const g = MINIGAMES.find(x=>x.id===id); if (!g) return;
+  miniGameState = { gameId:id, icon:g.icon, title:g.title, score:0, target:g.target,
+    duration:g.duration, timeLeft:g.duration, running:true, timers:[] };
+  g.setup();   // 게임별 초기화 + 첫 렌더 + 전용 타이머
+  // 공용 1초 카운트다운
+  const ct = setInterval(()=>{
+    const mg = miniGameState; if (!mg || !mg.running) return;
+    mg.timeLeft--;
+    const t = document.getElementById('mgTime'); if (t) t.textContent = mg.timeLeft;
+    if (mg.timeLeft <= 0) endMiniGame();
+  }, 1000);
+  mgAddTimer(ct);
+}
+
+// ---------- 게임 1: 물가 안정 작전 (타이밍 탭) ----------
+function mgSetupInflation(){
+  const mg = miniGameState;
+  Object.assign(mg, { pos:50, dir:1, speed:1.6, zoneStart:38, zoneEnd:62 });
+  document.getElementById('miniGameBody').innerHTML = `
+    ${mgHeader()}
     <div style="position:relative;height:46px;background:var(--bg0);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;">
-      <!-- 안정 구간(녹색) -->
       <div style="position:absolute;top:0;bottom:0;left:38%;width:24%;background:rgba(0,229,160,0.22);border-left:2px dashed var(--green);border-right:2px dashed var(--green);"></div>
-      <!-- 물가 인디케이터 -->
       <div id="mgIndicator" style="position:absolute;top:4px;bottom:4px;width:6px;border-radius:3px;background:var(--amber);left:50%;transform:translateX(-50%);transition:background .1s;"></div>
       <div style="position:absolute;left:6px;top:2px;font-size:9px;color:var(--red);">디플레</div>
       <div style="position:absolute;right:6px;top:2px;font-size:9px;color:var(--red);">인플레</div>
       <div style="position:absolute;left:50%;bottom:2px;transform:translateX(-50%);font-size:9px;color:var(--green);">안정</div>
     </div>
     <div id="mgFeedback" style="text-align:center;height:20px;font-size:12px;font-weight:700;margin-bottom:10px;"></div>
-    <button onclick="miniGameTap()" id="mgTapBtn"
-      style="width:100%;padding:18px;border-radius:12px;border:none;background:var(--green);color:#000;font-family:var(--font-kr);font-size:16px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-      🎯 안정화!
-    </button>
+    <button onclick="mgInflationTap()" style="width:100%;padding:18px;border-radius:12px;border:none;background:var(--green);color:#000;font-family:var(--font-kr);font-size:16px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;">🎯 안정화!</button>
     <div style="text-align:center;font-size:10px;color:var(--txt3);margin-top:10px;">물가 막대가 녹색 구간에 있을 때 누르세요</div>`;
+  const mv = setInterval(()=>{
+    const m = miniGameState; if (!m || !m.running) return;
+    m.pos += m.dir * m.speed;
+    if (m.pos >= 96){ m.pos = 96; m.dir = -1; }
+    if (m.pos <= 4){ m.pos = 4; m.dir = 1; }
+    const ind = document.getElementById('mgIndicator');
+    if (ind){ ind.style.left = m.pos + '%'; ind.style.background = (m.pos>=m.zoneStart && m.pos<=m.zoneEnd) ? 'var(--green)' : 'var(--amber)'; }
+  }, 33);
+  mgAddTimer(mv);
 }
-
-function miniGameTick() {
-  const mg = miniGameState;
-  if (!mg || !mg.running) return;
-  // 물가 위치 이동(좌우 왕복), 시간이 지날수록 약간 빨라짐
-  mg.pos += mg.dir * mg.speed;
-  if (mg.pos >= 96) { mg.pos = 96; mg.dir = -1; }
-  if (mg.pos <= 4) { mg.pos = 4; mg.dir = 1; }
-  const ind = document.getElementById('mgIndicator');
-  if (ind) {
-    ind.style.left = mg.pos + '%';
-    const inZone = mg.pos >= mg.zoneStart && mg.pos <= mg.zoneEnd;
-    ind.style.background = inZone ? 'var(--green)' : 'var(--amber)';
-  }
-}
-
-function miniGameTap() {
-  const mg = miniGameState;
-  if (!mg || !mg.running) return;
-  const inZone = mg.pos >= mg.zoneStart && mg.pos <= mg.zoneEnd;
-  const fb = document.getElementById('mgFeedback');
-  if (inZone) {
-    mg.score++;
-    document.getElementById('mgScore').textContent = mg.score;
-    if (fb) { fb.textContent = '✅ 물가 안정 성공! (+1)'; fb.style.color = 'var(--green)'; }
-    // 성공할수록 난이도 소폭 상승
+function mgInflationTap(){
+  const mg = miniGameState; if (!mg || !mg.running) return;
+  if (mg.pos >= mg.zoneStart && mg.pos <= mg.zoneEnd){
+    mg.score++; mgRefreshScore(); mgFeedback('✅ 물가 안정 성공! (+1)','var(--green)');
     mg.speed = Math.min(3.2, mg.speed + 0.12);
-    if (mg.score >= MINIGAME_TARGET) endMiniGame();
+    if (mg.score >= mg.target) endMiniGame();
   } else {
-    if (fb) { fb.textContent = mg.pos < mg.zoneStart ? '❌ 디플레이션! 너무 빨랐어요' : '❌ 인플레이션! 너무 늦었어요'; fb.style.color = 'var(--red)'; }
+    mgFeedback(mg.pos < mg.zoneStart ? '❌ 디플레이션! 너무 빨랐어요' : '❌ 인플레이션! 너무 늦었어요','var(--red)');
   }
 }
 
-function endMiniGame() {
+// ---------- 게임 2: 추세 예측 (▲/▼ 이진 예측) ----------
+function mgSetupTrend(){
   const mg = miniGameState;
-  if (!mg) return;
+  Object.assign(mg, { series:[50], momentum:1, rounds:0 });
+  document.getElementById('miniGameBody').innerHTML = `
+    ${mgHeader()}
+    <div style="font-size:11px;color:var(--txt2);text-align:center;margin-bottom:8px;">최근 흐름</div>
+    <div id="mgTrend" style="display:flex;align-items:flex-end;justify-content:center;gap:4px;height:90px;background:var(--bg0);border:1px solid var(--border);border-radius:10px;padding:8px;margin-bottom:8px;"></div>
+    <div id="mgFeedback" style="text-align:center;height:20px;font-size:12px;font-weight:700;margin-bottom:10px;"></div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="mgTrendGuess(1)" style="flex:1;padding:18px;border-radius:12px;border:none;background:var(--green);color:#000;font-size:18px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;">▲ 상승</button>
+      <button onclick="mgTrendGuess(-1)" style="flex:1;padding:18px;border-radius:12px;border:none;background:var(--red);color:#fff;font-size:18px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;">▼ 하락</button>
+    </div>`;
+  mgTrendRender();
+}
+function mgTrendRender(){
+  const mg = miniGameState; const el = document.getElementById('mgTrend'); if (!el) return;
+  const s = mg.series; const min = Math.min(...s), max = Math.max(...s), rng = (max-min)||1;
+  el.innerHTML = s.map((v,i)=>{
+    const h = 12 + ((v-min)/rng)*60;
+    const up = i>0 && v>=s[i-1];
+    const col = i===0 ? 'var(--txt3)' : (up?'var(--green)':'var(--red)');
+    return `<div style="width:14px;height:${h}px;background:${col};border-radius:3px;opacity:${0.5+0.5*(i/(s.length-1||1))};"></div>`;
+  }).join('');
+}
+function mgTrendGuess(dir){
+  const mg = miniGameState; if (!mg || !mg.running) return;
+  const last = mg.series[mg.series.length-1];
+  const cont = Math.random() < 0.68;                 // 추세 지속 68%
+  let nd = cont ? mg.momentum : -mg.momentum;
+  const next = Math.max(5, Math.min(95, last + nd*(4 + Math.random()*7)));
+  mg.momentum = next >= last ? 1 : -1;
+  mg.series.push(next); if (mg.series.length > 12) mg.series.shift();
+  mgTrendRender();
+  const correct = (dir > 0 && next > last) || (dir < 0 && next < last);
+  if (correct){ mg.score++; mgRefreshScore(); mgFeedback('✅ 예측 적중! (+1)','var(--green)'); if (mg.score >= mg.target) endMiniGame(); }
+  else { mgFeedback('❌ 빗나갔어요','var(--red)'); }
+}
+
+// ---------- 게임 3: 세금 징수 (두더지 잡기) ----------
+function mgSetupTax(){
+  const mg = miniGameState;
+  Object.assign(mg, { coin:-1, spawnMs:850 });
+  const cells = Array.from({length:9}, (_,i)=>
+    `<button id="mgCell${i}" onclick="mgTaxTap(${i})" style="aspect-ratio:1;border-radius:12px;border:1px solid var(--border);background:var(--bg2);font-size:30px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;"></button>`
+  ).join('');
+  document.getElementById('miniGameBody').innerHTML = `
+    ${mgHeader()}
+    <div id="mgFeedback" style="text-align:center;height:20px;font-size:12px;font-weight:700;margin-bottom:8px;"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">${cells}</div>
+    <div style="text-align:center;font-size:10px;color:var(--txt3);margin-top:10px;">금화가 사라지기 전에 탭하세요!</div>`;
+  const spawn = setInterval(()=>{
+    const m = miniGameState; if (!m || !m.running) return;
+    if (m.coin >= 0){ const old = document.getElementById('mgCell'+m.coin); if (old){ old.textContent=''; old.style.background='var(--bg2)'; } }
+    const next = Math.floor(Math.random()*9);
+    m.coin = next;
+    const cell = document.getElementById('mgCell'+next);
+    if (cell){ cell.textContent='🪙'; cell.style.background='rgba(255,181,71,0.18)'; }
+  }, mg.spawnMs);
+  mgAddTimer(spawn);
+}
+function mgTaxTap(i){
+  const mg = miniGameState; if (!mg || !mg.running) return;
+  if (i === mg.coin){
+    mg.score++; mgRefreshScore(); mgFeedback('🪙 세수 확보! (+1)','var(--amber)');
+    const cell = document.getElementById('mgCell'+i); if (cell){ cell.textContent=''; cell.style.background='var(--bg2)'; }
+    mg.coin = -1;
+    if (mg.score >= mg.target) endMiniGame();
+  } else {
+    mgFeedback('빈 칸이에요','var(--txt3)');
+  }
+}
+
+// ---------- 게임 4: 무역 균형 (수출/수입 균형 유지) ----------
+function mgSetupTrade(){
+  const mg = miniGameState;
+  Object.assign(mg, { bal:0, holdMs:0, band:14 });
+  document.getElementById('miniGameBody').innerHTML = `
+    ${mgHeader()}
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--txt3);margin-bottom:4px;"><span>📥 수입 우위(적자)</span><span>균형</span><span>수출 우위(흑자) 📤</span></div>
+    <div style="position:relative;height:44px;background:var(--bg0);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+      <div style="position:absolute;top:0;bottom:0;left:43%;width:14%;background:rgba(0,229,160,0.20);border-left:2px dashed var(--green);border-right:2px dashed var(--green);"></div>
+      <div id="mgBeam" style="position:absolute;top:4px;bottom:4px;width:8px;border-radius:4px;background:var(--amber);left:50%;transform:translateX(-50%);transition:background .1s;"></div>
+    </div>
+    <div id="mgFeedback" style="text-align:center;height:20px;font-size:12px;font-weight:700;margin-bottom:10px;"></div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="mgTradeNudge(-1)" style="flex:1;padding:18px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-size:15px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;">📥 수입</button>
+      <button onclick="mgTradeNudge(1)" style="flex:1;padding:18px;border-radius:12px;border:none;background:var(--cyan);color:#000;font-size:15px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;">📤 수출</button>
+    </div>
+    <div style="text-align:center;font-size:10px;color:var(--txt3);margin-top:10px;">막대를 가운데 녹색(균형)에 1초 유지할 때마다 +1점</div>`;
+  const drift = setInterval(()=>{
+    const m = miniGameState; if (!m || !m.running) return;
+    m.bal += (Math.random()-0.5) * 9;                 // 무작위 외부 충격
+    m.bal = Math.max(-50, Math.min(50, m.bal));
+    const inBand = Math.abs(m.bal) <= m.band;
+    if (inBand){ m.holdMs += 120; if (m.holdMs >= 1000){ m.holdMs -= 1000; m.score++; mgRefreshScore(); mgFeedback('⚖️ 균형 유지! (+1)','var(--green)'); if (m.score >= m.target){ endMiniGame(); return; } } }
+    else { m.holdMs = 0; }
+    const beam = document.getElementById('mgBeam');
+    if (beam){ beam.style.left = (50 + m.bal) + '%'; beam.style.background = inBand ? 'var(--green)' : 'var(--amber)'; }
+  }, 120);
+  mgAddTimer(drift);
+}
+function mgTradeNudge(sign){
+  const mg = miniGameState; if (!mg || !mg.running) return;
+  mg.bal += sign * 8;
+  mg.bal = Math.max(-50, Math.min(50, mg.bal));
+}
+
+// ---------- 공용 종료/보상 ----------
+function mgClearTimers(){
+  if (miniGameState && miniGameState.timers) miniGameState.timers.forEach(t=>clearInterval(t));
+}
+function endMiniGame() {
+  const mg = miniGameState; if (!mg || !mg.running) return;
   mg.running = false;
-  clearInterval(mg.moveTimer);
-  clearInterval(mg.countTimer);
-  const success = mg.score >= MINIGAME_TARGET;
+  mgClearTimers();
+  const success = mg.score >= mg.target;
   const mn = state.myNation;
 
-  // 하루 플레이 횟수 기록
-  const today = new Date().toISOString().slice(0,10);
-  if (!state.miniGame || state.miniGame.date !== today) state.miniGame = { date: today, plays: 0, bestScore: 0 };
-  state.miniGame.plays++;
-  state.miniGame.bestScore = Math.max(state.miniGame.bestScore||0, mg.score);
+  // 게임별 1일 플레이 횟수/최고점 기록
+  const rec = miniGameRec();
+  rec.plays[mg.gameId] = (rec.plays[mg.gameId] || 0) + 1;
+  rec.best[mg.gameId] = Math.max(rec.best[mg.gameId] || 0, mg.score);
 
-  // 보상: 점수 비례 + 목표 달성 보너스
-  let fundReward = mg.score * 1.5;     // 점수당 국고 $1.5B
-  let apReward = Math.floor(mg.score / 3);
-  let healthReward = mg.score;
-  if (success) { fundReward += 15; apReward += 3; healthReward += 10; }
-  fundReward = Math.round(fundReward);
+  // 보상: 목표 대비 달성률 기반(게임 간 보상 균형 유지)
+  const ratio = Math.min(1.5, mg.score / Math.max(1, mg.target));
+  let fundReward = Math.round(8 + ratio * 14);
+  let apReward = Math.round(ratio * 3);
+  let healthReward = Math.round(ratio * 8);
+  if (success){ fundReward += 8; apReward += 2; healthReward += 6; }
 
-  if (mn) {
+  if (mn){
     mn.treasury = (mn.treasury||0) + fundReward;
     mn.ap = Math.min(mn.maxAp, (mn.ap||0) + apReward);
     mn.health = Math.min(100, (mn.health||100) + healthReward);
@@ -3383,9 +3593,9 @@ function endMiniGame() {
 
   document.getElementById('miniGameBody').innerHTML = `
     <div style="text-align:center;padding:14px 8px;">
-      <div style="font-size:44px;margin-bottom:10px;">${success?'🏆':mg.score>=MINIGAME_TARGET/2?'👍':'📊'}</div>
-      <div style="font-size:18px;font-weight:900;margin-bottom:6px;color:${success?'var(--green)':'var(--txt)'};">${success?'물가 안정 성공!':'작전 종료'}</div>
-      <div style="font-size:14px;color:var(--txt2);margin-bottom:16px;">최종 점수: <strong style="color:var(--amber);">${mg.score}</strong> / ${MINIGAME_TARGET}</div>
+      <div style="font-size:44px;margin-bottom:10px;">${success?'🏆':mg.score>=mg.target/2?'👍':'📊'}</div>
+      <div style="font-size:18px;font-weight:900;margin-bottom:6px;color:${success?'var(--green)':'var(--txt)'};">${success?(mg.title+' 성공!'):'게임 종료'}</div>
+      <div style="font-size:14px;color:var(--txt2);margin-bottom:16px;">최종 점수: <strong style="color:var(--amber);">${mg.score}</strong> / ${mg.target}</div>
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px;">
         <div style="font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:8px;">🎁 획득 보상</div>
         <div style="display:flex;justify-content:space-around;font-family:var(--font-mono);">
@@ -3394,17 +3604,15 @@ function endMiniGame() {
           <div><div style="font-size:10px;color:var(--txt3);">경제체력</div><div style="font-size:15px;font-weight:900;color:var(--green);">+${healthReward}</div></div>
         </div>
       </div>
-      <button onclick="renderMiniGameIntro()" style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:13px;font-weight:700;cursor:pointer;">다시 하기 / 종료</button>
+      <button onclick="renderMiniGameMenu()" style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--border2);background:var(--bg2);color:var(--txt);font-family:var(--font-kr);font-size:13px;font-weight:700;cursor:pointer;">🎮 게임 선택으로</button>
     </div>`;
-  showToast(success?'success':'info','🎮 미니게임 종료', `점수 ${mg.score}점 · 국고 +$${fundReward}B, AP +${apReward}`);
+  showToast(success?'success':'info','🎮 미니게임 종료', `${mg.title} · 점수 ${mg.score}점 · 국고 +$${fundReward}B, AP +${apReward}`);
 }
 
 function closeMiniGame() {
-  if (miniGameState && miniGameState.running) {
-    // 진행 중 닫으면 게임 중단(보상 없음, 횟수 미차감)
-    miniGameState.running = false;
-    clearInterval(miniGameState.moveTimer);
-    clearInterval(miniGameState.countTimer);
+  if (miniGameState && miniGameState.running){
+    miniGameState.running = false;   // 진행 중 닫으면 중단(보상 없음, 횟수 미차감)
+    mgClearTimers();
   }
   miniGameState = null;
   closeModal('miniGameModal');
@@ -3735,7 +3943,7 @@ function renderWorldRanking(tabsHtml) {
     const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
     const isMe = c.isMe;
     const chg = isMe ? ((mn.gdp-mn.startGdp)/mn.startGdp*100) : (c.change_pct||0);
-    const clickAttr = isMe ? '' : `onclick="selectCountry('${c.code}');closeModal('rankingModal')"`;
+    const clickAttr = isMe ? '' : `onclick="pickCountry('${c.code}');closeModal('rankingModal')"`;
     return `<div class="rank-row ${isMe?'mine-rank':''}" ${clickAttr}>
       <div class="rank-num ${rankCls}">${medal}</div>
       <div class="rank-flag">${c.flag}</div>

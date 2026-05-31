@@ -276,9 +276,9 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
 
 /* Point bar */
 .ap-bar { padding:10px 12px; background:var(--bg2); border-bottom:1px solid var(--border); flex-shrink:0; }
-.ap-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
-.ap-lbl { font-family:var(--font-mono); font-size:12px; color:var(--txt2); }
-.ap-val { font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--cyan); }
+.ap-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; gap:8px; }
+.ap-lbl { font-family:var(--font-mono); font-size:12px; color:var(--txt2); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ap-val { font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--cyan); flex-shrink:0; white-space:nowrap; }
 .ap-bar-bg { height:4px; background:var(--bg3); border-radius:2px; overflow:hidden; }
 .ap-bar-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--cyan)); border-radius:2px; transition:width .5s; }
 
@@ -791,7 +791,7 @@ body { background:var(--bg0); color:var(--txt1); font-family:var(--font-kr), san
     <!-- Action Point bar -->
     <div class="ap-bar">
       <div class="ap-row">
-        <div class="ap-lbl">⚡ 행동 포인트 (AP) — 30초마다 +1 자동 충전</div>
+        <div class="ap-lbl">⚡ 행동 포인트 (AP) — 30초마다 +1</div>
         <div class="ap-val" id="apVal">0 / 20</div>
       </div>
       <div class="ap-bar-bg"><div class="ap-bar-fill" id="apBarFill" style="width:0%"></div></div>
@@ -3345,7 +3345,7 @@ const MINIGAMES = [
     desc:'직전 흐름을 보고 다음 시장이 <b style="color:var(--green)">오를지(▲)</b> <b style="color:var(--red)">내릴지(▼)</b> 예측! 추세는 이어지는 경향이 있어요.',
     tip:'추세(모멘텀)를 읽는 감각을 길러보세요.', setup:mgSetupTrend },
   { id:'tax', icon:'🪙', title:'세금 징수', target:18, duration:22,
-    desc:'칸에 나타나는 <b style="color:var(--amber)">금화 🪙</b>를 사라지기 전에 빠르게 탭해 세수를 확보하세요!',
+    desc:'🪙일반(+1)·💎대박(+2)을 탭해 세수 확보! 💣<b style="color:var(--red)">폭탄은 누르지 말고 피하세요</b>(−2).',
     tip:'세수 확보는 재정의 기본! 순발력 게임입니다.', setup:mgSetupTax },
   { id:'trade', icon:'⚖️', title:'무역 균형', target:14, duration:24,
     desc:'<b>수출/수입</b> 버튼으로 무역수지를 <b style="color:var(--green)">0 부근(균형)</b>에 유지! 균형 1초마다 +1점.',
@@ -3503,35 +3503,53 @@ function mgTrendGuess(dir){
 // ---------- 게임 3: 세금 징수 (두더지 잡기) ----------
 function mgSetupTax(){
   const mg = miniGameState;
-  Object.assign(mg, { coin:-1, spawnMs:850 });
+  Object.assign(mg, { coin:-1, coinType:'normal', spawnMs:850 });
   const cells = Array.from({length:9}, (_,i)=>
-    `<button id="mgCell${i}" onclick="mgTaxTap(${i})" style="aspect-ratio:1;border-radius:12px;border:1px solid var(--border);background:var(--bg2);font-size:30px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;"></button>`
+    `<button id="mgCell${i}" onclick="mgTaxTap(${i})" style="aspect-ratio:1;border-radius:12px;border:1px solid var(--border);background:var(--bg2);font-size:30px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;transition:background .1s;"></button>`
   ).join('');
   document.getElementById('miniGameBody').innerHTML = `
     ${mgHeader()}
     <div id="mgFeedback" style="text-align:center;height:20px;font-size:12px;font-weight:700;margin-bottom:8px;"></div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">${cells}</div>
-    <div style="text-align:center;font-size:10px;color:var(--txt3);margin-top:10px;">금화가 사라지기 전에 탭하세요!</div>`;
+    <div style="text-align:center;font-size:10px;color:var(--txt2);margin-top:10px;line-height:1.6;">
+      🪙 일반 <b>+1</b> · 💎 대박 <b style="color:var(--green)">+2</b> · 💣 폭탄은 <b style="color:var(--red)">누르지 마세요!</b>(−2)
+    </div>`;
+  const VISUAL = {
+    normal:{ icon:'🪙', bg:'rgba(255,181,71,0.18)' },
+    bonus: { icon:'💎', bg:'rgba(0,229,160,0.22)' },
+    trap:  { icon:'💣', bg:'rgba(255,77,109,0.22)' },
+  };
   const spawn = setInterval(()=>{
     const m = miniGameState; if (!m || !m.running) return;
     if (m.coin >= 0){ const old = document.getElementById('mgCell'+m.coin); if (old){ old.textContent=''; old.style.background='var(--bg2)'; } }
+    const r = Math.random();
+    const type = r < 0.10 ? 'trap' : (r < 0.30 ? 'bonus' : 'normal');  // 10% 폭탄 / 20% 2배 / 70% 일반
     const next = Math.floor(Math.random()*9);
-    m.coin = next;
+    m.coin = next; m.coinType = type;
     const cell = document.getElementById('mgCell'+next);
-    if (cell){ cell.textContent='🪙'; cell.style.background='rgba(255,181,71,0.18)'; }
+    if (cell){ cell.textContent = VISUAL[type].icon; cell.style.background = VISUAL[type].bg; }
   }, mg.spawnMs);
   mgAddTimer(spawn);
 }
 function mgTaxTap(i){
   const mg = miniGameState; if (!mg || !mg.running) return;
-  if (i === mg.coin){
-    mg.score++; mgRefreshScore(); mgFeedback('🪙 세수 확보! (+1)','var(--amber)');
-    const cell = document.getElementById('mgCell'+i); if (cell){ cell.textContent=''; cell.style.background='var(--bg2)'; }
-    mg.coin = -1;
-    if (mg.score >= mg.target) endMiniGame();
-  } else {
-    mgFeedback('빈 칸이에요','var(--txt3)');
+  if (i !== mg.coin){ mgFeedback('빈 칸이에요','var(--txt3)'); return; }
+  const cell = document.getElementById('mgCell'+i);
+  if (cell){ cell.textContent=''; cell.style.background='var(--bg2)'; }
+  const type = mg.coinType;
+  mg.coin = -1;
+  if (type === 'trap'){
+    mg.score = Math.max(0, mg.score - 2);
+    mgRefreshScore();
+    mgFeedback('💣 폭탄! 세수 손실 (−2)','var(--red)');
+    return;   // 폭탄은 목표 달성 체크 없음
   }
+  if (type === 'bonus'){
+    mg.score += 2; mgRefreshScore(); mgFeedback('💎 대박! 2배 세수 (+2)','var(--green)');
+  } else {
+    mg.score += 1; mgRefreshScore(); mgFeedback('🪙 세수 확보! (+1)','var(--amber)');
+  }
+  if (mg.score >= mg.target) endMiniGame();
 }
 
 // ---------- 게임 4: 무역 균형 (수출/수입 균형 유지) ----------
